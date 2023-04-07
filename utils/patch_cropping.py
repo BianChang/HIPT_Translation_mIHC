@@ -38,16 +38,15 @@ def crop_images_in_directory(input_dir, output_dir, patch_size, stride):
                     # Determine output filename and directory
                     patch_dir = os.path.join(output_dir, filename.split('.')[0])
                     os.makedirs(patch_dir, exist_ok=True)
-                    patch_filename = f"{filename.split('.')[0]}_patch_{i}_{j}.png"
+                    patch_filename = f"{filename.split('.')[0]}_patch_{i}_{j}.jpg"
                     patch_path = os.path.join(patch_dir, patch_filename)
 
                     # Save the patch to disk
                     cv2.imwrite(patch_path, patch)
 
 
-# Example usage:
-input_dir = "path/to/input/directory"
-output_dir = "path/to/output/directory"
-patch_size = 512
-stride = 256
+input_dir = r'D:\Chang_files\workspace\data\MIHC\PANCK_reg/HE-6'
+output_dir = r'D:\Chang_files\workspace\data\mihc_patches/PANCK/HE-6'
+patch_size = 1024
+stride = 512
 crop_images_in_directory(input_dir, output_dir, patch_size, stride)
