@@ -5,7 +5,7 @@ from timm.models.swin_transformer import SwinTransformerBlock
 import math
 
 class SwinTransformer(nn.Module):
-    def __init__(self, img_size=[4096], patch_size=16, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
+    def __init__(self, img_size=[1024], patch_size=16, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
                  num_heads=3, window_size=7, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop_rate=0., attn_drop_rate=0.,
                  drop_path_rate=0.1, norm_layer=nn.LayerNorm, output_channels=4, **kwargs):
         super().__init__()
@@ -59,10 +59,13 @@ class SwinTransformer(nn.Module):
             nn.init.normal_(m.weight, std=0.02)
             if isinstance(m, nn.Linear) and m.bias is not None:
                 nn.init.constant_(m.bias, 0)
+        elif isinstance(m, nn.Conv2d) or isinstance(m, nn.ConvTranspose2d):
+            nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+            if m.bias is not None:
+                nn.init.constant_(m.bias, 0.0)
         elif isinstance(m, nn.LayerNorm):
             nn.init.constant_(m.bias, 0)
             nn.init.constant_(m.weight, 1.0)
-
 
     def forward(self, x):
         # Apply patch embedding to convert the input image into a sequence of flattened patches
