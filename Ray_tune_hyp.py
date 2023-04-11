@@ -19,7 +19,7 @@ import argparse
 config = {
     "lr": tune.loguniform(1e-5, 1e-1),
     "lr_scheduler": tune.choice(["StepLR", "ExponentialLR", "CosineAnnealingLR"]),
-    "batch_size": tune.choice([16, 32, 64, 128]),
+    "batch_size": tune.choice([1, 2, 4]),
 }
 
 
