@@ -42,10 +42,10 @@ def train_model(config):
 
     # Load and preprocess the dataset using the provided patch_size
     # Define the transforms for the input and label images
-    mean_data = [mean_r, mean_g, mean_b]  # replace with your calculated values
-    std_data = [std_r, std_g, std_b]  # replace with your calculated values
-    mean_label = [mean_ch1, mean_ch2, mean_ch3, mean_ch4]  # replace with your calculated values
-    std_label = [std_ch1, std_ch2, std_ch3, std_ch4]  # replace with your calculated values
+    mean_data = [201.863, 156.647, 188.265]  
+    std_data = [40.689, 52.119, 37.961]
+    mean_label = [4.029, 10.271, 3.883, 11.188]
+    std_label = [9.946, 15.307, 4.273, 14.874]
 
     input_transform = Compose([
         ToTensor(),
