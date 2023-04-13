@@ -5,8 +5,8 @@ from timm.models.swin_transformer import SwinTransformerBlock
 import math
 
 class SwinTransformer(nn.Module):
-    def __init__(self, img_size=[1024], patch_size=16, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
-                 num_heads=3, window_size=7, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop_rate=0., attn_drop_rate=0.,
+    def __init__(self, img_size=[1024], input_resolution=[1024, 1024], patch_size=16, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
+                 num_heads=3, window_size=8, mlp_ratio=4., qkv_bias=False, drop_rate=0., attn_drop_rate=0.,
                  drop_path_rate=0.1, norm_layer=nn.LayerNorm, output_channels=4, **kwargs):
         super().__init__()
         self.embed_dim = embed_dim
@@ -23,10 +23,9 @@ class SwinTransformer(nn.Module):
         self.blocks = nn.ModuleList([
             nn.Sequential(*[
                 SwinTransformerBlock(
-                    dim=embed_dim, num_heads=num_heads, window_size=window_size, shift_size=window_size // 2,
-                    mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, qk_scale=qk_scale, drop=drop_rate, attn_drop=attn_drop_rate,
-                    drop_path=DropPath(drop_path_rate) if drop_path_rate > 0. else nn.Identity(),
-                    norm_layer=norm_layer)
+                    dim=embed_dim, input_resolution=input_resolution, num_heads=num_heads, window_size=window_size, shift_size=window_size // 2,
+                    mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, drop=drop_rate, attn_drop=attn_drop_rate,
+                    drop_path=drop_path_rate, norm_layer=norm_layer)
                 for _ in range(depth)])
             for depth in depths])
 

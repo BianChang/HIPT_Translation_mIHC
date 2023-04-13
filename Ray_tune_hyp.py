@@ -21,7 +21,7 @@ config = {
     "lr_scheduler": tune.choice(["StepLR", "ExponentialLR", "CosineAnnealingLR"]),
     "batch_size": tune.choice([1, 2, 4]),
 }
-SSIM = StructuralSimilarityIndexMeasure(range=1.0)
+SSIM = StructuralSimilarityIndexMeasure(range=1.0, reduction='none')
 
 def train_model(config):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -122,16 +122,16 @@ gpus_per_trial = 1  # Number of GPUs per trial
 
 # Run the experiment using ASHA (Asynchronous Successive Halving Algorithm) scheduler
 asha_scheduler = ASHAScheduler(max_t=max_num_epochs, grace_period=1, reduction_factor=2)
-search_alg = AxSearch(max_concurrent=2)  # You can use other search algorithms like BayesOptSearch, HyperOptSearch, etc.
-search_alg = ConcurrencyLimiter(search_alg, max_concurrency=10)
+# search_alg = AxSearch(max_concurrent=2)  # You can use other search algorithms like BayesOptSearch, HyperOptSearch, etc.
+# search_alg = ConcurrencyLimiter(search_alg, max_concurrency=10)
 
 analysis = tune.run(
     train_model,
-    resources_per_trial={"cpu": 1, "gpu": gpus_per_trial},
+    resources_per_trial={"cpu": 2, "gpu": gpus_per_trial},
     config=config,
     num_samples=num_samples,
     scheduler=asha_scheduler,
-    search_alg=search_alg,
+    #search_alg=search_alg,
     metric="loss",
     mode="min",
 )
