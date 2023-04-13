@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, ToTensor, Normalize
-from torchmetrics import SSIM
+from torchmetrics import StructuralSimilarityIndexMeasure
 from SwinVisionTranformer import SwinTransformer
 import os
 import numpy as np
@@ -21,7 +21,7 @@ config = {
     "lr_scheduler": tune.choice(["StepLR", "ExponentialLR", "CosineAnnealingLR"]),
     "batch_size": tune.choice([1, 2, 4]),
 }
-
+SSIM = StructuralSimilarityIndexMeasure(range=1.0)
 
 def train_model(config):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
