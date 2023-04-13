@@ -60,7 +60,6 @@ def train_model(config):
     parser = argparse.ArgumentParser(description='Train a Swin Transformer model for image-to-image translation')
     parser.add_argument('--train_path', type=str, default='/path/to/train', help='Path to training data')
     parser.add_argument('--val_path', type=str, default='/path/to/val', help='Path to validation data')
-    parser.add_argument('--test_path', type=str, default='/path/to/test', help='Path to test data')
     args = parser.parse_args()
 
     train_dataset = ImageToImageDataset(args.train_path, input_transform=input_transform,
@@ -106,11 +105,11 @@ def train_model(config):
                 # Calculate SSIM
                 ssim_val = SSIM(output, target)
                 val_ssim.append(ssim_val.cpu().numpy())
-    running_loss /= len(train_loader)
-    val_ssim = np.mean(val_ssim, axis=0)
-    avg_val_ssim = np.mean(val_ssim)
+        running_loss /= len(train_loader)
+        val_ssim = np.mean(val_ssim, axis=0)
+        avg_val_ssim = np.mean(val_ssim)
 
-    tune.report(loss=running_loss, accuracy=avg_val_ssim)
+        tune.report(loss=running_loss, accuracy=avg_val_ssim)
 
 # Initialize Ray
 ray.init()
@@ -127,7 +126,7 @@ asha_scheduler = ASHAScheduler(max_t=max_num_epochs, grace_period=1, reduction_f
 
 analysis = tune.run(
     train_model,
-    resources_per_trial={"cpu": 2, "gpu": gpus_per_trial},
+    resources_per_trial={"cpu": 1, "gpu": gpus_per_trial},
     config=config,
     num_samples=num_samples,
     scheduler=asha_scheduler,
