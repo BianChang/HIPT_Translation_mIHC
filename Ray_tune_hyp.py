@@ -42,7 +42,7 @@ def train_model(config):
 
     # Load and preprocess the dataset using the provided patch_size
     # Define the transforms for the input and label images
-    mean_data = [201.863, 156.647, 188.265]  
+    mean_data = [201.863, 156.647, 188.265]
     std_data = [40.689, 52.119, 37.961]
     mean_label = [4.029, 10.271, 3.883, 11.188]
     std_label = [9.946, 15.307, 4.273, 14.874]

@@ -9,8 +9,8 @@ class ImageToImageDataset(Dataset):
         self.input_transform = input_transform
         self.label_transform = label_transform
 
-        self.input_dir = os.path.join(root, 'inputs')
-        self.label_dir = os.path.join(root, 'labels')
+        self.input_dir = os.path.join(root, 'input')
+        self.label_dir = os.path.join(root, 'label')
 
         self.input_filenames = sorted(os.listdir(self.input_dir))
         self.label_filenames = sorted(os.listdir(self.label_dir))
