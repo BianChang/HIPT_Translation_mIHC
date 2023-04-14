@@ -1,6 +1,8 @@
 import ray
 from ray import tune
+from ray.tune import CLIReporter
 from ray.tune.schedulers import ASHAScheduler
+from functools import partial
 from ray.tune.suggest import ConcurrencyLimiter
 from ray.tune.suggest.ax import AxSearch
 import torch
@@ -15,12 +17,6 @@ import numpy as np
 from dataset.ImageToImageDataset import ImageToImageDataset
 import argparse
 
-# Define the search space
-config = {
-    "lr": tune.loguniform(1e-5, 1e-1),
-    "lr_scheduler": tune.choice(["StepLR", "ExponentialLR", "CosineAnnealingLR"]),
-    "batch_size": tune.choice([1, 2, 4]),
-}
 SSIM = StructuralSimilarityIndexMeasure(range=1.0, reduction='none')
 
 def train_model(config):
@@ -57,14 +53,12 @@ def train_model(config):
     ])
 
     # Create instances of the ImageToImageDataset for the training, validation, and test sets
-    parser = argparse.ArgumentParser(description='Train a Swin Transformer model for image-to-image translation')
-    parser.add_argument('--train_path', type=str, default='/path/to/train', help='Path to training data')
-    parser.add_argument('--val_path', type=str, default='/path/to/val', help='Path to validation data')
-    args = parser.parse_args()
+    train_path = r'D:\Chang_files\workspace\data\MIHC\train'
+    val_path = r'D:\Chang_files\workspace\data\MIHC\val'
 
-    train_dataset = ImageToImageDataset(args.train_path, input_transform=input_transform,
+    train_dataset = ImageToImageDataset(train_path, input_transform=input_transform,
                                         label_transform=label_transform)
-    val_dataset = ImageToImageDataset(args.val_path, input_transform=input_transform, label_transform=label_transform)
+    val_dataset = ImageToImageDataset(val_path, input_transform=input_transform, label_transform=label_transform)
 
 
     # Create instances of the DataLoader for the training, validation, and test sets
@@ -74,6 +68,7 @@ def train_model(config):
 
     # Train your model using the optimizer and scheduler
     for epoch in range(10):  # Loop over the dataset multiple times
+        print('Begin training')
         running_loss = 0.0
         epoch_ssim = []
         for i, (source, target) in enumerate(train_loader):
@@ -95,6 +90,7 @@ def train_model(config):
         val_loss = 0.0
         val_ssim = []
         with torch.no_grad():
+            print('begin val')
             for i, (source, target) in enumerate(val_loader):
                 source, target = source.to(device), target.to(device)
 
@@ -109,33 +105,41 @@ def train_model(config):
         val_ssim = np.mean(val_ssim, axis=0)
         avg_val_ssim = np.mean(val_ssim)
 
-        tune.report(loss=running_loss, accuracy=avg_val_ssim)
+        tune.report(loss=running_loss, accuracy=float(avg_val_ssim), iter_num=epoch)
 
-# Initialize Ray
-ray.init()
 
-# Define the experiment settings
-num_samples = 50  # Number of samples for each hyperparameter set
-max_num_epochs = 10  # Maximum number of epochs for training
-gpus_per_trial = 1  # Number of GPUs per trial
+def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
+    # Define the search space
+    config = {
+        "lr": tune.loguniform(1e-5, 1e-1),
+        "lr_scheduler": tune.choice(["StepLR", "ExponentialLR", "CosineAnnealingLR"]),
+        "batch_size": tune.choice([1, 2, 4]),
+    }
+    scheduler = ASHAScheduler(
+        metric="loss",
+        mode="min",
+        max_t=max_num_epochs,
+        grace_period=1,
+        reduction_factor=2)
+    reporter = CLIReporter(
+        metric_columns=["loss", "ssim", "iteration"])
+    result = tune.run(
+        # tune.with_parameters(train, Model=net),
+        partial(train_model),
+        resources_per_trial={"cpu": 2, "gpu": gpus_per_trial},
+        config=config,
+        num_samples=num_samples,
+        scheduler=scheduler,
+        progress_reporter=reporter)
 
-# Run the experiment using ASHA (Asynchronous Successive Halving Algorithm) scheduler
-asha_scheduler = ASHAScheduler(max_t=max_num_epochs, grace_period=1, reduction_factor=2)
-# search_alg = AxSearch(max_concurrent=2)  # You can use other search algorithms like BayesOptSearch, HyperOptSearch, etc.
-# search_alg = ConcurrencyLimiter(search_alg, max_concurrency=10)
+    # Get the best hyperparameters
+    best_trial = result.get_best_trial("loss", "min", "last")
+    best_config = best_trial.config
+    print("Best hyperparameters found were:", best_config)
 
-analysis = tune.run(
-    train_model,
-    resources_per_trial={"cpu": 4, "gpu": gpus_per_trial},
-    config=config,
-    num_samples=num_samples,
-    scheduler=asha_scheduler,
-    #search_alg=search_alg,
-    metric="loss",
-    mode="min",
-)
 
-# Get the best hyperparameters
-best_trial = analysis.get_best_trial("loss", "min", "last")
-best_config = best_trial.config
-print("Best hyperparameters found were: ", best_config)
+if __name__ == "__main__":
+    # You can change the number of GPUs per trial here:
+    #args = get_args()
+    #net = get_transNet(3)
+    main(num_samples=20, max_num_epochs=10, gpus_per_trial=1)
