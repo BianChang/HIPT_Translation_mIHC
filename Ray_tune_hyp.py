@@ -65,12 +65,12 @@ def train_model(config):
     train_dataset = ImageToImageDataset(args.train_path, input_transform=input_transform,
                                         label_transform=label_transform)
     val_dataset = ImageToImageDataset(args.val_path, input_transform=input_transform, label_transform=label_transform)
-    test_dataset = ImageToImageDataset(args.test_path, input_transform=input_transform, label_transform=label_transform)
+
 
     # Create instances of the DataLoader for the training, validation, and test sets
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+
 
     # Train your model using the optimizer and scheduler
     for epoch in range(10):  # Loop over the dataset multiple times
@@ -126,7 +126,7 @@ asha_scheduler = ASHAScheduler(max_t=max_num_epochs, grace_period=1, reduction_f
 
 analysis = tune.run(
     train_model,
-    resources_per_trial={"cpu": 1, "gpu": gpus_per_trial},
+    resources_per_trial={"cpu": 4, "gpu": gpus_per_trial},
     config=config,
     num_samples=num_samples,
     scheduler=asha_scheduler,
