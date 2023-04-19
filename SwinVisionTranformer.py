@@ -55,7 +55,7 @@ class SwinTransformer(nn.Module):
                 for _ in range(depth)])
             for depth in depths])
 
-        self.decoder = Decoder(embed_dim, in_chans, output_channels, img_size[0], patch_size)
+        self.decoder = Decoder(embed_dim, in_chans, output_channels, img_size, patch_size)
 
         self.apply(self._init_weights)
 
