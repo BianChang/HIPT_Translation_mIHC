@@ -25,8 +25,8 @@ os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:1024'
 SSIM = StructuralSimilarityIndexMeasure(range=1.0, reduction='none')
 
 def train_model(config):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    #device = torch.device("cpu")
+    #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")
     # Create and configure the model using the provided hyperparameters
     batch_size = config["batch_size"]
     lr = config["lr"]
@@ -148,7 +148,7 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
     result = tune.run(
         # tune.with_parameters(train, Model=net),
         partial(train_model),
-        resources_per_trial={"cpu": 8, "gpu": gpus_per_trial},
+        resources_per_trial={"cpu": 16, "gpu": gpus_per_trial},
         config=config,
         num_samples=num_samples,
         scheduler=scheduler,
@@ -164,4 +164,4 @@ if __name__ == "__main__":
     # You can change the number of GPUs per trial here:
     #args = get_args()
     #net = get_transNet(3)
-    main(num_samples=20, max_num_epochs=10, gpus_per_trial=1)
+    main(num_samples=20, max_num_epochs=10, gpus_per_trial=0)
