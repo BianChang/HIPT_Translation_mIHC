@@ -151,6 +151,7 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
         resources_per_trial={"cpu": 16, "gpu": gpus_per_trial},
         config=config,
         num_samples=num_samples,
+        max_concurrent=1,
         scheduler=scheduler,
         progress_reporter=reporter)
 
