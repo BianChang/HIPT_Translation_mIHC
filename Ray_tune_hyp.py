@@ -23,7 +23,7 @@ SSIM = StructuralSimilarityIndexMeasure(range=1.0, reduction='none')
 
 def train_model(config):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # device = torch.device("cpu")
+    #device = torch.device("cpu")
     # Create and configure the model using the provided hyperparameters
     batch_size = config["batch_size"]
     lr = config["lr"]
