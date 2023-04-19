@@ -3,6 +3,7 @@ import torch.nn as nn
 from timm.models.layers import DropPath, to_2tuple
 from timm.models.swin_transformer import SwinTransformerBlock
 import math
+from torch.utils.checkpoint import checkpoint
 
 class Decoder(nn.Module):
     def __init__(self, embed_dim, in_chans, output_channels, img_size, patch_size):
@@ -95,8 +96,13 @@ class SwinTransformer(nn.Module):
         x = self.pos_drop(x)
 
         # Process the patch embeddings through the Swin Transformer blocks
+        '''
         for stage in self.blocks:
             x = stage(x)
+        '''
+        for stage in self.blocks:
+            for block in stage:
+                x = checkpoint(block, x)
 
         # Reshape the output tensor to obtain the image features in the original spatial dimensions
         x = x.reshape(B, self.img_size[0] // self.patch_size, self.img_size[1] // self.patch_size, self.embed_dim)
