@@ -161,4 +161,4 @@ if __name__ == "__main__":
     # You can change the number of GPUs per trial here:
     #args = get_args()
     #net = get_transNet(3)
-    main(num_samples=20, max_num_epochs=10, gpus_per_trial=2)
+    main(num_samples=20, max_num_epochs=10, gpus_per_trial=1)
