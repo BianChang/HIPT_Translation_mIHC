@@ -15,16 +15,24 @@ from SwinVisionTranformer import SwinTransformer
 import os
 import numpy as np
 from dataset.ImageToImageDataset import ImageToImageDataset
-import argparse
+from torch.cuda.amp import autocast, GradScaler
+from torch.nn.parallel import DistributedDataParallel as DDP
+
 
 SSIM = StructuralSimilarityIndexMeasure(range=1.0, reduction='none')
 
 def train_model(config):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")
     # Create and configure the model using the provided hyperparameters
     batch_size = config["batch_size"]
     lr = config["lr"]
     model = SwinTransformer().to(device)
+    
+    # DataPrallel
+    if torch.cuda.device_count() > 1:
+        model = nn.DataParallel(model)
+
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
     if config["lr_scheduler"] == "StepLR":
@@ -53,8 +61,8 @@ def train_model(config):
     ])
 
     # Create instances of the ImageToImageDataset for the training, validation, and test sets
-    train_path = r'D:\Chang_files\workspace\data\MIHC\train'
-    val_path = r'D:\Chang_files\workspace\data\MIHC\val'
+    train_path = r'/net/scratch2/t18155cb/data_summary/train'
+    val_path = r'/net/scratch2/t18155cb/data_summary/val'
 
     train_dataset = ImageToImageDataset(train_path, input_transform=input_transform,
                                         label_transform=label_transform)
@@ -64,7 +72,8 @@ def train_model(config):
     # Create instances of the DataLoader for the training, validation, and test sets
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
-
+    
+    scaler = GradScaler()  # Initialize the GradScaler
 
     # Train your model using the optimizer and scheduler
     for epoch in range(10):  # Loop over the dataset multiple times
@@ -75,11 +84,21 @@ def train_model(config):
             inputs, labels = source.to(device), target.to(device)
 
             optimizer.zero_grad()
+            
+            # Wrap the forward pass in autocast context for mixed precision
+            with autocast():
+                outputs = model(inputs)
+                loss = criterion(outputs, labels)
+                
+            # Scale the loss and call backward() for mixed precision
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
 
-            outputs = model(inputs)
-            loss = criterion(outputs, labels)
-            loss.backward()
-            optimizer.step()
+            #outputs = model(inputs)
+            #loss = criterion(outputs, labels)
+            #loss.backward()
+            #optimizer.step()
 
             running_loss += loss.item()
 
@@ -126,7 +145,7 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
     result = tune.run(
         # tune.with_parameters(train, Model=net),
         partial(train_model),
-        resources_per_trial={"cpu": 2, "gpu": gpus_per_trial},
+        resources_per_trial={"cpu": 16, "gpu": gpus_per_trial},
         config=config,
         num_samples=num_samples,
         scheduler=scheduler,
@@ -142,4 +161,4 @@ if __name__ == "__main__":
     # You can change the number of GPUs per trial here:
     #args = get_args()
     #net = get_transNet(3)
-    main(num_samples=20, max_num_epochs=10, gpus_per_trial=1)
+    main(num_samples=20, max_num_epochs=10, gpus_per_trial=0)
