@@ -132,7 +132,7 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
     config = {
         "lr": tune.loguniform(1e-5, 1e-1),
         "lr_scheduler": tune.choice(["StepLR", "ExponentialLR", "CosineAnnealingLR"]),
-        "batch_size": tune.choice([1, 2, 4]),
+        "batch_size": tune.choice([1, 2]),
     }
     scheduler = ASHAScheduler(
         metric="loss",
@@ -145,7 +145,7 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
     result = tune.run(
         # tune.with_parameters(train, Model=net),
         partial(train_model),
-        resources_per_trial={"cpu": 16, "gpu": gpus_per_trial},
+        resources_per_trial={"cpu": 8, "gpu": gpus_per_trial},
         config=config,
         num_samples=num_samples,
         scheduler=scheduler,
@@ -161,4 +161,4 @@ if __name__ == "__main__":
     # You can change the number of GPUs per trial here:
     #args = get_args()
     #net = get_transNet(3)
-    main(num_samples=20, max_num_epochs=10, gpus_per_trial=0)
+    main(num_samples=20, max_num_epochs=10, gpus_per_trial=2)
