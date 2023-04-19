@@ -12,11 +12,13 @@ from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, ToTensor, Normalize
 from torchmetrics import StructuralSimilarityIndexMeasure
 from SwinVisionTranformer import SwinTransformer
-import os
 import numpy as np
 from dataset.ImageToImageDataset import ImageToImageDataset
 from torch.cuda.amp import autocast, GradScaler
 from torch.nn.parallel import DistributedDataParallel as DDP
+import os
+os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:1024'
+
 
 
 SSIM = StructuralSimilarityIndexMeasure(range=1.0, reduction='none')
