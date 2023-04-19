@@ -4,6 +4,28 @@ from timm.models.layers import DropPath, to_2tuple
 from timm.models.swin_transformer import SwinTransformerBlock
 import math
 
+class Decoder(nn.Module):
+    def __init__(self, embed_dim, in_chans, output_channels, img_size, patch_size):
+        super().__init__()
+        self.conv_skip = nn.Conv2d(embed_dim, output_channels, kernel_size=1, stride=1, padding=0)
+        self.decoder_layers = nn.Sequential(
+            nn.ConvTranspose2d(embed_dim, in_chans, kernel_size=patch_size, stride=patch_size, padding=0),
+            nn.BatchNorm2d(in_chans),
+            nn.ReLU(inplace=True),
+            nn.ConvTranspose2d(in_chans, output_channels, kernel_size=patch_size, stride=patch_size, padding=0),
+            nn.BatchNorm2d(output_channels),
+            nn.Upsample(scale_factor=img_size[0] // (patch_size * patch_size), mode='bilinear', align_corners=True),
+        )
+
+    def forward(self, x):
+        x_skip = self.conv_skip(x)
+        x_skip = nn.functional.interpolate(x_skip, size=(x.shape[2], x.shape[3]), mode='bilinear', align_corners=True)
+
+        x = self.decoder_layers(x)
+        x = x + x_skip
+
+        return x
+
 class SwinTransformer(nn.Module):
     def __init__(self, img_size=[1024, 1024], patch_size=16, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
                  num_heads=3, window_size=8, mlp_ratio=4., qkv_bias=False, drop_rate=0., attn_drop_rate=0.,
@@ -33,27 +55,7 @@ class SwinTransformer(nn.Module):
                 for _ in range(depth)])
             for depth in depths])
 
-        '''
-        self.decoder = nn.Sequential(
-            nn.Linear(embed_dim * num_patches, in_chans * img_size[0] * img_size[0]),
-            nn.BatchNorm1d(in_chans * img_size[0] * img_size[0]),
-            nn.ReLU(inplace=True),
-            nn.Unflatten(1, (in_chans, img_size[0], img_size[0])),
-            nn.Sequential(
-                nn.ConvTranspose2d(in_chans, output_channels, kernel_size=patch_size, stride=patch_size, padding=0),
-                nn.Upsample(scale_factor=img_size[0] // (patch_size * patch_size), mode='bilinear', align_corners=True)
-            ),
-        )
-        '''
-
-        self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(embed_dim, in_chans, kernel_size=patch_size, stride=patch_size, padding=0),
-            nn.BatchNorm2d(in_chans),
-            nn.ReLU(inplace=True),
-            nn.ConvTranspose2d(in_chans, output_channels, kernel_size=patch_size, stride=patch_size, padding=0),
-            nn.BatchNorm2d(output_channels),
-            nn.Upsample(scale_factor=img_size[0] // (patch_size * patch_size), mode='bilinear', align_corners=True),
-        )
+        self.decoder = Decoder(embed_dim, in_chans, output_channels, img_size[0], patch_size)
 
         self.apply(self._init_weights)
 
@@ -102,9 +104,9 @@ class SwinTransformer(nn.Module):
         x = x.permute(0, 3, 1, 2)
 
         # Add skip connections in the decoder
-        x_skip = x
+        # x_skip = x
         x = self.decoder(x)
-        x = x + x_skip
+        # x = x + x_skip
         # Reshape the output tensor to obtain the output image with the correct dimensions
         x = x.view(B, -1, self.img_size[0], self.img_size[1])
 
