@@ -1,0 +1,1154 @@
+libs/cuda(3):ERROR:105: Unable to locate a modulefile for 'libs/cuda/11.6.0'
+libs/cuDNN/8.1.0(16):ERROR:151: Module 'libs/cuDNN/8.1.0' depends on one of the module(s) 'libs/nvidia-hpc-sdk/23.1-nompi libs/nvidia-hpc-sdk/23.1-nocompiler libs/nvidia-hpc-sdk/23.1 libs/nvidia-hpc-sdk/22.3-nompi libs/nvidia-hpc-sdk/22.3-nocompiler libs/nvidia-hpc-sdk/22.3 libs/nvidia-hpc-sdk/21.5-nompi libs/nvidia-hpc-sdk/21.5-nocompiler libs/nvidia-hpc-sdk/21.5 libs/nvidia-hpc-sdk/21.3-nompi libs/nvidia-hpc-sdk/21.3-nocompiler libs/nvidia-hpc-sdk/21.3'
+libs/cuDNN/8.1.0(16):ERROR:102: Tcl command execution failed: prereq  libs/cuda/11.2.0 libs/cuda/11.1.1 libs/cuda/11.0.3 libs/nvidia-hpc-sdk
+
+[WARNING 04-19 00:13:04] ax.service.utils.with_db_settings_base: Ax currently requires a sqlalchemy version below 2.0. This will be addressed in a future release. Disabling SQL storage in Ax for now, if you would like to use SQL storage please install Ax with mysql extras via `pip install ax-platform[mysql]`.
+2023-04-19 00:13:15,057	WARNING function_runner.py:598 -- Function checkpointing is disabled. This may result in unexpected behavior when using checkpointing features or certain schedulers. To enable, set the train function arguments to be `func(config, checkpoint_dir=None)`.
+2023-04-19 00:13:15,859	INFO trial_runner.py:803 -- starting train_model_98c5f_00000
+2023-04-19 00:13:21,359	INFO trial_runner.py:803 -- starting train_model_98c5f_00001
+[2m[36m(func pid=114394)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=114394)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=114394)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=114394)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=114394)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=114394)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=114487)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=114487)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=114487)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=114487)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=114487)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=114487)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=114394)[0m 2023-04-19 01:08:40,938	ERROR function_runner.py:281 -- Runner Thread raised error.
+2023-04-19 01:08:41,200	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00000: Error processing event.
+NoneType: None
+[2m[36m(func pid=114394)[0m Traceback (most recent call last):
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=114394)[0m     self._entrypoint()
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=114394)[0m     return self._trainable_func(
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=114394)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=114394)[0m     output = fn()
+[2m[36m(func pid=114394)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=114394)[0m     outputs = model(inputs)
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=114394)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=114394)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=114394)[0m     x = self.decoder(x)
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=114394)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=114394)[0m     input = module(input)
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=114394)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=114394)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=114394)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=114394)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+[2m[36m(func pid=114394)[0m Exception in thread Thread-3:
+[2m[36m(func pid=114394)[0m Traceback (most recent call last):
+[2m[36m(func pid=114394)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=114394)[0m     self.run()
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=114394)[0m     raise e
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=114394)[0m     self._entrypoint()
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=114394)[0m     return self._trainable_func(
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=114394)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=114394)[0m     output = fn()
+[2m[36m(func pid=114394)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=114394)[0m     outputs = model(inputs)
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=114394)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=114394)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=114394)[0m     x = self.decoder(x)
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=114394)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=114394)[0m     input = module(input)
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=114394)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=114394)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=114394)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=114394)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=114394)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+2023-04-19 01:08:42,224	INFO trial_runner.py:803 -- starting train_model_98c5f_00002
+[2m[36m(func pid=114487)[0m 2023-04-19 01:08:50,308	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=114487)[0m Traceback (most recent call last):
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=114487)[0m     self._entrypoint()
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=114487)[0m     return self._trainable_func(
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=114487)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=114487)[0m     output = fn()
+[2m[36m(func pid=114487)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=114487)[0m     outputs = model(inputs)
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=114487)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=114487)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=114487)[0m     x = self.decoder(x)
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=114487)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=114487)[0m     input = module(input)
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=114487)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=114487)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=114487)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=114487)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+[2m[36m(func pid=114487)[0m Exception in thread Thread-3:
+[2m[36m(func pid=114487)[0m Traceback (most recent call last):
+[2m[36m(func pid=114487)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=114487)[0m     self.run()
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=114487)[0m     raise e
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=114487)[0m     self._entrypoint()
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=114487)[0m     return self._trainable_func(
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=114487)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=114487)[0m     output = fn()
+[2m[36m(func pid=114487)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=114487)[0m     outputs = model(inputs)
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=114487)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=114487)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=114487)[0m     x = self.decoder(x)
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=114487)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=114487)[0m     input = module(input)
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=114487)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=114487)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=114487)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=114487)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=114487)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+2023-04-19 01:08:52,045	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00001: Error processing event.
+NoneType: None
+[2m[36m(func pid=122782)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=122782)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+2023-04-19 01:08:52,222	INFO trial_runner.py:803 -- starting train_model_98c5f_00003
+[2m[36m(func pid=122782)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=122782)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=122782)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=122782)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=122887)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=122887)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=122887)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=122887)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=122887)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=122887)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=122782)[0m 2023-04-19 01:24:33,317	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=122782)[0m Traceback (most recent call last):
+[2m[36m(func pid=122782)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=122782)[0m     self._entrypoint()
+[2m[36m(func pid=122782)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=122782)[0m     return self._trainable_func(
+[2m[36m(func pid=122782)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=122782)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=122782)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=122782)[0m     output = fn()
+[2m[36m(func pid=122782)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=122782)[0m     outputs = model(inputs)
+[2m[36m(func pid=122782)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=122782)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=122782)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=122782)[0m     x = x + x_skip
+[2m[36m(func pid=122782)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+[2m[36m(func pid=122782)[0m Exception in thread Thread-3:
+[2m[36m(func pid=122782)[0m Traceback (most recent call last):
+[2m[36m(func pid=122782)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=122782)[0m     self.run()
+[2m[36m(func pid=122782)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=122782)[0m     raise e
+[2m[36m(func pid=122782)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=122782)[0m     self._entrypoint()
+[2m[36m(func pid=122782)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=122782)[0m     return self._trainable_func(
+[2m[36m(func pid=122782)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=122782)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=122782)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=122782)[0m     output = fn()
+[2m[36m(func pid=122782)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=122782)[0m     outputs = model(inputs)
+[2m[36m(func pid=122782)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=122782)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=122782)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=122782)[0m     x = x + x_skip
+[2m[36m(func pid=122782)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+2023-04-19 01:24:35,824	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00002: Error processing event.
+NoneType: None
+2023-04-19 01:24:36,343	INFO trial_runner.py:803 -- starting train_model_98c5f_00004
+[2m[36m(func pid=125254)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=125254)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=125254)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=125254)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=125254)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=125254)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=122887)[0m 2023-04-19 01:38:35,173	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=122887)[0m Traceback (most recent call last):
+[2m[36m(func pid=122887)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=122887)[0m     self._entrypoint()
+[2m[36m(func pid=122887)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=122887)[0m     return self._trainable_func(
+[2m[36m(func pid=122887)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=122887)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=122887)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=122887)[0m     output = fn()
+[2m[36m(func pid=122887)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=122887)[0m     outputs = model(inputs)
+[2m[36m(func pid=122887)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=122887)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=122887)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=122887)[0m     x = x + x_skip
+[2m[36m(func pid=122887)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+[2m[36m(func pid=122887)[0m Exception in thread Thread-3:
+[2m[36m(func pid=122887)[0m Traceback (most recent call last):
+[2m[36m(func pid=122887)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=122887)[0m     self.run()
+[2m[36m(func pid=122887)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=122887)[0m     raise e
+[2m[36m(func pid=122887)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=122887)[0m     self._entrypoint()
+[2m[36m(func pid=122887)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=122887)[0m     return self._trainable_func(
+[2m[36m(func pid=122887)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=122887)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=122887)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=122887)[0m     output = fn()
+[2m[36m(func pid=122887)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=122887)[0m     outputs = model(inputs)
+[2m[36m(func pid=122887)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=122887)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=122887)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=122887)[0m     x = x + x_skip
+[2m[36m(func pid=122887)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+2023-04-19 01:38:43,628	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00003: Error processing event.
+NoneType: None
+2023-04-19 01:38:44,454	INFO trial_runner.py:803 -- starting train_model_98c5f_00005
+[2m[36m(func pid=127393)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=127393)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=127393)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=127393)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=127393)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=127393)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=125254)[0m 2023-04-19 02:19:26,326	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=125254)[0m Traceback (most recent call last):
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=125254)[0m     self._entrypoint()
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=125254)[0m     return self._trainable_func(
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=125254)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=125254)[0m     output = fn()
+[2m[36m(func pid=125254)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=125254)[0m     outputs = model(inputs)
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=125254)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=125254)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=125254)[0m     x = self.decoder(x)
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=125254)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=125254)[0m     input = module(input)
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=125254)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=125254)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=125254)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=125254)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+[2m[36m(func pid=125254)[0m Exception in thread Thread-3:
+[2m[36m(func pid=125254)[0m Traceback (most recent call last):
+[2m[36m(func pid=125254)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=125254)[0m     self.run()
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=125254)[0m     raise e
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=125254)[0m     self._entrypoint()
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=125254)[0m     return self._trainable_func(
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=125254)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=125254)[0m     output = fn()
+[2m[36m(func pid=125254)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=125254)[0m     outputs = model(inputs)
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=125254)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=125254)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=125254)[0m     x = self.decoder(x)
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=125254)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=125254)[0m     input = module(input)
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=125254)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=125254)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=125254)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=125254)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=125254)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+2023-04-19 02:19:26,726	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00004: Error processing event.
+NoneType: None
+2023-04-19 02:19:27,671	INFO trial_runner.py:803 -- starting train_model_98c5f_00006
+[2m[36m(func pid=133707)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=133707)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=133707)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=133707)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=133707)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=133707)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=127393)[0m 2023-04-19 02:33:57,273	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=127393)[0m Traceback (most recent call last):
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=127393)[0m     self._entrypoint()
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=127393)[0m     return self._trainable_func(
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=127393)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=127393)[0m     output = fn()
+[2m[36m(func pid=127393)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=127393)[0m     outputs = model(inputs)
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=127393)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=127393)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=127393)[0m     x = self.decoder(x)
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=127393)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=127393)[0m     input = module(input)
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=127393)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=127393)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=127393)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=127393)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+[2m[36m(func pid=127393)[0m Exception in thread Thread-3:
+[2m[36m(func pid=127393)[0m Traceback (most recent call last):
+[2m[36m(func pid=127393)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=127393)[0m     self.run()
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=127393)[0m     raise e
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=127393)[0m     self._entrypoint()
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=127393)[0m     return self._trainable_func(
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=127393)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=127393)[0m     output = fn()
+[2m[36m(func pid=127393)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=127393)[0m     outputs = model(inputs)
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=127393)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=127393)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=127393)[0m     x = self.decoder(x)
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=127393)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=127393)[0m     input = module(input)
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=127393)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=127393)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=127393)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=127393)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=127393)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+2023-04-19 02:33:57,752	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00005: Error processing event.
+NoneType: None
+2023-04-19 02:33:58,757	INFO trial_runner.py:803 -- starting train_model_98c5f_00007
+[2m[36m(func pid=135867)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=135867)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=135867)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=135867)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=135867)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=135867)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=133707)[0m 2023-04-19 02:35:20,564	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=133707)[0m Traceback (most recent call last):
+[2m[36m(func pid=133707)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=133707)[0m     self._entrypoint()
+[2m[36m(func pid=133707)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=133707)[0m     return self._trainable_func(
+[2m[36m(func pid=133707)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=133707)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=133707)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=133707)[0m     output = fn()
+[2m[36m(func pid=133707)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=133707)[0m     outputs = model(inputs)
+[2m[36m(func pid=133707)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=133707)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=133707)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=133707)[0m     x = x + x_skip
+[2m[36m(func pid=133707)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+[2m[36m(func pid=133707)[0m Exception in thread Thread-3:
+[2m[36m(func pid=133707)[0m Traceback (most recent call last):
+[2m[36m(func pid=133707)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=133707)[0m     self.run()
+[2m[36m(func pid=133707)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=133707)[0m     raise e
+[2m[36m(func pid=133707)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=133707)[0m     self._entrypoint()
+[2m[36m(func pid=133707)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=133707)[0m     return self._trainable_func(
+[2m[36m(func pid=133707)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=133707)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=133707)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=133707)[0m     output = fn()
+[2m[36m(func pid=133707)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=133707)[0m     outputs = model(inputs)
+[2m[36m(func pid=133707)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=133707)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=133707)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=133707)[0m     x = x + x_skip
+[2m[36m(func pid=133707)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+2023-04-19 02:35:23,366	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00006: Error processing event.
+NoneType: None
+2023-04-19 02:35:23,771	INFO trial_runner.py:803 -- starting train_model_98c5f_00008
+[2m[36m(func pid=136167)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=136167)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=136167)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=136167)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=136167)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=136167)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=135867)[0m 2023-04-19 03:03:56,560	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=135867)[0m Traceback (most recent call last):
+[2m[36m(func pid=135867)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=135867)[0m     self._entrypoint()
+[2m[36m(func pid=135867)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=135867)[0m     return self._trainable_func(
+[2m[36m(func pid=135867)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=135867)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=135867)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=135867)[0m     output = fn()
+[2m[36m(func pid=135867)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=135867)[0m     outputs = model(inputs)
+[2m[36m(func pid=135867)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=135867)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=135867)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=135867)[0m     x = x + x_skip
+[2m[36m(func pid=135867)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+[2m[36m(func pid=135867)[0m Exception in thread Thread-3:
+[2m[36m(func pid=135867)[0m Traceback (most recent call last):
+[2m[36m(func pid=135867)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=135867)[0m     self.run()
+[2m[36m(func pid=135867)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=135867)[0m     raise e
+[2m[36m(func pid=135867)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=135867)[0m     self._entrypoint()
+[2m[36m(func pid=135867)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=135867)[0m     return self._trainable_func(
+[2m[36m(func pid=135867)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=135867)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=135867)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=135867)[0m     output = fn()
+[2m[36m(func pid=135867)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=135867)[0m     outputs = model(inputs)
+[2m[36m(func pid=135867)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=135867)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=135867)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=135867)[0m     x = x + x_skip
+[2m[36m(func pid=135867)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+2023-04-19 03:04:04,955	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00007: Error processing event.
+NoneType: None
+2023-04-19 03:04:05,903	INFO trial_runner.py:803 -- starting train_model_98c5f_00009
+[2m[36m(func pid=140861)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=140861)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=140861)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=140861)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=140861)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=140861)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=140861)[0m 2023-04-19 03:20:04,818	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=140861)[0m Traceback (most recent call last):
+[2m[36m(func pid=140861)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=140861)[0m     self._entrypoint()
+[2m[36m(func pid=140861)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=140861)[0m     return self._trainable_func(
+[2m[36m(func pid=140861)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=140861)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=140861)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=140861)[0m     output = fn()
+[2m[36m(func pid=140861)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=140861)[0m     outputs = model(inputs)
+[2m[36m(func pid=140861)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=140861)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=140861)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=140861)[0m     x = x + x_skip
+[2m[36m(func pid=140861)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+[2m[36m(func pid=140861)[0m Exception in thread Thread-3:
+[2m[36m(func pid=140861)[0m Traceback (most recent call last):
+[2m[36m(func pid=140861)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=140861)[0m     self.run()
+[2m[36m(func pid=140861)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=140861)[0m     raise e
+[2m[36m(func pid=140861)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=140861)[0m     self._entrypoint()
+[2m[36m(func pid=140861)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=140861)[0m     return self._trainable_func(
+[2m[36m(func pid=140861)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=140861)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=140861)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=140861)[0m     output = fn()
+[2m[36m(func pid=140861)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=140861)[0m     outputs = model(inputs)
+[2m[36m(func pid=140861)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=140861)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=140861)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=140861)[0m     x = x + x_skip
+[2m[36m(func pid=140861)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+2023-04-19 03:20:07,739	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00009: Error processing event.
+NoneType: None
+2023-04-19 03:20:07,975	INFO trial_runner.py:803 -- starting train_model_98c5f_00010
+[2m[36m(func pid=143240)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=143240)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=143240)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=143240)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=143240)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=143240)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=136167)[0m 2023-04-19 03:30:14,776	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=136167)[0m Traceback (most recent call last):
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=136167)[0m     self._entrypoint()
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=136167)[0m     return self._trainable_func(
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=136167)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=136167)[0m     output = fn()
+[2m[36m(func pid=136167)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=136167)[0m     outputs = model(inputs)
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=136167)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=136167)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=136167)[0m     x = self.decoder(x)
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=136167)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=136167)[0m     input = module(input)
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=136167)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=136167)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=136167)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=136167)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+[2m[36m(func pid=136167)[0m Exception in thread Thread-3:
+[2m[36m(func pid=136167)[0m Traceback (most recent call last):
+[2m[36m(func pid=136167)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=136167)[0m     self.run()
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=136167)[0m     raise e
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=136167)[0m     self._entrypoint()
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=136167)[0m     return self._trainable_func(
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=136167)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=136167)[0m     output = fn()
+[2m[36m(func pid=136167)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=136167)[0m     outputs = model(inputs)
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=136167)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=136167)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=136167)[0m     x = self.decoder(x)
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=136167)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=136167)[0m     input = module(input)
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=136167)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=136167)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=136167)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=136167)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=136167)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+2023-04-19 03:30:15,069	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00008: Error processing event.
+NoneType: None
+2023-04-19 03:30:16,022	INFO trial_runner.py:803 -- starting train_model_98c5f_00011
+[2m[36m(func pid=144860)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=144860)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=144860)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=144860)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=144860)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=144860)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=144860)[0m 2023-04-19 03:46:12,925	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=144860)[0m Traceback (most recent call last):
+[2m[36m(func pid=144860)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=144860)[0m     self._entrypoint()
+[2m[36m(func pid=144860)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=144860)[0m     return self._trainable_func(
+[2m[36m(func pid=144860)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=144860)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=144860)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=144860)[0m     output = fn()
+[2m[36m(func pid=144860)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=144860)[0m     outputs = model(inputs)
+[2m[36m(func pid=144860)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=144860)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=144860)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=144860)[0m     x = x + x_skip
+[2m[36m(func pid=144860)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+[2m[36m(func pid=144860)[0m Exception in thread Thread-3:
+[2m[36m(func pid=144860)[0m Traceback (most recent call last):
+[2m[36m(func pid=144860)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=144860)[0m     self.run()
+[2m[36m(func pid=144860)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=144860)[0m     raise e
+[2m[36m(func pid=144860)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=144860)[0m     self._entrypoint()
+[2m[36m(func pid=144860)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=144860)[0m     return self._trainable_func(
+[2m[36m(func pid=144860)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=144860)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=144860)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=144860)[0m     output = fn()
+[2m[36m(func pid=144860)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=144860)[0m     outputs = model(inputs)
+[2m[36m(func pid=144860)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=144860)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=144860)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=144860)[0m     x = x + x_skip
+[2m[36m(func pid=144860)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+2023-04-19 03:46:16,387	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00011: Error processing event.
+NoneType: None
+2023-04-19 03:46:17,094	INFO trial_runner.py:803 -- starting train_model_98c5f_00012
+[2m[36m(func pid=147191)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=147191)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=147191)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=147191)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=147191)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=147191)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=143240)[0m 2023-04-19 04:15:25,775	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=143240)[0m Traceback (most recent call last):
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=143240)[0m     self._entrypoint()
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=143240)[0m     return self._trainable_func(
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=143240)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=143240)[0m     output = fn()
+[2m[36m(func pid=143240)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=143240)[0m     outputs = model(inputs)
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=143240)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=143240)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=143240)[0m     x = self.decoder(x)
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=143240)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=143240)[0m     input = module(input)
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=143240)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=143240)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=143240)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=143240)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+[2m[36m(func pid=143240)[0m Exception in thread Thread-3:
+[2m[36m(func pid=143240)[0m Traceback (most recent call last):
+[2m[36m(func pid=143240)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=143240)[0m     self.run()
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=143240)[0m     raise e
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=143240)[0m     self._entrypoint()
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=143240)[0m     return self._trainable_func(
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=143240)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=143240)[0m     output = fn()
+[2m[36m(func pid=143240)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=143240)[0m     outputs = model(inputs)
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=143240)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=143240)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=143240)[0m     x = self.decoder(x)
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=143240)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=143240)[0m     input = module(input)
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=143240)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=143240)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=143240)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=143240)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=143240)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+2023-04-19 04:15:26,527	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00010: Error processing event.
+NoneType: None
+2023-04-19 04:15:27,195	INFO trial_runner.py:803 -- starting train_model_98c5f_00013
+[2m[36m(func pid=151835)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=151835)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=151835)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=151835)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=151835)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=151835)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=147191)[0m 2023-04-19 04:16:44,001	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=147191)[0m Traceback (most recent call last):
+[2m[36m(func pid=147191)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=147191)[0m     self._entrypoint()
+[2m[36m(func pid=147191)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=147191)[0m     return self._trainable_func(
+[2m[36m(func pid=147191)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=147191)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=147191)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=147191)[0m     output = fn()
+[2m[36m(func pid=147191)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=147191)[0m     outputs = model(inputs)
+[2m[36m(func pid=147191)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=147191)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=147191)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=147191)[0m     x = x + x_skip
+[2m[36m(func pid=147191)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+[2m[36m(func pid=147191)[0m Exception in thread Thread-3:
+[2m[36m(func pid=147191)[0m Traceback (most recent call last):
+[2m[36m(func pid=147191)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=147191)[0m     self.run()
+[2m[36m(func pid=147191)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=147191)[0m     raise e
+[2m[36m(func pid=147191)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=147191)[0m     self._entrypoint()
+[2m[36m(func pid=147191)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=147191)[0m     return self._trainable_func(
+[2m[36m(func pid=147191)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=147191)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=147191)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=147191)[0m     output = fn()
+[2m[36m(func pid=147191)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=147191)[0m     outputs = model(inputs)
+[2m[36m(func pid=147191)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=147191)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=147191)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=147191)[0m     x = x + x_skip
+[2m[36m(func pid=147191)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+2023-04-19 04:16:51,258	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00012: Error processing event.
+NoneType: None
+2023-04-19 04:16:52,203	INFO trial_runner.py:803 -- starting train_model_98c5f_00014
+[2m[36m(func pid=152131)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=152131)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=152131)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=152131)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=152131)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=152131)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=152131)[0m 2023-04-19 04:33:00,854	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=152131)[0m Traceback (most recent call last):
+[2m[36m(func pid=152131)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=152131)[0m     self._entrypoint()
+[2m[36m(func pid=152131)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=152131)[0m     return self._trainable_func(
+[2m[36m(func pid=152131)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=152131)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=152131)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=152131)[0m     output = fn()
+[2m[36m(func pid=152131)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=152131)[0m     outputs = model(inputs)
+[2m[36m(func pid=152131)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=152131)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=152131)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=152131)[0m     x = x + x_skip
+[2m[36m(func pid=152131)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+[2m[36m(func pid=152131)[0m Exception in thread Thread-3:
+[2m[36m(func pid=152131)[0m Traceback (most recent call last):
+[2m[36m(func pid=152131)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=152131)[0m     self.run()
+[2m[36m(func pid=152131)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=152131)[0m     raise e
+[2m[36m(func pid=152131)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=152131)[0m     self._entrypoint()
+[2m[36m(func pid=152131)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=152131)[0m     return self._trainable_func(
+[2m[36m(func pid=152131)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=152131)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=152131)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=152131)[0m     output = fn()
+[2m[36m(func pid=152131)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=152131)[0m     outputs = model(inputs)
+[2m[36m(func pid=152131)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=152131)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=152131)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=152131)[0m     x = x + x_skip
+[2m[36m(func pid=152131)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+2023-04-19 04:33:03,755	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00014: Error processing event.
+NoneType: None
+2023-04-19 04:33:04,265	INFO trial_runner.py:803 -- starting train_model_98c5f_00015
+[2m[36m(func pid=154508)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=154508)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=154508)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=154508)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=154508)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=154508)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=154508)[0m 2023-04-19 04:48:56,346	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=154508)[0m Traceback (most recent call last):
+[2m[36m(func pid=154508)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=154508)[0m     self._entrypoint()
+[2m[36m(func pid=154508)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=154508)[0m     return self._trainable_func(
+[2m[36m(func pid=154508)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=154508)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=154508)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=154508)[0m     output = fn()
+[2m[36m(func pid=154508)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=154508)[0m     outputs = model(inputs)
+[2m[36m(func pid=154508)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=154508)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=154508)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=154508)[0m     x = x + x_skip
+[2m[36m(func pid=154508)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+[2m[36m(func pid=154508)[0m Exception in thread Thread-3:
+[2m[36m(func pid=154508)[0m Traceback (most recent call last):
+[2m[36m(func pid=154508)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=154508)[0m     self.run()
+[2m[36m(func pid=154508)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=154508)[0m     raise e
+[2m[36m(func pid=154508)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=154508)[0m     self._entrypoint()
+[2m[36m(func pid=154508)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=154508)[0m     return self._trainable_func(
+[2m[36m(func pid=154508)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=154508)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=154508)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=154508)[0m     output = fn()
+[2m[36m(func pid=154508)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=154508)[0m     outputs = model(inputs)
+[2m[36m(func pid=154508)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=154508)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=154508)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=154508)[0m     x = x + x_skip
+[2m[36m(func pid=154508)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+2023-04-19 04:48:58,205	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00015: Error processing event.
+NoneType: None
+2023-04-19 04:48:58,335	INFO trial_runner.py:803 -- starting train_model_98c5f_00016
+[2m[36m(func pid=157176)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=157176)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=157176)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=157176)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=157176)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=157176)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=151835)[0m 2023-04-19 05:10:04,385	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=151835)[0m Traceback (most recent call last):
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=151835)[0m     self._entrypoint()
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=151835)[0m     return self._trainable_func(
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=151835)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=151835)[0m     output = fn()
+[2m[36m(func pid=151835)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=151835)[0m     outputs = model(inputs)
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=151835)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=151835)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=151835)[0m     x = self.decoder(x)
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=151835)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=151835)[0m     input = module(input)
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=151835)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=151835)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=151835)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=151835)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+[2m[36m(func pid=151835)[0m Exception in thread Thread-3:
+[2m[36m(func pid=151835)[0m Traceback (most recent call last):
+[2m[36m(func pid=151835)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=151835)[0m     self.run()
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=151835)[0m     raise e
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=151835)[0m     self._entrypoint()
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=151835)[0m     return self._trainable_func(
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=151835)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=151835)[0m     output = fn()
+[2m[36m(func pid=151835)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=151835)[0m     outputs = model(inputs)
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=151835)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=151835)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=151835)[0m     x = self.decoder(x)
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=151835)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=151835)[0m     input = module(input)
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=151835)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=151835)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=151835)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=151835)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=151835)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+2023-04-19 05:10:04,737	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00013: Error processing event.
+NoneType: None
+2023-04-19 05:10:05,417	INFO trial_runner.py:803 -- starting train_model_98c5f_00017
+[2m[36m(func pid=160441)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=160441)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=160441)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=160441)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=160441)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=160441)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=160441)[0m 2023-04-19 05:26:07,449	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=160441)[0m Traceback (most recent call last):
+[2m[36m(func pid=160441)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=160441)[0m     self._entrypoint()
+[2m[36m(func pid=160441)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=160441)[0m     return self._trainable_func(
+[2m[36m(func pid=160441)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=160441)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=160441)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=160441)[0m     output = fn()
+[2m[36m(func pid=160441)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=160441)[0m     outputs = model(inputs)
+[2m[36m(func pid=160441)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=160441)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=160441)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=160441)[0m     x = x + x_skip
+[2m[36m(func pid=160441)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+[2m[36m(func pid=160441)[0m Exception in thread Thread-3:
+[2m[36m(func pid=160441)[0m Traceback (most recent call last):
+[2m[36m(func pid=160441)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=160441)[0m     self.run()
+[2m[36m(func pid=160441)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=160441)[0m     raise e
+[2m[36m(func pid=160441)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=160441)[0m     self._entrypoint()
+[2m[36m(func pid=160441)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=160441)[0m     return self._trainable_func(
+[2m[36m(func pid=160441)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=160441)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=160441)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=160441)[0m     output = fn()
+[2m[36m(func pid=160441)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=160441)[0m     outputs = model(inputs)
+[2m[36m(func pid=160441)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=160441)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=160441)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 106, in forward
+[2m[36m(func pid=160441)[0m     x = x + x_skip
+[2m[36m(func pid=160441)[0m RuntimeError: The size of tensor a (65536) must match the size of tensor b (64) at non-singleton dimension 3
+2023-04-19 05:26:10,841	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00017: Error processing event.
+NoneType: None
+2023-04-19 05:26:11,487	INFO trial_runner.py:803 -- starting train_model_98c5f_00018
+[2m[36m(func pid=162822)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=162822)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=162822)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=162822)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=162822)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=162822)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=157176)[0m 2023-04-19 05:43:32,380	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=157176)[0m Traceback (most recent call last):
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=157176)[0m     self._entrypoint()
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=157176)[0m     return self._trainable_func(
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=157176)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=157176)[0m     output = fn()
+[2m[36m(func pid=157176)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=157176)[0m     outputs = model(inputs)
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=157176)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=157176)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=157176)[0m     x = self.decoder(x)
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=157176)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=157176)[0m     input = module(input)
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=157176)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=157176)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=157176)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=157176)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+[2m[36m(func pid=157176)[0m Exception in thread Thread-3:
+[2m[36m(func pid=157176)[0m Traceback (most recent call last):
+[2m[36m(func pid=157176)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=157176)[0m     self.run()
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=157176)[0m     raise e
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=157176)[0m     self._entrypoint()
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=157176)[0m     return self._trainable_func(
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=157176)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=157176)[0m     output = fn()
+[2m[36m(func pid=157176)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=157176)[0m     outputs = model(inputs)
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=157176)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=157176)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=157176)[0m     x = self.decoder(x)
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=157176)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=157176)[0m     input = module(input)
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=157176)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=157176)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=157176)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=157176)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=157176)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+2023-04-19 05:43:32,820	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00016: Error processing event.
+NoneType: None
+2023-04-19 05:43:33,542	INFO trial_runner.py:803 -- starting train_model_98c5f_00019
+[2m[36m(func pid=165354)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+[2m[36m(func pid=165354)[0m   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2m[36m(func pid=165354)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/cuda/amp/grad_scaler.py:120: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+[2m[36m(func pid=165354)[0m   warnings.warn("torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.")
+[2m[36m(func pid=165354)[0m /mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/amp/autocast_mode.py:204: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+[2m[36m(func pid=165354)[0m   warnings.warn('User provided device_type of \'cuda\', but CUDA is not available. Disabling')
+[2m[36m(func pid=162822)[0m 2023-04-19 06:21:31,274	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=162822)[0m Traceback (most recent call last):
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=162822)[0m     self._entrypoint()
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=162822)[0m     return self._trainable_func(
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=162822)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=162822)[0m     output = fn()
+[2m[36m(func pid=162822)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=162822)[0m     outputs = model(inputs)
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=162822)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=162822)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=162822)[0m     x = self.decoder(x)
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=162822)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=162822)[0m     input = module(input)
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=162822)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=162822)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=162822)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=162822)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+[2m[36m(func pid=162822)[0m Exception in thread Thread-3:
+[2m[36m(func pid=162822)[0m Traceback (most recent call last):
+[2m[36m(func pid=162822)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=162822)[0m     self.run()
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=162822)[0m     raise e
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=162822)[0m     self._entrypoint()
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=162822)[0m     return self._trainable_func(
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=162822)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=162822)[0m     output = fn()
+[2m[36m(func pid=162822)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=162822)[0m     outputs = model(inputs)
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=162822)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=162822)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=162822)[0m     x = self.decoder(x)
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=162822)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=162822)[0m     input = module(input)
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=162822)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=162822)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=162822)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=162822)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=162822)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+2023-04-19 06:21:32,159	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00018: Error processing event.
+NoneType: None
+[2m[36m(func pid=165354)[0m 2023-04-19 06:36:59,502	ERROR function_runner.py:281 -- Runner Thread raised error.
+[2m[36m(func pid=165354)[0m Traceback (most recent call last):
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=165354)[0m     self._entrypoint()
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=165354)[0m     return self._trainable_func(
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=165354)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=165354)[0m     output = fn()
+[2m[36m(func pid=165354)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=165354)[0m     outputs = model(inputs)
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=165354)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=165354)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=165354)[0m     x = self.decoder(x)
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=165354)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=165354)[0m     input = module(input)
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=165354)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=165354)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=165354)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=165354)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+[2m[36m(func pid=165354)[0m Exception in thread Thread-3:
+[2m[36m(func pid=165354)[0m Traceback (most recent call last):
+[2m[36m(func pid=165354)[0m   File "/opt/apps/apps/python/miniconda3/4.10.3/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+[2m[36m(func pid=165354)[0m     self.run()
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 298, in run
+[2m[36m(func pid=165354)[0m     raise e
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 272, in run
+[2m[36m(func pid=165354)[0m     self._entrypoint()
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 348, in entrypoint
+[2m[36m(func pid=165354)[0m     return self._trainable_func(
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/util/tracing/tracing_helper.py", line 462, in _resume_span
+[2m[36m(func pid=165354)[0m     return method(self, *_args, **_kwargs)
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/function_runner.py", line 640, in _trainable_func
+[2m[36m(func pid=165354)[0m     output = fn()
+[2m[36m(func pid=165354)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 90, in train_model
+[2m[36m(func pid=165354)[0m     outputs = model(inputs)
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=165354)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=165354)[0m   File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/SwinVisionTranformer.py", line 105, in forward
+[2m[36m(func pid=165354)[0m     x = self.decoder(x)
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=165354)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/container.py", line 217, in forward
+[2m[36m(func pid=165354)[0m     input = module(input)
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+[2m[36m(func pid=165354)[0m     return forward_call(*args, **kwargs)
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/modules/upsampling.py", line 156, in forward
+[2m[36m(func pid=165354)[0m     return F.interpolate(input, self.size, self.scale_factor, self.mode, self.align_corners,
+[2m[36m(func pid=165354)[0m   File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/torch/nn/functional.py", line 3959, in interpolate
+[2m[36m(func pid=165354)[0m     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+[2m[36m(func pid=165354)[0m RuntimeError: [enforce fail at alloc_cpu.cpp:75] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 274877906944 bytes. Error code 12 (Cannot allocate memory)
+2023-04-19 06:36:59,680	ERROR trial_runner.py:876 -- Trial train_model_98c5f_00019: Error processing event.
+NoneType: None
+Traceback (most recent call last):
+  File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 164, in <module>
+    main(num_samples=20, max_num_epochs=10, gpus_per_trial=0)
+  File "/net/scratch2/t18155cb/SwinVisonTranslation_mIHC/Ray_tune_hyp.py", line 145, in main
+    result = tune.run(
+  File "/mnt/iusers01/ct01/t18155cb/.local/lib/python3.9/site-packages/ray/tune/tune.py", line 695, in run
+    raise TuneError("Trials did not complete", incomplete_trials)
+ray.tune.error.TuneError: ('Trials did not complete', [train_model_98c5f_00000, train_model_98c5f_00001, train_model_98c5f_00002, train_model_98c5f_00003, train_model_98c5f_00004, train_model_98c5f_00005, train_model_98c5f_00006, train_model_98c5f_00007, train_model_98c5f_00008, train_model_98c5f_00009, train_model_98c5f_00010, train_model_98c5f_00011, train_model_98c5f_00012, train_model_98c5f_00013, train_model_98c5f_00014, train_model_98c5f_00015, train_model_98c5f_00016, train_model_98c5f_00017, train_model_98c5f_00018, train_model_98c5f_00019])
