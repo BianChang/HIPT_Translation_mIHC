@@ -64,8 +64,8 @@ def train_model(config):
     ])
 
     # Create instances of the ImageToImageDataset for the training, validation, and test sets
-    train_path = r'/net/scratch2/t18155cb/data_summary/train'
-    val_path = r'/net/scratch2/t18155cb/data_summary/val'
+    train_path = r'D:\Chang_files\workspace\data\MIHC\train'
+    val_path = r'D:\Chang_files\workspace\data\MIHC\val'
 
     train_dataset = ImageToImageDataset(train_path, input_transform=input_transform,
                                         label_transform=label_transform)
@@ -148,10 +148,9 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
     result = tune.run(
         # tune.with_parameters(train, Model=net),
         partial(train_model),
-        resources_per_trial={"cpu": 16, "gpu": gpus_per_trial},
+        resources_per_trial={"cpu": 2, "gpu": gpus_per_trial},
         config=config,
         num_samples=num_samples,
-        max_concurrent=1,
         scheduler=scheduler,
         progress_reporter=reporter)
 
@@ -165,4 +164,4 @@ if __name__ == "__main__":
     # You can change the number of GPUs per trial here:
     #args = get_args()
     #net = get_transNet(3)
-    main(num_samples=20, max_num_epochs=10, gpus_per_trial=0)
+    main(num_samples=20, max_num_epochs=10, gpus_per_trial=1)

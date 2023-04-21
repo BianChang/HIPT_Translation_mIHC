@@ -4,28 +4,44 @@ from timm.models.layers import DropPath, to_2tuple
 from timm.models.swin_transformer import SwinTransformerBlock
 import math
 from torch.utils.checkpoint import checkpoint
+from timm.models.swin_transformer import PatchMerging
+
 
 class Decoder(nn.Module):
     def __init__(self, embed_dim, in_chans, output_channels, img_size, patch_size):
         super().__init__()
-        self.conv_skip = nn.Conv2d(embed_dim, output_channels, kernel_size=1, stride=1, padding=0)
-        self.decoder_layers = nn.Sequential(
-            nn.ConvTranspose2d(embed_dim, in_chans, kernel_size=patch_size, stride=patch_size, padding=0),
-            nn.BatchNorm2d(in_chans),
-            nn.ReLU(inplace=True),
-            nn.ConvTranspose2d(in_chans, output_channels, kernel_size=patch_size, stride=patch_size, padding=0),
-            nn.BatchNorm2d(output_channels),
-            nn.Upsample(scale_factor=img_size[0] // (patch_size * patch_size), mode='bilinear', align_corners=True),
-        )
 
-    def forward(self, x):
-        x_skip = self.conv_skip(x)
-        x_skip = nn.functional.interpolate(x_skip, size=(x.shape[2], x.shape[3]), mode='bilinear', align_corners=True)
+        self.upsample1 = nn.ConvTranspose2d(embed_dim, embed_dim // 2, kernel_size=2, stride=2)
+        self.conv1 = nn.Conv2d(embed_dim, embed_dim // 2, kernel_size=3, padding=1)
 
-        x = self.decoder_layers(x)
-        x = x + x_skip
+        self.upsample2 = nn.ConvTranspose2d(embed_dim // 2, embed_dim // 4, kernel_size=2, stride=2)
+        self.conv2 = nn.Conv2d(embed_dim // 2, embed_dim // 4, kernel_size=3, padding=1)
+
+        self.upsample3 = nn.ConvTranspose2d(embed_dim // 4, embed_dim // 8, kernel_size=6, stride=4, padding=1)
+        self.conv3 = nn.Conv2d(embed_dim // 4, embed_dim // 8, kernel_size=3, padding=1)
+
+        self.upsample4 = nn.ConvTranspose2d(embed_dim // 8, output_channels, kernel_size=6, stride=4, padding=1)
+        self.conv4 = nn.Conv2d(embed_dim // 8, output_channels, kernel_size=3, padding=1)
+
+    def forward(self, x, stage_outputs):
+        x = self.upsample1(x)
+        x = torch.cat((x, stage_outputs[-1]), dim=1)
+        x = self.conv1(x)
+
+        x = self.upsample2(x)
+        x = torch.cat((x, stage_outputs[-2]), dim=1)
+        x = self.conv2(x)
+
+        x = self.upsample3(x)
+        x = torch.cat((x, stage_outputs[-3]), dim=1)
+        x = self.conv3(x)
+
+        x = self.upsample4(x)
+        x = torch.cat((x, stage_outputs[-4]), dim=1)
+        x = self.conv4(x)
 
         return x
+
 
 class SwinTransformer(nn.Module):
     def __init__(self, img_size=[1024, 1024], patch_size=16, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
@@ -46,7 +62,27 @@ class SwinTransformer(nn.Module):
         self.pos_embed = nn.Parameter(torch.empty(1, self.num_patches, embed_dim))
         nn.init.kaiming_uniform_(self.pos_embed, a=math.sqrt(5))
         self.pos_drop = nn.Dropout(p=drop_rate)
+        self.stage_outputs = []
 
+        self.blocks_and_merging = nn.ModuleList([])
+
+        for i in range(len(depths)):
+            stage_blocks = [
+                SwinTransformerBlock(
+                    dim=embed_dim, input_resolution=(self.num_patches_sqrt, self.num_patches_sqrt),
+                    num_heads=num_heads, window_size=window_size, shift_size=window_size // 2,
+                    mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, drop=drop_rate, attn_drop=attn_drop_rate,
+                    drop_path=drop_path_rate, norm_layer=norm_layer)
+                for _ in range(depths[i])
+            ]
+
+            self.blocks_and_merging.append(nn.Sequential(*stage_blocks))
+
+            if i < len(depths) - 1:  # Don't add patch merging after the last stage
+                patch_merging = PatchMerging(input_resolution=(self.num_patches_sqrt, self.num_patches_sqrt),
+                                             dim=embed_dim, norm_layer=norm_layer)
+                self.blocks_and_merging.append(patch_merging)
+        '''
         self.blocks = nn.ModuleList([
             nn.Sequential(*[
                 SwinTransformerBlock(
@@ -55,6 +91,7 @@ class SwinTransformer(nn.Module):
                     drop_path=drop_path_rate, norm_layer=norm_layer)
                 for _ in range(depth)])
             for depth in depths])
+        '''
 
         self.decoder = Decoder(embed_dim, in_chans, output_channels, img_size, patch_size)
 
@@ -92,17 +129,21 @@ class SwinTransformer(nn.Module):
 
         # Add positional encoding to the patch embeddings
         x = x + self.pos_embed
+        print('x+x_embed: ', x.shape)
         # Apply dropout to the patch embeddings (prevent overfitting)
         x = self.pos_drop(x)
 
         # Process the patch embeddings through the Swin Transformer blocks
+        for i, layer in enumerate(self.blocks_and_merging):
+            x = layer(x)
+            if isinstance(layer, nn.Sequential):
+                # Save the output of each stage in self.stage_outputs
+                self.stage_outputs.append(x)
         '''
         for stage in self.blocks:
             x = stage(x)
+            print(x.shape)
         '''
-        for stage in self.blocks:
-            for block in stage:
-                x = checkpoint(block, x)
 
         # Reshape the output tensor to obtain the image features in the original spatial dimensions
         x = x.reshape(B, self.img_size[0] // self.patch_size, self.img_size[1] // self.patch_size, self.embed_dim)
@@ -110,9 +151,8 @@ class SwinTransformer(nn.Module):
         x = x.permute(0, 3, 1, 2)
 
         # Add skip connections in the decoder
-        # x_skip = x
-        x = self.decoder(x)
-        # x = x + x_skip
+        # Add skip connections in the decoder
+        x = self.decoder(x, self.stage_outputs)
         # Reshape the output tensor to obtain the output image with the correct dimensions
         x = x.view(B, -1, self.img_size[0], self.img_size[1])
 
