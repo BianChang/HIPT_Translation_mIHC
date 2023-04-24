@@ -8,20 +8,21 @@ from timm.models.swin_transformer import PatchMerging
 
 
 class Decoder(nn.Module):
-    def __init__(self, embed_dim, in_chans, output_channels, img_size, patch_size):
+    def __init__(self, in_channs, output_channels, img_size, patch_size):
         super().__init__()
 
-        self.upsample1 = nn.ConvTranspose2d(embed_dim, embed_dim // 2, kernel_size=2, stride=2)
-        self.conv1 = nn.Conv2d(embed_dim, embed_dim // 2, kernel_size=3, padding=1)
+        self.upsample1 = nn.ConvTranspose2d(in_channs, in_channs // 2, kernel_size=2, stride=2)
+        self.conv1 = nn.Conv2d(in_channs, in_channs // 2, kernel_size=3, padding=1)
 
-        self.upsample2 = nn.ConvTranspose2d(embed_dim // 2, embed_dim // 4, kernel_size=2, stride=2)
-        self.conv2 = nn.Conv2d(embed_dim // 2, embed_dim // 4, kernel_size=3, padding=1)
+        self.upsample2 = nn.ConvTranspose2d(in_channs // 2, in_channs // 4, kernel_size=2, stride=2)
+        self.conv2 = nn.Conv2d(in_channs // 2, in_channs// 4, kernel_size=3, padding=1)
 
-        self.upsample3 = nn.ConvTranspose2d(embed_dim // 4, embed_dim // 8, kernel_size=6, stride=4, padding=1)
-        self.conv3 = nn.Conv2d(embed_dim // 4, embed_dim // 8, kernel_size=3, padding=1)
+        self.upsample3 = nn.ConvTranspose2d(in_channs // 4, in_channs // 8, kernel_size=2, stride=2)
+        self.conv3 = nn.Conv2d(in_channs // 4, in_channs // 8, kernel_size=3, padding=1)
 
-        self.upsample4 = nn.ConvTranspose2d(embed_dim // 8, output_channels, kernel_size=6, stride=4, padding=1)
-        self.conv4 = nn.Conv2d(embed_dim // 8, output_channels, kernel_size=3, padding=1)
+        self.upsample4 = nn.ConvTranspose2d(in_channs // 8, in_channs // 8, kernel_size=6, stride=4, padding=1)
+        self.upsample5 = nn.ConvTranspose2d(in_channs // 8, output_channels, kernel_size=6, stride=4, padding=1)
+
 
     def forward(self, x, stage_outputs):
         x = self.upsample1(x)
@@ -37,8 +38,7 @@ class Decoder(nn.Module):
         x = self.conv3(x)
 
         x = self.upsample4(x)
-        x = torch.cat((x, stage_outputs[-4]), dim=1)
-        x = self.conv4(x)
+        x = self.upsample5(x)
 
         return x
 
@@ -93,7 +93,8 @@ class SwinTransformer(nn.Module):
             for depth in depths])
         '''
 
-        self.decoder = Decoder(embed_dim, in_chans, output_channels, img_size, patch_size)
+        self.decoder = Decoder(in_chans=embed_dim // (math.pow(2, len(depths))-1), output_channels=output_channels,
+                               img_size=img_size, patch_size=patch_size)
 
         self.apply(self._init_weights)
 
@@ -136,9 +137,10 @@ class SwinTransformer(nn.Module):
         # Process the patch embeddings through the Swin Transformer blocks
         for i, layer in enumerate(self.blocks_and_merging):
             x = layer(x)
-            if isinstance(layer, nn.Sequential):
-                # Save the output of each stage in self.stage_outputs
+            if i + 1 < len(self.blocks_and_merging) and isinstance(self.blocks_and_merging[i + 1], PatchMerging):
+                # Save the output of each stage before the patch merging in self.stage_outputs
                 self.stage_outputs.append(x)
+
         '''
         for stage in self.blocks:
             x = stage(x)
@@ -146,7 +148,8 @@ class SwinTransformer(nn.Module):
         '''
 
         # Reshape the output tensor to obtain the image features in the original spatial dimensions
-        x = x.reshape(B, self.img_size[0] // self.patch_size, self.img_size[1] // self.patch_size, self.embed_dim)
+        x = x.reshape(B, self.img_size[0] // (self.patch_size * math.pow(2, len(self.depths)-1)) ,
+                      self.img_size[1] // (self.patch_size * math.pow(2, len(self.depths)-1)), self.embed_dim)
         # Permute the tensor dimensions to make it compatible with the decoder
         x = x.permute(0, 3, 1, 2)
 
