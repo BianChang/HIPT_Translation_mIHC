@@ -25,8 +25,8 @@ os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:1024'
 SSIM = StructuralSimilarityIndexMeasure(range=1.0, reduction='none')
 
 def train_model(config):
-    #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    device = torch.device("cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    #device = torch.device("cpu")
     # Create and configure the model using the provided hyperparameters
     batch_size = config["batch_size"]
     lr = config["lr"]
@@ -133,7 +133,7 @@ def train_model(config):
 def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
     # Define the search space
     config = {
-        "lr": tune.loguniform(1e-5, 1e-1),
+        "lr": tune.loguniform(1e-4, 1e-1),
         "lr_scheduler": tune.choice(["StepLR", "ExponentialLR", "CosineAnnealingLR"]),
         "batch_size": tune.choice([1, 2]),
     }
@@ -148,7 +148,7 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
     result = tune.run(
         # tune.with_parameters(train, Model=net),
         partial(train_model),
-        resources_per_trial={"cpu": 2, "gpu": gpus_per_trial},
+        resources_per_trial={"cpu": 6, "gpu": gpus_per_trial},
         config=config,
         num_samples=num_samples,
         scheduler=scheduler,
