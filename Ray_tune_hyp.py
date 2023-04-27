@@ -11,14 +11,14 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, ToTensor, Normalize
 from torchmetrics import StructuralSimilarityIndexMeasure
-from SwinVisionTranformer import SwinTransformer
+from SwinVisionTranformer import SwinTransformer, Decoder
 import numpy as np
 from dataset.ImageToImageDataset import ImageToImageDataset
 from torch.cuda.amp import autocast, GradScaler
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 import os
-os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:1024'
+os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:50'
 
 
 
@@ -45,7 +45,7 @@ def train_model(config):
     elif config["lr_scheduler"] == "CosineAnnealingLR":
         scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=50)
 
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.L1Loss()
 
     # Load and preprocess the dataset using the provided patch_size
     # Define the transforms for the input and label images
@@ -81,6 +81,7 @@ def train_model(config):
     # Train your model using the optimizer and scheduler
     for epoch in range(10):  # Loop over the dataset multiple times
         print('Begin training')
+        print(epoch)
         running_loss = 0.0
         epoch_ssim = []
         for i, (source, target) in enumerate(train_loader):
@@ -148,7 +149,7 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
     result = tune.run(
         # tune.with_parameters(train, Model=net),
         partial(train_model),
-        resources_per_trial={"cpu": 6, "gpu": gpus_per_trial},
+        resources_per_trial={"cpu": 4, "gpu": gpus_per_trial},
         config=config,
         num_samples=num_samples,
         scheduler=scheduler,
