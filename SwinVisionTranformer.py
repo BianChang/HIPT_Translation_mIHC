@@ -26,15 +26,23 @@ class Decoder(nn.Module):
 
     def forward(self, x, stage_outputs):
         #print('decoder')
+        #print(stage_outputs[-1].shape, stage_outputs[-2].shape, stage_outputs[-3].shape)
         x = self.upsample1(x)
-        stage_outputs_reshape = stage_outputs[-1].view(stage_outputs[-1].shape[0], 16, 16, 384).permute(0,3,1,2)
+        #print(x.shape)
+        stage_outputs_reshape = stage_outputs[-1].view(stage_outputs[-1].shape[0], 16, 16, 384).permute(0, 3, 1, 2)
+        #print(stage_outputs_reshape.shape)
         x = torch.cat((x, stage_outputs_reshape), dim=1)
+        #print(x.shape)
         x = self.conv1(x)
+        #print('final:',x.shape)
 
 
         x = self.upsample2(x)
+        #print('up2:',x.shape)
         stage_outputs_reshape = stage_outputs[-2].view(stage_outputs[-1].shape[0], 32, 32, 192).permute(0, 3, 1, 2)
+        #print(stage_outputs_reshape.shape)
         x = torch.cat((x, stage_outputs_reshape), dim=1)
+        #print('after conca:',x.shape)
         x = self.conv2(x)
 
 
@@ -46,7 +54,7 @@ class Decoder(nn.Module):
 
         x = self.upsample4(x)
         x = self.upsample5(x)
-       # print('final:', x.shape)
+        # print('final:', x.shape)
 
         return x
 
