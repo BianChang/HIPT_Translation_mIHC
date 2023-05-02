@@ -3,8 +3,8 @@ import os
 from PIL import Image
 
 # Define the paths to your dataset and label directories
-data_dir = r'F:\2023_4_11_data_organization\Patches\train\input'
-label_dir = r'F:\2023_4_11_data_organization\Patches\train\label'
+data_dir = r'D:\Chang_files\workspace\data\MIHC\512_patches\train\input'
+label_dir = r'D:\Chang_files\workspace\data\MIHC\512_patches\train\label'
 
 # Initialize the accumulator variables for mean and variance
 mean = np.zeros(3)
@@ -12,7 +12,7 @@ variance = np.zeros(3)
 
 # Iterate over the images in the dataset directory
 for filename in os.listdir(data_dir):
-    print(filename)
+    #print(filename)
     # Load the image using PIL and convert to numpy array
     img = np.array(Image.open(os.path.join(data_dir, filename)).convert('RGB'))
 
@@ -39,7 +39,7 @@ variance = np.zeros(4)
 # Iterate over the images in the label directory
 for filename in os.listdir(label_dir):
     # Load the label image using PIL and convert to numpy array
-    print(filename)
+    #print(filename)
     label = np.array(Image.open(os.path.join(label_dir, filename)))
 
     # Accumulate the pixel values for mean and variance calculation

@@ -31,7 +31,7 @@ class Decoder(nn.Module):
         #print(x.shape)
         #stage_outputs_reshape = stage_outputs[-1].view(stage_outputs[-1].shape[0], 16, 16, 384).permute(0, 3, 1, 2)
         #print(stage_outputs_reshape.shape)
-        x = torch.cat((x, stage_outputs[-1].view(stage_outputs[-1].shape[0], 16, 16, 384).permute(0, 3, 1, 2)), dim=1)
+        x = torch.cat((x, stage_outputs[-1].view(stage_outputs[-1].shape[0], 8, 8, 384).permute(0, 3, 1, 2)), dim=1)
         #print(x.shape)
         x = self.conv1(x)
         #print('final:',x.shape)
@@ -41,14 +41,14 @@ class Decoder(nn.Module):
         #print('up2:',x.shape)
         #stage_outputs_reshape = stage_outputs[-2].view(stage_outputs[-1].shape[0], 32, 32, 192).permute(0, 3, 1, 2)
         #print(stage_outputs_reshape.shape)
-        x = torch.cat((x, stage_outputs[-2].view(stage_outputs[-2].shape[0], 32, 32, 192).permute(0, 3, 1, 2)), dim=1)
+        x = torch.cat((x, stage_outputs[-2].view(stage_outputs[-2].shape[0], 16, 16, 192).permute(0, 3, 1, 2)), dim=1)
         #print('after conca:',x.shape)
         x = self.conv2(x)
 
 
         x = self.upsample3(x)
         # stage_outputs_reshape = stage_outputs[-3].view(stage_outputs[-1].shape[0], 64, 64, 96).permute(0, 3, 1, 2)
-        x = torch.cat((x, stage_outputs[-3].view(stage_outputs[-1].shape[0], 64, 64, 96).permute(0, 3, 1, 2)), dim=1)
+        x = torch.cat((x, stage_outputs[-3].view(stage_outputs[-1].shape[0], 32, 32, 96).permute(0, 3, 1, 2)), dim=1)
         x = self.conv3(x)
 
 
@@ -60,7 +60,7 @@ class Decoder(nn.Module):
 
 
 class SwinTransformer(nn.Module):
-    def __init__(self, img_size=[1024, 1024], patch_size=16, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
+    def __init__(self, img_size=[512, 512], patch_size=16, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
                  num_heads=3, window_size=8, mlp_ratio=4., qkv_bias=False, drop_rate=0., attn_drop_rate=0.,
                  drop_path_rate=0.1, norm_layer=nn.LayerNorm, output_channels=4, **kwargs):
         super().__init__()

@@ -66,6 +66,8 @@ def train_model(config):
     # Create instances of the ImageToImageDataset for the training, validation, and test sets
     train_path = r'D:\Chang_files\workspace\data\MIHC\train'
     val_path = r'D:\Chang_files\workspace\data\MIHC\val'
+    train_path = r'D:\Chang_files\workspace\data\MIHC\512_patches\train'
+    val_path = r'D:\Chang_files\workspace\data\MIHC\512_patches\val'
 
     train_dataset = ImageToImageDataset(train_path, input_transform=input_transform,
                                         label_transform=label_transform)
@@ -79,7 +81,7 @@ def train_model(config):
     scaler = GradScaler()  # Initialize the GradScaler
 
     # Train your model using the optimizer and scheduler
-    for epoch in range(10):  # Loop over the dataset multiple times
+    for epoch in range(5):  # Loop over the dataset multiple times
         print('Begin training')
         print(epoch)
         running_loss = 0.0
@@ -165,4 +167,4 @@ if __name__ == "__main__":
     # You can change the number of GPUs per trial here:
     #args = get_args()
     #net = get_transNet(3)
-    main(num_samples=20, max_num_epochs=10, gpus_per_trial=1)
+    main(num_samples=20, max_num_epochs=5, gpus_per_trial=1)

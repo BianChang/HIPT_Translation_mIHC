@@ -49,8 +49,8 @@ def crop_images_in_directory(input_dir, output_dir, patch_size, stride):
                         cv2.imwrite(patch_path, patch)
 
 
-input_dir = r'D:\work\project1\workspace\2023_4_11_data_organization\DAPI_block\grey'
-output_dir = r'D:\work\project1\workspace\2023_4_11_data_organization\Patches\DAPI'
-patch_size = 1024
-stride = 512
+input_dir = r'F:\2023_4_11_data_organization\PANCK_block\grey'
+output_dir = r'F:\2023_4_11_data_organization\512_patches\panck'
+patch_size = 512
+stride = 256
 crop_images_in_directory(input_dir, output_dir, patch_size, stride)

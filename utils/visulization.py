@@ -41,8 +41,8 @@ def visualize_4channel_tif(input_dir, output_dir):
 
 
 def main():
-    input_dir = r'D:\work\project1\workspace\2023_4_11_data_organization\Patches\MERGED'
-    output_dir = r'D:\work\project1\workspace\2023_4_11_data_organization\Patches\VIS'
+    input_dir = r'F:\2023_4_11_data_organization\512_patches\all_slide\merged'
+    output_dir = r'F:\2023_4_11_data_organization\512_patches\all_slide\vis'
     visualize_4channel_tif(input_dir, output_dir)
 
 
