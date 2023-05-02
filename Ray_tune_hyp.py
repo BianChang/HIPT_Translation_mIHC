@@ -64,8 +64,6 @@ def train_model(config):
     ])
 
     # Create instances of the ImageToImageDataset for the training, validation, and test sets
-    train_path = r'D:\Chang_files\workspace\data\MIHC\train'
-    val_path = r'D:\Chang_files\workspace\data\MIHC\val'
     train_path = r'D:\Chang_files\workspace\data\MIHC\512_patches\train'
     val_path = r'D:\Chang_files\workspace\data\MIHC\512_patches\val'
 
