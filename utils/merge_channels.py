@@ -2,12 +2,12 @@ import os
 import cv2
 import numpy as np
 
-DAPI_DIR = r'F:\2023_4_11_data_organization\512_patches\all_slide\dapi'
-CD3_DIR = r'F:\2023_4_11_data_organization\512_patches\all_slide\cd3'
-CD20_DIR = r'F:\2023_4_11_data_organization\512_patches\all_slide\cd20'
-PANCK_DIR = r'F:\2023_4_11_data_organization\512_patches\all_slide\panck'
+DAPI_DIR = r'F:\2023_4_11_data_organization\224_patches\dapi\HE-1\[13196,49353]'
+CD3_DIR = r'F:\2023_4_11_data_organization\224_patches\cd3\HE-1\[13196,49353]'
+CD20_DIR = r'F:\2023_4_11_data_organization\224_patches\cd20\HE-1\[13196,49353]'
+PANCK_DIR = r'F:\2023_4_11_data_organization\224_patches\panck\HE-1\[13196,49353]'
 
-output_dir = r'F:\2023_4_11_data_organization\512_patches\all_slide\merged'
+output_dir = r'F:\2023_4_11_data_organization\224_patches\merged\test'
 
 # Make sure output directory exists
 os.makedirs(output_dir, exist_ok=True)

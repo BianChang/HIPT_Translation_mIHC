@@ -3,8 +3,8 @@ import os
 from PIL import Image
 
 # Define the paths to your dataset and label directories
-data_dir = r'D:\Chang_files\workspace\data\MIHC\512_patches\train\input'
-label_dir = r'D:\Chang_files\workspace\data\MIHC\512_patches\train\label'
+data_dir = r'F:\2023_4_11_data_organization\224_patches\merged\train\input'
+label_dir = r'F:\2023_4_11_data_organization\224_patches\merged\train\label'
 
 # Initialize the accumulator variables for mean and variance
 mean = np.zeros(3)

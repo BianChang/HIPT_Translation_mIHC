@@ -20,21 +20,23 @@ class Decoder(nn.Module):
         self.upsample3 = nn.ConvTranspose2d(in_channs // 4, in_channs // 8, kernel_size=2, stride=2)
         self.conv3 = nn.Conv2d(in_channs // 4, in_channs // 8, kernel_size=3, padding=1)
 
-        self.upsample4 = nn.ConvTranspose2d(in_channs // 8, in_channs // 8, kernel_size=6, stride=4, padding=1)
-        self.upsample5 = nn.ConvTranspose2d(in_channs // 8, output_channels, kernel_size=6, stride=4, padding=1)
+        #self.upsample4 = nn.ConvTranspose2d(in_channs // 8, in_channs // 8, kernel_size=6, stride=4, padding=1)
+        #self.upsample5 = nn.ConvTranspose2d(in_channs // 8, output_channels, kernel_size=6, stride=4, padding=1)
+        self.upsample4 = nn.ConvTranspose2d(in_channs // 8, in_channs // 4, kernel_size=2, stride=2)
+        self.upsample4 = nn.ConvTranspose2d(in_channs // 4, output_channels, kernel_size=2, stride=2)
 
 
     def forward(self, x, stage_outputs):
-        #print('decoder')
+        print('decoder')
         #print(stage_outputs[-1].shape, stage_outputs[-2].shape, stage_outputs[-3].shape)
         x = self.upsample1(x)
-        #print(x.shape)
+        print(x.shape)
         #stage_outputs_reshape = stage_outputs[-1].view(stage_outputs[-1].shape[0], 16, 16, 384).permute(0, 3, 1, 2)
         #print(stage_outputs_reshape.shape)
         x = torch.cat((x, stage_outputs[-1].view(stage_outputs[-1].shape[0], 8, 8, 384).permute(0, 3, 1, 2)), dim=1)
-        #print(x.shape)
+        print(x.shape)
         x = self.conv1(x)
-        #print('final:',x.shape)
+        print('final:',x.shape)
 
 
         x = self.upsample2(x)
@@ -60,8 +62,8 @@ class Decoder(nn.Module):
 
 
 class SwinTransformer(nn.Module):
-    def __init__(self, img_size=[512, 512], patch_size=16, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
-                 num_heads=3, window_size=8, mlp_ratio=4., qkv_bias=False, drop_rate=0., attn_drop_rate=0.,
+    def __init__(self, img_size=[224, 224], patch_size=4, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
+                 num_heads=3, window_size=7, mlp_ratio=4., qkv_bias=False, drop_rate=0., attn_drop_rate=0.,
                  drop_path_rate=0.1, norm_layer=nn.LayerNorm, output_channels=4, **kwargs):
         super().__init__()
         self.img_size = img_size
