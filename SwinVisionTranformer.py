@@ -27,7 +27,7 @@ class Decoder(nn.Module):
 
 
     def forward(self, x, stage_outputs):
-        print('decoder')
+        #print('decoder')
         #print(stage_outputs[-1].shape, stage_outputs[-2].shape, stage_outputs[-3].shape)
         x = self.upsample1(x)
         #print(x.shape)

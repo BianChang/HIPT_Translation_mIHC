@@ -8,7 +8,6 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, ToTensor, Normalize
-from torchmetrics import StructuralSimilarityIndexMeasure
 from SwinVisionTranformer import SwinTransformer, Decoder
 import numpy as np
 from dataset.ImageToImageDataset import ImageToImageDataset
@@ -16,14 +15,11 @@ from torch.cuda.amp import autocast, GradScaler
 from torch.nn.parallel import DistributedDataParallel as DDP
 from ray.tune.search import ConcurrencyLimiter
 from ray.tune.search.ax import AxSearch
+from utils.metrics import calculate_ssim_per_channel
 
 
 import os
 os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:50'
-
-
-
-SSIM = StructuralSimilarityIndexMeasure(range=1.0, reduction='none')
 
 def train_model(config):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -98,8 +94,8 @@ def train_model(config):
 
     # Train your model using the optimizer and scheduler
     for epoch in range(5):  # Loop over the dataset multiple times
-        print('Begin training')
-        print(epoch)
+        #print('Begin training')
+        #print(epoch)
         running_loss = 0.0
         epoch_ssim = []
         for i, (source, target) in enumerate(train_loader):
@@ -111,6 +107,7 @@ def train_model(config):
             with autocast():
                 outputs = model(inputs)
                 loss = criterion(outputs, labels)
+                #print(loss.item())
                 
             # Scale the loss and call backward() for mixed precision
             scaler.scale(loss).backward()
@@ -131,7 +128,7 @@ def train_model(config):
         val_loss = 0.0
         val_ssim = []
         with torch.no_grad():
-            print('begin val')
+            #print('begin val')
             for i, (source, target) in enumerate(val_loader):
                 source, target = source.to(device), target.to(device)
 
@@ -140,7 +137,8 @@ def train_model(config):
                 val_loss += loss.item()
 
                 # Calculate SSIM
-                ssim_val = SSIM(output, target)
+                ssim_val = calculate_ssim_per_channel(output, target)
+                #print(ssim_val)
                 val_ssim.append(ssim_val.cpu().numpy())
         running_loss /= len(train_loader)
         val_ssim = np.mean(val_ssim, axis=0)
