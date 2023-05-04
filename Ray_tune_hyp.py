@@ -3,8 +3,6 @@ from ray import tune
 from ray.tune import CLIReporter
 from ray.tune.schedulers import ASHAScheduler
 from functools import partial
-from ray.tune.suggest import ConcurrencyLimiter
-from ray.tune.suggest.ax import AxSearch
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -16,6 +14,9 @@ import numpy as np
 from dataset.ImageToImageDataset import ImageToImageDataset
 from torch.cuda.amp import autocast, GradScaler
 from torch.nn.parallel import DistributedDataParallel as DDP
+from ray.tune.search import ConcurrencyLimiter
+from ray.tune.search.ax import AxSearch
+
 
 import os
 os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:50'
@@ -161,12 +162,17 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
         max_t=max_num_epochs,
         grace_period=1,
         reduction_factor=2)
+    search_alg = AxSearch(metric='loss', mode='min')
+    # Wrap your search algorithm with ConcurrencyLimiter
+    limited_search_alg = ConcurrencyLimiter(search_alg, max_concurrent=1)  # Set max_concurrent to your desired value
+
     reporter = CLIReporter(
         metric_columns=["loss", "ssim", "iteration"])
     result = tune.run(
         # tune.with_parameters(train, Model=net),
         partial(train_model),
         resources_per_trial={"cpu": 4, "gpu": gpus_per_trial},
+        search_alg=limited_search_alg,
         config=config,
         num_samples=num_samples,
         scheduler=scheduler,

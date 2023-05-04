@@ -23,34 +23,37 @@ class Decoder(nn.Module):
         #self.upsample4 = nn.ConvTranspose2d(in_channs // 8, in_channs // 8, kernel_size=6, stride=4, padding=1)
         #self.upsample5 = nn.ConvTranspose2d(in_channs // 8, output_channels, kernel_size=6, stride=4, padding=1)
         self.upsample4 = nn.ConvTranspose2d(in_channs // 8, in_channs // 4, kernel_size=2, stride=2)
-        self.upsample4 = nn.ConvTranspose2d(in_channs // 4, output_channels, kernel_size=2, stride=2)
+        self.upsample5 = nn.ConvTranspose2d(in_channs // 4, output_channels, kernel_size=2, stride=2)
 
 
     def forward(self, x, stage_outputs):
         print('decoder')
         #print(stage_outputs[-1].shape, stage_outputs[-2].shape, stage_outputs[-3].shape)
         x = self.upsample1(x)
-        print(x.shape)
+        #print(x.shape)
         #stage_outputs_reshape = stage_outputs[-1].view(stage_outputs[-1].shape[0], 16, 16, 384).permute(0, 3, 1, 2)
         #print(stage_outputs_reshape.shape)
-        x = torch.cat((x, stage_outputs[-1].view(stage_outputs[-1].shape[0], 8, 8, 384).permute(0, 3, 1, 2)), dim=1)
-        print(x.shape)
+        #x = torch.cat((x, stage_outputs[-1].view(stage_outputs[-1].shape[0], 8, 8, 384).permute(0, 3, 1, 2)), dim=1)
+        x = torch.cat((x, stage_outputs[-1].view(stage_outputs[-1].shape[0], 14, 14, 384).permute(0, 3, 1, 2)), dim=1)
+        #print(x.shape)
         x = self.conv1(x)
-        print('final:',x.shape)
+        #print('final:',x.shape)
 
 
         x = self.upsample2(x)
         #print('up2:',x.shape)
         #stage_outputs_reshape = stage_outputs[-2].view(stage_outputs[-1].shape[0], 32, 32, 192).permute(0, 3, 1, 2)
         #print(stage_outputs_reshape.shape)
-        x = torch.cat((x, stage_outputs[-2].view(stage_outputs[-2].shape[0], 16, 16, 192).permute(0, 3, 1, 2)), dim=1)
+        #x = torch.cat((x, stage_outputs[-2].view(stage_outputs[-2].shape[0], 16, 16, 192).permute(0, 3, 1, 2)), dim=1)
+        x = torch.cat((x, stage_outputs[-2].view(stage_outputs[-2].shape[0], 28, 28, 192).permute(0, 3, 1, 2)), dim=1)
         #print('after conca:',x.shape)
         x = self.conv2(x)
 
 
         x = self.upsample3(x)
         # stage_outputs_reshape = stage_outputs[-3].view(stage_outputs[-1].shape[0], 64, 64, 96).permute(0, 3, 1, 2)
-        x = torch.cat((x, stage_outputs[-3].view(stage_outputs[-1].shape[0], 32, 32, 96).permute(0, 3, 1, 2)), dim=1)
+        # x = torch.cat((x, stage_outputs[-3].view(stage_outputs[-1].shape[0], 32, 32, 96).permute(0, 3, 1, 2)), dim=1)
+        x = torch.cat((x, stage_outputs[-3].view(stage_outputs[-1].shape[0], 56, 56, 96).permute(0, 3, 1, 2)), dim=1)
         x = self.conv3(x)
 
 
@@ -157,7 +160,7 @@ class SwinTransformer(nn.Module):
         # Process the patch embeddings through the Swin Transformer blocks
         for i, layer in enumerate(self.blocks_and_merging):
             x = layer(x)
-            # print(i, x.shape)
+            #print(i, x.shape)
             if i + 1 < len(self.blocks_and_merging) and isinstance(self.blocks_and_merging[i + 1], PatchMerging):
                 # Save the output of each stage before the patch merging in self.stage_outputs
                 self.stage_outputs.append(x)
@@ -173,6 +176,7 @@ class SwinTransformer(nn.Module):
                       self.img_size[1] // int(self.patch_size * math.pow(2, len(self.depths)-1)), self.last_stage_dim)
         # Permute the tensor dimensions to make it compatible with the decoder
         x = x.permute(0, 3, 1, 2)
+        #print(x.shape)
 
         # Add skip connections in the decoder
         # Add skip connections in the decoder
