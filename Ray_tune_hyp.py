@@ -27,11 +27,15 @@ def train_model(config):
     # Create and configure the model using the provided hyperparameters
     batch_size = config["batch_size"]
     lr = config["lr"]
-    model = SwinTransformer().to(device)
+
+    model = SwinTransformer(**config["model_params"])
     
     # DataPrallel
     if torch.cuda.device_count() > 1:
         model = nn.DataParallel(model)
+        model.to(device)
+    else:
+        model.to(device)
 
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
@@ -139,7 +143,7 @@ def train_model(config):
                 # Calculate SSIM
                 ssim_val = calculate_ssim_per_channel(output, target)
                 #print(ssim_val)
-                val_ssim.append(ssim_val.cpu().numpy())
+                val_ssim.append(ssim_val)
         running_loss /= len(train_loader)
         val_ssim = np.mean(val_ssim, axis=0)
         avg_val_ssim = np.mean(val_ssim)
@@ -153,6 +157,11 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
         "lr": tune.loguniform(1e-4, 1e-1),
         "lr_scheduler": tune.choice(["StepLR", "ExponentialLR", "CosineAnnealingLR"]),
         "batch_size": tune.choice([1, 2]),
+        "model_params": {
+            "img_size": [224, 224],
+            "patch_size": 4,
+            "window_size": 7,
+        }
     }
     scheduler = ASHAScheduler(
         metric="loss",
@@ -169,7 +178,7 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
     result = tune.run(
         # tune.with_parameters(train, Model=net),
         partial(train_model),
-        resources_per_trial={"cpu": 4, "gpu": gpus_per_trial},
+        resources_per_trial={"cpu": 8, "gpu": gpus_per_trial},
         search_alg=limited_search_alg,
         config=config,
         num_samples=num_samples,
