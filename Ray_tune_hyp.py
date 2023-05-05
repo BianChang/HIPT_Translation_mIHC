@@ -98,8 +98,6 @@ def train_model(config):
 
     # Train your model using the optimizer and scheduler
     for epoch in range(5):  # Loop over the dataset multiple times
-        #print('Begin training')
-        #print(epoch)
         running_loss = 0.0
         epoch_ssim = []
         for i, (source, target) in enumerate(train_loader):
@@ -108,31 +106,38 @@ def train_model(config):
             optimizer.zero_grad()
             
             # Wrap the forward pass in autocast context for mixed precision
+            '''  
             with autocast():
                 outputs = model(inputs)
                 loss = criterion(outputs, labels)
-                #print(loss.item())
-                
+                if i % 10 == 0:
+                    print(f"Epoch: {epoch}, Iteration: {i}, Loss: {loss.item()}")
+
+            
             # Scale the loss and call backward() for mixed precision
             scaler.scale(loss).backward()
             scaler.step(optimizer)
             scaler.update()
+            '''
 
-            #outputs = model(inputs)
-            #loss = criterion(outputs, labels)
-            #loss.backward()
-            #optimizer.step()
+
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            print(f"Epoch: {epoch}, Iteration: {i}, Loss: {loss.item()}")
+            loss.backward()
+            optimizer.step()
 
             running_loss += loss.item()
 
-            scheduler.step()
+
+        scheduler.step()
     # Evaluate your model and report the performance using tune.report()
         # validation loop
         model.eval()
         val_loss = 0.0
         val_ssim = []
         with torch.no_grad():
-            #print('begin val')
+            print('begin val')
             for i, (source, target) in enumerate(val_loader):
                 source, target = source.to(device), target.to(device)
 
@@ -145,13 +150,14 @@ def train_model(config):
                 #print(ssim_val)
                 val_ssim.append(ssim_val)
         running_loss /= len(train_loader)
+        val_loss /= len(val_loader)
         val_ssim = np.mean(val_ssim, axis=0)
         avg_val_ssim = np.mean(val_ssim)
 
-        tune.report(loss=running_loss, accuracy=float(avg_val_ssim), iter_num=epoch)
+    tune.report(train_loss=running_loss, val_loss=val_loss, val_ssim=float(avg_val_ssim), iter_num=epoch)
 
 
-def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
+def main(num_samples=50, max_num_epochs=10, gpus_per_trial=1):
     # Define the search space
     config = {
         "lr": tune.loguniform(1e-4, 1e-1),
@@ -174,7 +180,7 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=2):
     limited_search_alg = ConcurrencyLimiter(search_alg, max_concurrent=1)  # Set max_concurrent to your desired value
 
     reporter = CLIReporter(
-        metric_columns=["loss", "ssim", "iteration"])
+        metric_columns=["train_loss", "val_loss", "val_ssim", "iter_num"])
     result = tune.run(
         # tune.with_parameters(train, Model=net),
         partial(train_model),
