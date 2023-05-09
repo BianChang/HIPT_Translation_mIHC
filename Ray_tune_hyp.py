@@ -97,7 +97,7 @@ def train_model(config):
     scaler = GradScaler()  # Initialize the GradScaler
 
     # Train your model using the optimizer and scheduler
-    for epoch in range(5):  # Loop over the dataset multiple times
+    for epoch in range(2):  # Loop over the dataset multiple times
         running_loss = 0.0
         epoch_ssim = []
         for i, (source, target) in enumerate(train_loader):
@@ -172,21 +172,21 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=1):
         }
     }
     scheduler = ASHAScheduler(
-        metric="loss",
+        metric="train_loss",
         mode="min",
         max_t=max_num_epochs,
         grace_period=1,
         reduction_factor=2)
-    search_alg = AxSearch(metric='loss', mode='min')
+    search_alg = AxSearch(metric='train_loss', mode='min')
     # Wrap your search algorithm with ConcurrencyLimiter
-    limited_search_alg = ConcurrencyLimiter(search_alg, max_concurrent=1)  # Set max_concurrent to your desired value
+    limited_search_alg = ConcurrencyLimiter(search_alg, max_concurrent=5)  # Set max_concurrent to your desired value
 
     reporter = CLIReporter(
         metric_columns=["train_loss", "val_loss", "val_ssim", "iter_num"])
     result = tune.run(
         # tune.with_parameters(train, Model=net),
         partial(train_model),
-        resources_per_trial={"cpu": 12, "gpu": gpus_per_trial},
+        resources_per_trial={"cpu": 6, "gpu": gpus_per_trial},
         search_alg=limited_search_alg,
         config=config,
         num_samples=num_samples,
@@ -203,4 +203,4 @@ if __name__ == "__main__":
     # You can change the number of GPUs per trial here:
     #args = get_args()
     #net = get_transNet(3)
-    main(num_samples=20, max_num_epochs=5, gpus_per_trial=1)
+    main(num_samples=20, max_num_epochs=2, gpus_per_trial=1)

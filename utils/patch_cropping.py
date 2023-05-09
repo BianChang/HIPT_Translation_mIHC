@@ -42,15 +42,15 @@ def crop_images_in_directory(input_dir, output_dir, patch_size, stride):
                         # Determine output filename and directory
                         patch_dir = os.path.join(out_subdir, filename.split('.')[0])
                         os.makedirs(patch_dir, exist_ok=True)
-                        patch_filename = f"{filename.split('.')[0]}_patch_{i}_{j}.tif"
+                        patch_filename = f"{filename.split('.')[0]}_patch_{i}_{j}.jpg"
                         patch_path = os.path.join(patch_dir, patch_filename)
 
                         # Save the patch to disk
                         cv2.imwrite(patch_path, patch)
 
 
-input_dir = r'F:\2023_4_11_data_organization\PANCK_block\grey'
-output_dir = r'F:\2023_4_11_data_organization\224_patches\panck'
+input_dir = r'F:\2023_4_11_data_organization\HE_block_norm'
+output_dir = r'F:\2023_4_11_data_organization\224_patches\HE_jpg'
 patch_size = 224
 stride = 112
 crop_images_in_directory(input_dir, output_dir, patch_size, stride)
