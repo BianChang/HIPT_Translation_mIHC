@@ -29,13 +29,16 @@ def train_model(config):
     lr = config["lr"]
 
     model = SwinTransformer(**config["model_params"])
-    
+
+    '''
     # DataPrallel
     if torch.cuda.device_count() > 1:
         model = nn.DataParallel(model)
         model.to(device)
     else:
         model.to(device)
+    '''
+    model.to(device)
 
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
