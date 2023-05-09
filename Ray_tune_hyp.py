@@ -82,8 +82,8 @@ def train_model(config):
     ])
 
     # Create instances of the ImageToImageDataset for the training, validation, and test sets
-    train_path = r'F:\2023_4_11_data_organization\224_patches\merged\train'
-    val_path = r'F:\2023_4_11_data_organization\224_patches\merged\val'
+    train_path = r'F:\2023_4_11_data_organization\224_patches\merged\small_dataset\train'
+    val_path = r'F:\2023_4_11_data_organization\224_patches\merged\small_dataset\val'
 
     train_dataset = ImageToImageDataset(train_path, input_transform=input_transform,
                                         label_transform=label_transform)
@@ -160,13 +160,15 @@ def train_model(config):
 def main(num_samples=50, max_num_epochs=10, gpus_per_trial=1):
     # Define the search space
     config = {
-        "lr": tune.loguniform(1e-4, 1e-1),
+        "lr": tune.loguniform(1e-5, 1e-2),
         "lr_scheduler": tune.choice(["StepLR", "ExponentialLR", "CosineAnnealingLR"]),
-        "batch_size": tune.choice([1, 2]),
+        "batch_size": tune.choice([1, 2, 4]),
         "model_params": {
             "img_size": [224, 224],
             "patch_size": 4,
             "window_size": 7,
+            "depths": [2, 2, 2, 2],
+            "embed_dim": 48,
         }
     }
     scheduler = ASHAScheduler(
@@ -184,7 +186,7 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=1):
     result = tune.run(
         # tune.with_parameters(train, Model=net),
         partial(train_model),
-        resources_per_trial={"cpu": 8, "gpu": gpus_per_trial},
+        resources_per_trial={"cpu": 12, "gpu": gpus_per_trial},
         search_alg=limited_search_alg,
         config=config,
         num_samples=num_samples,
