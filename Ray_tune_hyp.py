@@ -148,6 +148,10 @@ def train_model(config):
                 loss = criterion(output, target)
                 val_loss += loss.item()
 
+                output = output.detach().cpu()
+                target = target.detach().cpu()
+
+
                 # Calculate SSIM
                 ssim_val = calculate_ssim_per_channel(output, target)
                 #print(ssim_val)
@@ -165,13 +169,13 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=1):
     config = {
         "lr": tune.loguniform(1e-5, 1e-2),
         "lr_scheduler": tune.choice(["StepLR", "ExponentialLR", "CosineAnnealingLR"]),
-        "batch_size": tune.choice([1, 2, 4]),
+        "batch_size": tune.choice([1, 2]),
         "model_params": {
             "img_size": [224, 224],
             "patch_size": 4,
             "window_size": 7,
-            "depths": [2, 2, 2, 2],
-            "embed_dim": 48,
+            "depths": [2, 2, 6, 2],
+            "embed_dim": 96,
         }
     }
     scheduler = ASHAScheduler(
@@ -197,7 +201,7 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=1):
         progress_reporter=reporter)
 
     # Get the best hyperparameters
-    best_trial = result.get_best_trial("loss", "min", "last")
+    best_trial = result.get_best_trial("train_loss", "min", "last")
     best_config = best_trial.config
     print("Best hyperparameters found were:", best_config)
 

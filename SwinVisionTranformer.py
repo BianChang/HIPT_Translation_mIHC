@@ -30,39 +30,41 @@ class Decoder(nn.Module):
         #print('decoder')
         #print(stage_outputs[-1].shape, stage_outputs[-2].shape, stage_outputs[-3].shape)
         x = self.upsample1(x)
+        h_w_dim = int((stage_outputs[-1].shape[1]) ** 0.5)
         #print(x.shape)
         #stage_outputs_reshape = stage_outputs[-1].view(stage_outputs[-1].shape[0], 16, 16, 384).permute(0, 3, 1, 2)
         #print(stage_outputs_reshape.shape)
         #x = torch.cat((x, stage_outputs[-1].view(stage_outputs[-1].shape[0], 8, 8, 384).permute(0, 3, 1, 2)), dim=1)
         #x = torch.cat((x, stage_outputs[-1].view(stage_outputs[-1].shape[0], 14, 14, 384).permute(0, 3, 1, 2)), dim=1)
-        x = torch.cat((x, stage_outputs[-1].view(stage_outputs[-1].shape[0], 14, 14, 192).permute(0, 3, 1, 2)), dim=1)
+        x = torch.cat((x, stage_outputs[-1].view(stage_outputs[-1].shape[0], h_w_dim, h_w_dim, stage_outputs[-1].shape[2]).permute(0, 3, 1, 2)), dim=1)
         #print(x.shape)
         x = self.conv1(x)
         #print('final:',x.shape)
 
 
         x = self.upsample2(x)
+        h_w_dim2 = int((stage_outputs[-2].shape[1]) ** 0.5)
         #print('up2:',x.shape)
         #stage_outputs_reshape = stage_outputs[-2].view(stage_outputs[-1].shape[0], 32, 32, 192).permute(0, 3, 1, 2)
         #print(stage_outputs_reshape.shape)
         #x = torch.cat((x, stage_outputs[-2].view(stage_outputs[-2].shape[0], 16, 16, 192).permute(0, 3, 1, 2)), dim=1)
         #x = torch.cat((x, stage_outputs[-2].view(stage_outputs[-2].shape[0], 28, 28, 192).permute(0, 3, 1, 2)), dim=1)
-        x = torch.cat((x, stage_outputs[-2].view(stage_outputs[-2].shape[0], 28, 28, 96).permute(0, 3, 1, 2)), dim=1)
+        x = torch.cat((x, stage_outputs[-2].view(stage_outputs[-2].shape[0], h_w_dim2, h_w_dim2, stage_outputs[-2].shape[2]).permute(0, 3, 1, 2)), dim=1)
         #print('after conca:',x.shape)
         x = self.conv2(x)
 
 
         x = self.upsample3(x)
+        h_w_dim3 = int((stage_outputs[-3].shape[1]) ** 0.5)
         # stage_outputs_reshape = stage_outputs[-3].view(stage_outputs[-1].shape[0], 64, 64, 96).permute(0, 3, 1, 2)
         # x = torch.cat((x, stage_outputs[-3].view(stage_outputs[-1].shape[0], 32, 32, 96).permute(0, 3, 1, 2)), dim=1)
         # x = torch.cat((x, stage_outputs[-3].view(stage_outputs[-1].shape[0], 56, 56, 96).permute(0, 3, 1, 2)), dim=1)
-        x = torch.cat((x, stage_outputs[-3].view(stage_outputs[-3].shape[0], 56, 56, 48).permute(0, 3, 1, 2)), dim=1)
+        x = torch.cat((x, stage_outputs[-3].view(stage_outputs[-3].shape[0], h_w_dim3, h_w_dim3, stage_outputs[-3].shape[2]).permute(0, 3, 1, 2)), dim=1)
         x = self.conv3(x)
 
 
         x = self.upsample4(x)
         x = self.upsample5(x)
-        # print('final:', x.shape)
 
         return x
 
