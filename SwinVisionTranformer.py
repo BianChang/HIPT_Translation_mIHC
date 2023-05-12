@@ -5,6 +5,7 @@ from timm.models.swin_transformer import SwinTransformerBlock
 import math
 from torch.utils.checkpoint import checkpoint
 from timm.models.swin_transformer import PatchMerging
+import timm
 
 
 class Decoder(nn.Module):
@@ -72,7 +73,7 @@ class Decoder(nn.Module):
 class SwinTransformer(nn.Module):
     def __init__(self, img_size=[224, 224], patch_size=4, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
                  num_heads=3, window_size=7, mlp_ratio=4., qkv_bias=False, drop_rate=0., attn_drop_rate=0.,
-                 drop_path_rate=0.1, norm_layer=nn.LayerNorm, output_channels=4, **kwargs):
+                 drop_path_rate=0.1, norm_layer=nn.LayerNorm, output_channels=4, pretrained=False, **kwargs):
         super().__init__()
         self.img_size = img_size
         self.embed_dim = embed_dim
@@ -110,21 +111,23 @@ class SwinTransformer(nn.Module):
                 patch_merging = PatchMerging(input_resolution=input_resolutions[i],
                                              dim=embed_dim * 2 ** i, norm_layer=norm_layer)
                 self.blocks_and_merging.append(patch_merging)
-        '''
-        self.blocks = nn.ModuleList([
-            nn.Sequential(*[
-                SwinTransformerBlock(
-                    dim=embed_dim, input_resolution=(self.num_patches_sqrt, self.num_patches_sqrt), num_heads=num_heads, window_size=window_size, shift_size=window_size // 2,
-                    mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, drop=drop_rate, attn_drop=attn_drop_rate,
-                    drop_path=drop_path_rate, norm_layer=norm_layer)
-                for _ in range(depth)])
-            for depth in depths])
-        '''
 
         self.decoder = Decoder(in_channs=int(embed_dim * (math.pow(2, len(depths)-1))), output_channels=output_channels,
                                )
 
         self.apply(self._init_weights)
+
+        if pretrained:
+            print('pretrained model loading')
+            self._load_pretrained_weights()
+            print('pretrained model loaded')
+
+    def _load_pretrained_weights(self):
+
+        pretrained_model = timm.create_model('swin_tiny_patch4_window7_224', pretrained=True)
+        self.load_state_dict(pretrained_model.state_dict(), strict=False)
+
+
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
@@ -191,3 +194,7 @@ class SwinTransformer(nn.Module):
 
 
         return x
+
+
+
+

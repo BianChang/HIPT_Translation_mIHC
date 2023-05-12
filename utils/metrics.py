@@ -1,5 +1,6 @@
 import torch
 from torchmetrics import StructuralSimilarityIndexMeasure
+import torch.nn.functional as F
 
 
 def calculate_ssim_per_channel(input_tensor, target_tensor):
@@ -28,3 +29,21 @@ def calculate_ssim_per_channel(input_tensor, target_tensor):
     ssim_scores = ssim_scores.squeeze().tolist()
 
     return ssim_scores
+
+def calculate_pearson_corr(input_tensor, target_tensor):
+    # Calculate mean squared error (MSE) and mean absolute error (MAE) between the output and target tensors
+    mse_loss = F.mse_loss(input_tensor, target_tensor)
+    mae_loss = F.l1_loss(input_tensor, target_tensor)
+
+    # Calculate Pearson correlation coefficient
+    corr_coef = 1.0 - (2.0 * mae_loss) / (mse_loss + torch.mean(target_tensor ** 2))
+
+    # Calculate psnr
+    max_val = 1.0
+    psnr = 20 * torch.log10(max_val / torch.sqrt(mse_loss))
+
+    return corr_coef, psnr
+
+
+
+

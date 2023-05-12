@@ -3,13 +3,13 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, ToTensor, Normalize
-from torchmetrics import SSIM
 from SwinVisionTranformer import SwinTransformer
 import matplotlib.pyplot as plt
 import torch.nn.functional as F
 import os
 import numpy as np
 from dataset.ImageToImageDataset import ImageToImageDataset
+from utils.metrics import calculate_ssim_per_channel, calculate_pearson_corr
 import argparse
 
 
@@ -30,10 +30,10 @@ lr = args.lr
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Define the transforms for the input and label images
-mean_data = [mean_r, mean_g, mean_b]  # replace with your calculated values
-std_data = [std_r, std_g, std_b]  # replace with your calculated values
-mean_label = [mean_ch1, mean_ch2, mean_ch3, mean_ch4]  # replace with your calculated values
-std_label = [std_ch1, std_ch2, std_ch3, std_ch4]  # replace with your calculated values
+mean_data = [x / 255. for x in [220.01547782, 191.56385728, 212.98354594]]
+std_data = [x / 255. for x in [40.00758663, 50.92426149, 35.41413304]]
+mean_label = [x / 255. for x in [0.10220867, 10.87440873, 1.94304308, 15.15272538]]
+std_label = [x / 255. for x in [1.4342306, 11.01720706, 4.51241098, 16.71110848]]
 
 input_transform = Compose([
     ToTensor(),
@@ -60,15 +60,13 @@ model = SwinTransformer().to(device)
 optimizer = optim.Adam(model.parameters(), lr=lr)
 criterion = nn.MSELoss()
 
-# Initialize SSIM metric
-ssim = SSIM(data_range=1.0, kernel_size=11, kernel_sigma=1.5, reduction='none', convert_to_greyscale=False)
-
 # Initialize variables for storing training information
 losses = []
 ssim_values = []
 avg_ssim_values = []
 pearson_corr_values = []
 psnr_values = []
+x_epoch = []
 
 # Initialize variables for storing validation information
 val_losses = []
@@ -92,6 +90,11 @@ for epoch in range(epochs):
     epoch_pr = []
     epoch_psnr = []
 
+    train_dapi_ssim = []
+    train_cd3_ssim = []
+    train_cd20_ssim = []
+    train_panck_ssim = []
+
     for i, (source, target) in enumerate(train_loader):
         source, target = source.to(device), target.to(device)
 
@@ -105,16 +108,13 @@ for epoch in range(epochs):
         epoch_loss += loss.item()
 
         # Calculate SSIM
-        ssim_val = ssim(output, target)
+        output = output.detatch().cpu()
+        target = target.detatch().cpu()
+        ssim_train = calculate_ssim_per_channel(output, target)
         epoch_ssim.append(ssim_val.cpu().numpy())
 
-
-        # Calculate mean squared error (MSE) and mean absolute error (MAE) between the output and target tensors
-        mse_loss = F.mse_loss(output, target)
-        mae_loss = F.l1_loss(output, target)
-
-        # Calculate Pearson correlation coefficient
-        corr_coef = 1.0 - (2.0 * mae_loss) / (mse_loss + torch.mean(target ** 2))
+        # Calculate pearson correlation
+        corr_coef = calculate_pearson_corr(output, target)
         epoch_pr.append(corr_coef.cpu().numpy())
 
         # Calculate peak signal-to-noise ratio (PSNR)
@@ -125,12 +125,17 @@ for epoch in range(epochs):
 
     epoch_loss /= len(train_loader)
     epoch_ssim = np.mean(epoch_ssim, axis=0)
+
+    train_dapi_ssim.append(epoch_ssim[0])
+    train_cd3_ssim.append(epoch_ssim[1])
+    train_cd20_ssim.append(epoch_ssim[2])
+    train_panck_ssim.append(epoch_ssim[3])
+
     avg_ssim = np.mean(epoch_ssim)
     epoch_pr = np.mean(epoch_pr)
     epoch_psnr = np.mean(epoch_psnr)
 
     losses.append(epoch_loss)
-    ssim_values.append(epoch_ssim)
     avg_ssim_values.append(avg_ssim)
     pearson_corr_values.append(epoch_pr)
     psnr_values.append(epoch_psnr)
@@ -139,6 +144,10 @@ for epoch in range(epochs):
     model.eval()
     val_loss = 0.0
     val_ssim = []
+    val_dapi_ssim = []
+    val_cd3_ssim = []
+    val_cd20_ssim = []
+    val_panck_ssim = []
     val_pr = []
     val_psnr = []
 
@@ -150,8 +159,11 @@ for epoch in range(epochs):
             loss = criterion(output, target)
             val_loss += loss.item()
 
+            output = output.detatch().cpu()
+            target = target.detatch().cpu()
+
             # Calculate SSIM
-            ssim_val = ssim(output, target)
+            ssim_val = calculate_ssim_per_channel(output, target)
             val_ssim.append(ssim_val.cpu().numpy())
 
             # Calculate mean squared error (MSE) and mean absolute error (MAE) between the output and target tensors
@@ -169,12 +181,17 @@ for epoch in range(epochs):
 
         val_loss /= len(val_loader)
         val_ssim = np.mean(val_ssim, axis=0)
+
+        val_dapi_ssim.append(val_ssim[0])
+        val_cd3_ssim.append(val_ssim[1])
+        val_cd20_ssim.append(val_ssim[2])
+        val_panck_ssim.append(val_ssim[3])
+
         avg_val_ssim = np.mean(val_ssim)
         val_pr = np.mean(val_pr)
         val_psnr = np.mean(val_psnr)
 
         val_losses.append(val_losses)
-        ssim_values.append(epoch_ssim)
         avg_ssim_values.append(avg_ssim)
         pearson_corr_values.append(epoch_pr)
         psnr_values.append(epoch_psnr)
@@ -203,14 +220,16 @@ for epoch in range(epochs):
 
     #plot curves
     # Store loss and SSIM curves
+
     if (epoch + 1) % 10 == 0:
+        x_epoch.append((epoch+1))
         fig, ax = plt.subplots(1, 3, figsize=(12, 6))
-        ax[0].plot(losses)
+        ax[0].plot(x_epoch, losses[epoch])
         ax[0].set_title("Loss")
         ax[0].set_xlabel("Epoch")
-        ax[0].set_ylabel("MSE Loss")
+        ax[0].set_ylabel("Loss")
 
-        ax[1].plot(ssim_values)
+        ax[1].plot(train_dapi_ssim, train_cd3_ssim, train_cd20_ssim, train_panck_ssim)
         ax[1].plot(avg_ssim_values)
         ax[1].set_title("Training_SSIM")
         ax[1].set_xlabel("Epoch")

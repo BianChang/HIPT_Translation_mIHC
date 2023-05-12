@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, ToTensor, Normalize
-from SwinVisionTranformer import SwinTransformer, Decoder
+from SwinVisionTranformer import SwinTransformer
 import numpy as np
 from dataset.ImageToImageDataset import ImageToImageDataset
 from torch.cuda.amp import autocast, GradScaler
@@ -40,7 +40,8 @@ def train_model(config):
     '''
     model.to(device)
 
-    optimizer = optim.Adam(model.parameters(), lr=lr)
+    #optimizer = optim.Adam(model.parameters(), lr=lr)
+    optimizer = optim.Adam(model.decoder.parameters(), lr=lr)
 
     if config["lr_scheduler"] == "StepLR":
         scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.1)
@@ -107,22 +108,6 @@ def train_model(config):
             inputs, labels = source.to(device), target.to(device)
 
             optimizer.zero_grad()
-            
-            # Wrap the forward pass in autocast context for mixed precision
-            '''  
-            with autocast():
-                outputs = model(inputs)
-                loss = criterion(outputs, labels)
-                if i % 10 == 0:
-                    print(f"Epoch: {epoch}, Iteration: {i}, Loss: {loss.item()}")
-
-            
-            # Scale the loss and call backward() for mixed precision
-            scaler.scale(loss).backward()
-            scaler.step(optimizer)
-            scaler.update()
-            '''
-
 
             outputs = model(inputs)
             loss = criterion(outputs, labels)
@@ -176,15 +161,16 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=1):
             "window_size": 7,
             "depths": [2, 2, 6, 2],
             "embed_dim": 96,
+            "pretrained": True,
         }
     }
     scheduler = ASHAScheduler(
-        metric="train_loss",
+        metric="val_loss",
         mode="min",
         max_t=max_num_epochs,
         grace_period=1,
         reduction_factor=2)
-    search_alg = AxSearch(metric='train_loss', mode='min')
+    search_alg = AxSearch(metric='val_loss', mode='min')
     # Wrap your search algorithm with ConcurrencyLimiter
     limited_search_alg = ConcurrencyLimiter(search_alg, max_concurrent=5)  # Set max_concurrent to your desired value
 
