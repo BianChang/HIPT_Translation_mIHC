@@ -161,7 +161,6 @@ def train(net=None):
 
         scheduler.step()
         train_epoch_loss /= len(data_loader_iter)
-        train_epoch_loss = train_epoch_loss.detach().cpu().numpy()
 
         val_loader_num = val_loader
         test_loader_num = test_loader
