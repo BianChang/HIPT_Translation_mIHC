@@ -91,7 +91,6 @@ class SwinTransformer(nn.Module):
         self.pos_embed = nn.Parameter(torch.empty(1, self.num_patches, embed_dim))
         nn.init.kaiming_uniform_(self.pos_embed, a=math.sqrt(5))
         self.pos_drop = nn.Dropout(p=drop_rate)
-        self.stage_outputs = []
 
         self.blocks_and_merging = nn.ModuleList([])
 
@@ -118,9 +117,7 @@ class SwinTransformer(nn.Module):
         self.apply(self._init_weights)
 
         if pretrained:
-            print('pretrained model loading')
             self._load_pretrained_weights()
-            print('pretrained model loaded')
 
     def _load_pretrained_weights(self):
 
@@ -143,6 +140,7 @@ class SwinTransformer(nn.Module):
             nn.init.constant_(m.weight, 1.0)
 
     def forward(self, x):
+        self.stage_outputs = []
         # Apply patch embedding to convert the input image into a sequence of flattened patches
         # print("input shape:", x.shape)
         x = self.patch_embed(x)
@@ -173,12 +171,6 @@ class SwinTransformer(nn.Module):
                 # Save the output of each stage before the patch merging in self.stage_outputs
                 self.stage_outputs.append(x)
 
-        '''
-        for stage in self.blocks:
-            x = stage(x)
-            print(x.shape)
-        '''
-
         # Reshape the output tensor to obtain the image features in the original spatial dimensions
         x = x.reshape(B, self.img_size[0] // int(self.patch_size * math.pow(2, len(self.depths)-1)),
                       self.img_size[1] // int(self.patch_size * math.pow(2, len(self.depths)-1)), self.last_stage_dim)
@@ -186,12 +178,7 @@ class SwinTransformer(nn.Module):
         x = x.permute(0, 3, 1, 2)
         #print(x.shape)
 
-        # Add skip connections in the decoder
-        # Add skip connections in the decoder
         x = self.decoder(x, self.stage_outputs)
-        # Reshape the output tensor to obtain the output image with the correct dimensions
-        # x = x.view(B, -1, self.img_size[0], self.img_size[1])
-
 
         return x
 

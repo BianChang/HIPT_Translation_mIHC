@@ -309,7 +309,6 @@ def train(net=None):
         if epoch % 10 == 0:
             torch.save(net.state_dict(), 'weights/' + model_name + '/' + model_name + '%d.th' % (epoch))
 
-        torch.cuda.empty_cache()
         mylog.flush()
 
     # writer.add_graph(Model(), img)
