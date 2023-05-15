@@ -88,9 +88,9 @@ def train(net=None):
     test_dataset = ImageToImageDataset(args.test_path, input_transform=input_transform, label_transform=label_transform)
 
     # Create instances of the DataLoader for the training, validation, and test sets
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
 
     n_train = len(train_dataset)
     n_val = len(val_dataset)
@@ -145,16 +145,16 @@ def train(net=None):
             pred = net(img)
             train_loss = criterion(pred, mask)
 
-            pred = pred.detach().cpu()
-            mask = mask.detach().cpu()
+            pred_cpu = pred.detach().cpu()
+            mask_cpu = mask.detach().cpu()
 
-            ssim_4_channel_train = calculate_ssim_per_channel(pred, mask)
+            ssim_4_channel_train = calculate_ssim_per_channel(pred_cpu, mask_cpu)
             dapi_train += ssim_4_channel_train[0]
             cd3_train += ssim_4_channel_train[1]
             cd20_train += ssim_4_channel_train[2]
             panck_train += ssim_4_channel_train[3]
             average_train += np.mean(ssim_4_channel_train)
-            train_epoch_loss += train_loss
+            train_epoch_loss += train_loss.item()
 
             train_loss.backward()
             optimizer.step()
@@ -310,6 +310,7 @@ def train(net=None):
         if epoch % 10 == 0:
             torch.save(net.state_dict(), 'weights/' + model_name + '/' + model_name + '%d.th' % (epoch))
 
+        torch.cuda.empty_cache()
         mylog.flush()
 
     # writer.add_graph(Model(), img)

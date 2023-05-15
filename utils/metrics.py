@@ -4,8 +4,6 @@ import torch.nn.functional as F
 
 
 def calculate_ssim_per_channel(input_tensor, target_tensor):
-    input_tensor = input_tensor.cpu()
-    target_tensor = target_tensor.cpu()
     # Check that the input and target tensors have the same number of channels
     assert input_tensor.size(1) == target_tensor.size(
         1), "Input and target tensors must have the same number of channels"
@@ -20,15 +18,11 @@ def calculate_ssim_per_channel(input_tensor, target_tensor):
         input_channel = input_tensor[:, channel, :, :].unsqueeze(1)
         target_channel = target_tensor[:, channel, :, :].unsqueeze(1)
         ssim_channel = ssim(input_channel, target_channel)
-        ssim_channel = ssim_channel.mean().unsqueeze(0)
-        ssim_scores.append(ssim_channel)
+        ssim_channel = ssim_channel.mean()
+        ssim_scores.append(ssim_channel.item())  # Convert to Python float right away
 
-    ssim_scores = torch.cat(ssim_scores, dim=0)
+    return ssim_scores  # Returns a list of Python floats
 
-    # Convert tensor to tuple
-    ssim_scores = ssim_scores.squeeze().tolist()
-
-    return ssim_scores
 
 def calculate_pearson_corr(input_tensor, target_tensor):
     # Calculate mean squared error (MSE) and mean absolute error (MAE) between the output and target tensors
