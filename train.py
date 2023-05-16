@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, ToTensor, Normalize
-from SwinVisionTranformer import SwinTransformer
+from SwinVisionTranformer import SwinTransformer, CustomSwinTransformer
 import matplotlib.pyplot as plt
 import torch.nn.functional as F
 import os
@@ -325,11 +325,11 @@ def get_args():
     parser.add_argument('-e', '--epoch', dest='epoch', type=int, default=100, help='data root')
     parser.add_argument('-p', '--pretrained', dest='premodel', type=str, default='None', help='pre trained model')
     parser.add_argument('-tp', '--train_path', dest='train_path', type=str,
-                        default=r'F:\2023_4_11_data_organization\224_patches\merged\super_small_for_debug\train')
+                        default=r'F:\2023_4_11_data_organization\224_patches\merged\small_dataset\train')
     parser.add_argument('-vp', '--val_path', dest='val_path', type=str,
-                        default=r'F:\2023_4_11_data_organization\224_patches\merged\super_small_for_debug\val')
+                        default=r'F:\2023_4_11_data_organization\224_patches\merged\small_dataset\val')
     parser.add_argument('-test_p', '--test_path', dest='test_path', type=str,
-                        default=r'F:\2023_4_11_data_organization\224_patches\merged\super_small_for_debug\test')
+                        default=r'F:\2023_4_11_data_organization\224_patches\merged\small_dataset\test')
 
 
     return parser.parse_args()
@@ -403,7 +403,8 @@ if __name__ == '__main__':
             "pretrained": False,
         }
     }
-    net = SwinTransformer(**config["model_params"])
+    # net = SwinTransformer(**config["model_params"])
+    net = CustomSwinTransformer(**config["model_params"])
     train(net)
 
 

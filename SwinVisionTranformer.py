@@ -184,5 +184,56 @@ class SwinTransformer(nn.Module):
         return x
 
 
+class CustomSwinTransformer(nn.Module):
+    def __init__(self, img_size=[224, 224], patch_size=4, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
+                 num_heads=3, window_size=7, mlp_ratio=4., qkv_bias=False, drop_rate=0., attn_drop_rate=0.,
+                 drop_path_rate=0.1, norm_layer=nn.LayerNorm, output_channels=4, pretrained=False, **kwargs):
+        super().__init__()
+        self.img_size = img_size
+        self.embed_dim = embed_dim
+        self.depths = depths
+        self.patch_size = patch_size
+        self.last_stage_dim = embed_dim * (2 ** (len(depths) - 1))
+        self.model = timm.create_model('swin_tiny_patch4_window7_224', pretrained=True)
+        self.model.head = nn.Identity()  # remove classification head
+
+        self.decoder = Decoder(in_channs=int(embed_dim * (math.pow(2, len(depths) - 1))),
+                               output_channels=output_channels,
+                               )
+
+    def forward(self, x):
+        self.stage_outputs = []
+        B, C, H, W = x.shape
+        x = self.model.patch_embed(x)
+        # print(x.shape)
+        x = self.model.pos_drop(x)
+        # print(x.shape)
+
+        for stage in self.model.layers:
+            for blk in stage.blocks:
+                x = blk(x)
+
+            # Check if current stage has a downsampling layer before storing and downsampling
+            if stage.downsample is not None:
+                self.stage_outputs.append(x)  # Store output before downsampling
+                x = stage.downsample(x)  # Downsample
+
+        x = self.model.norm(x)
+        # print(x.shape)
+        # x = self.model.head(x)
+        x = x.reshape(B, self.img_size[0] // int(self.patch_size * math.pow(2, len(self.depths) - 1)),
+                      self.img_size[1] // int(self.patch_size * math.pow(2, len(self.depths) - 1)), self.last_stage_dim)
+        # print('after reshape:', x.shape)
+        # Permute the tensor dimensions to make it compatible with the decoder
+        x = x.permute(0, 3, 1, 2)
+        # print('after permute:', x.shape)
+
+        x = self.decoder(x, self.stage_outputs)
+
+        return x
+
+
+
+
 
 

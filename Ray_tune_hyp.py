@@ -60,20 +60,21 @@ def train_model(config):
     mean_label = [4.029, 10.271, 3.883, 11.188]
     std_label = [9.946, 15.307, 4.273, 14.874]
     '''
-    '''
+
     # 512 patches
     mean_data = [x / 255. for x in [207.829, 166.691, 195.421]]
     std_data = [x / 255. for x in [40.153, 51.167, 36.759]]
     mean_label = [x / 255. for x in [1.944, 10.204, 3.079, 10.236]]
     std_label = [x / 255. for x in [6.419, 14.140, 4.142, 14.107]]
-    '''
 
+
+    '''
     #224 patches
     mean_data = [x / 255. for x in [220.01547782, 191.56385728, 212.98354594]]
     std_data = [x / 255. for x in [40.00758663, 50.92426149, 35.41413304]]
     mean_label = [x / 255. for x in [0.10220867, 10.87440873, 1.94304308, 15.15272538]]
     std_label = [x / 255. for x in [1.4342306, 11.01720706, 4.51241098, 16.71110848]]
-
+    '''
 
 
     input_transform = Compose([
@@ -86,8 +87,8 @@ def train_model(config):
     ])
 
     # Create instances of the ImageToImageDataset for the training, validation, and test sets
-    train_path = r'F:\2023_4_11_data_organization\224_patches\merged\small_dataset\train'
-    val_path = r'F:\2023_4_11_data_organization\224_patches\merged\small_dataset\val'
+    train_path = r'F:\2023_4_11_data_organization\512_patches\small_dataset\train'
+    val_path = r'F:\2023_4_11_data_organization\512_patches\small_dataset\val'
 
     train_dataset = ImageToImageDataset(train_path, input_transform=input_transform,
                                         label_transform=label_transform)
@@ -156,7 +157,7 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=1):
         "lr_scheduler": tune.choice(["StepLR", "ExponentialLR", "CosineAnnealingLR"]),
         "batch_size": tune.choice([1, 2]),
         "model_params": {
-            "img_size": [224, 224],
+            "img_size": [512, 512],
             "patch_size": 4,
             "window_size": 7,
             "depths": [2, 2, 6, 2],
