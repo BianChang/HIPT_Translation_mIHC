@@ -23,6 +23,12 @@ def visualize_4channel_tif(input_dir, output_dir):
         img_path = os.path.join(input_dir, filename)
         img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
 
+        # Convert the image values back to [0, 1] from [-1, 1]
+        # img = (img + 1.0) / 2.0
+
+        # Convert the image values back to [0, 255] from [0, 1]
+        # img = (img * 255).astype(np.uint8)
+
         # Split channels
         dapi = img[:, :, 0]
         cd3 = img[:, :, 1]

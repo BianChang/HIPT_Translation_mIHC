@@ -26,6 +26,7 @@ class Decoder(nn.Module):
         self.upsample4 = nn.ConvTranspose2d(in_channs // 8, in_channs // 4, kernel_size=2, stride=2)
         self.upsample5 = nn.ConvTranspose2d(in_channs // 4, output_channels, kernel_size=2, stride=2)
         self.sigmoid = nn.Sigmoid()
+        self.tanh = nn.Tanh()
 
 
     def forward(self, x, stage_outputs):
@@ -68,7 +69,9 @@ class Decoder(nn.Module):
         x = self.upsample4(x)
         x = self.upsample5(x)
 
-        return self.sigmoid(x)
+        # return self.sigmoid(x)
+        # return self.tanh(x)
+        return(x)
 
 
 class SwinTransformer(nn.Module):

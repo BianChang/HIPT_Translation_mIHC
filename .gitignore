@@ -155,3 +155,5 @@ logs/
 lossGraphs/
 weights/
 record/
+output/
+visualization/
