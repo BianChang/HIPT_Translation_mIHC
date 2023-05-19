@@ -47,8 +47,8 @@ def visualize_4channel_tif(input_dir, output_dir):
 
 
 def main():
-    input_dir = r'F:\2023_4_11_data_organization\224_patches\merged\test\label'
-    output_dir = r'F:\2023_4_11_data_organization\224_patches\merged\vis\test'
+    input_dir = r'D:\Chang_files\workspace\Github_workspace\HIPT_Translation_mIHC\output\Scratch_224_label_[-1,1]'
+    output_dir = r'D:\Chang_files\workspace\Github_workspace\HIPT_Translation_mIHC\visualization\Scratch_224_[-1,1]_label'
     visualize_4channel_tif(input_dir, output_dir)
 
 

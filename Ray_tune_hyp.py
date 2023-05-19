@@ -60,13 +60,13 @@ def train_model(config):
     mean_label = [4.029, 10.271, 3.883, 11.188]
     std_label = [9.946, 15.307, 4.273, 14.874]
     '''
-
+    '''
     # 512 patches
     mean_data = [x / 255. for x in [207.829, 166.691, 195.421]]
     std_data = [x / 255. for x in [40.153, 51.167, 36.759]]
     mean_label = [x / 255. for x in [1.944, 10.204, 3.079, 10.236]]
     std_label = [x / 255. for x in [6.419, 14.140, 4.142, 14.107]]
-
+    '''
 
     '''
     #224 patches
@@ -75,7 +75,10 @@ def train_model(config):
     mean_label = [x / 255. for x in [0.10220867, 10.87440873, 1.94304308, 15.15272538]]
     std_label = [x / 255. for x in [1.4342306, 11.01720706, 4.51241098, 16.71110848]]
     '''
-
+    mean_data = [0.5, 0.5, 0.5]
+    std_data = [0.5, 0.5, 0.5]
+    mean_label = [0.5, 0.5, 0.5, 0.5]
+    std_label = [0.5, 0.5, 0.5, 0.5]
 
     input_transform = Compose([
         ToTensor(),
@@ -102,7 +105,7 @@ def train_model(config):
     scaler = GradScaler()  # Initialize the GradScaler
 
     # Train your model using the optimizer and scheduler
-    for epoch in range(2):  # Loop over the dataset multiple times
+    for epoch in range(100):  # Loop over the dataset multiple times
         running_loss = 0.0
         epoch_ssim = []
         for i, (source, target) in enumerate(train_loader):
@@ -155,9 +158,9 @@ def main(num_samples=50, max_num_epochs=10, gpus_per_trial=1):
     config = {
         "lr": tune.loguniform(1e-5, 1e-2),
         "lr_scheduler": tune.choice(["StepLR", "ExponentialLR", "CosineAnnealingLR"]),
-        "batch_size": tune.choice([1, 2]),
+        "batch_size": tune.choice([1, 2, 4]),
         "model_params": {
-            "img_size": [512, 512],
+            "img_size": [224, 224],
             "patch_size": 4,
             "window_size": 7,
             "depths": [2, 2, 6, 2],
@@ -197,4 +200,4 @@ if __name__ == "__main__":
     # You can change the number of GPUs per trial here:
     #args = get_args()
     #net = get_transNet(3)
-    main(num_samples=20, max_num_epochs=2, gpus_per_trial=1)
+    main(num_samples=20, max_num_epochs=100, gpus_per_trial=1)

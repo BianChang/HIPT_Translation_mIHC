@@ -68,10 +68,17 @@ def train(net=None):
     batch_size = BATCHSIZE_PER_CARD
 
     # Define the transforms for the input and label images
+    '''
     mean_data = [x / 255. for x in [220.01547782, 191.56385728, 212.98354594]]
     std_data = [x / 255. for x in [40.00758663, 50.92426149, 35.41413304]]
     mean_label = [x / 255. for x in [0.10220867, 10.87440873, 1.94304308, 15.15272538]]
     std_label = [x / 255. for x in [1.4342306, 11.01720706, 4.51241098, 16.71110848]]
+    '''
+
+    mean_data = [0.5, 0.5, 0.5]
+    std_data = [0.5, 0.5, 0.5]
+    mean_label = [0.5, 0.5, 0.5, 0.5]
+    std_label = [0.5, 0.5, 0.5, 0.5]
 
     input_transform = Compose([
         ToTensor(),

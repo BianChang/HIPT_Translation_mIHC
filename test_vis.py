@@ -30,6 +30,7 @@ def test_model(model, test_loader, device, output_dir):
             model.eval()
             predict1 = model(test_img)
             test_mask = test_mask.detach().cpu()
+            test_mask = test_mask.detach().cpu()
             predict1 = predict1.detach().cpu()
             ssim_4_channel_test = calculate_ssim_per_channel(predict1, test_mask)
             corr_coef, psnr = calculate_pearson_corr(predict1, test_mask)
@@ -45,6 +46,10 @@ def test_model(model, test_loader, device, output_dir):
             for output, filename in zip(predict1, filenames):
                 output = output.squeeze()
                 save_outputs(output, filename, output_dir)
+            for label, filename in zip(test_mask, filenames):
+                label = label.squeeze()
+                save_outputs(label, filename, 'D:\Chang_files\workspace\Github_workspace\HIPT_Translation_mIHC\output\Scratch_224_label_[-1,1]')
+
 
         dapi_t_mean = dapi_t / len(test_loader_num)
         cd3_t_mean = cd3_t / len(test_loader_num)
@@ -112,7 +117,7 @@ def save_outputs(output, filename, output_dir):
     # Convert tensor to numpy array and save as .tif
     output = output.permute(1, 2, 0)
     # Convert the image values back to [0, 1] from [-1, 1]
-    # img = (img + 1.0) / 2.0
+    output = (output + 1.0) / 2.0
 
     # Convert the image values back to [0, 255] from [0, 1]
     output = (output.cpu().detach().numpy() * 255).astype(np.uint8)
@@ -121,17 +126,18 @@ def save_outputs(output, filename, output_dir):
 
 def main():
     # Define transforms
-
+    '''
     mean_data = [x / 255. for x in [220.01547782, 191.56385728, 212.98354594]]
     std_data = [x / 255. for x in [40.00758663, 50.92426149, 35.41413304]]
     mean_label = [x / 255. for x in [0.10220867, 10.87440873, 1.94304308, 15.15272538]]
     std_label = [x / 255. for x in [1.4342306, 11.01720706, 4.51241098, 16.71110848]]
     '''
+
     mean_data = [0.5, 0.5, 0.5]
     std_data = [0.5, 0.5, 0.5]
     mean_label = [0.5, 0.5, 0.5, 0.5]
     std_label = [0.5, 0.5, 0.5, 0.5]
-    '''
+
 
     input_transform = Compose([
         ToTensor(),
