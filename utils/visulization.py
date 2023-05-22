@@ -47,8 +47,8 @@ def visualize_4channel_tif(input_dir, output_dir):
 
 
 def main():
-    input_dir = r'D:\Chang_files\workspace\Github_workspace\HIPT_Translation_mIHC\output\Scratch_224_label_[-1,1]'
-    output_dir = r'D:\Chang_files\workspace\Github_workspace\HIPT_Translation_mIHC\visualization\Scratch_224_[-1,1]_label'
+    input_dir = r'D:\Chang_files\workspace\Github_workspace\HIPT_Translation_mIHC\output\Ptretrained_224_label'
+    output_dir = r'D:\Chang_files\workspace\Github_workspace\HIPT_Translation_mIHC\visualization\Ptretrained_224_label'
     visualize_4channel_tif(input_dir, output_dir)
 
 

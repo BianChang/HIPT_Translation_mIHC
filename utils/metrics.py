@@ -9,7 +9,7 @@ def calculate_ssim_per_channel(input_tensor, target_tensor):
         1), "Input and target tensors must have the same number of channels"
 
     # Create an instance of StructuralSimilarityIndexMeasure
-    ssim = StructuralSimilarityIndexMeasure(range=1.0, reduction='none')
+    ssim = StructuralSimilarityIndexMeasure(range=2.0, reduction='none')
 
     # Calculate SSIM for each channel
     ssim_scores = []

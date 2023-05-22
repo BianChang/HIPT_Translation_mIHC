@@ -164,8 +164,15 @@ def main():
     else:
         model.load_state_dict(state_dict)
 
-    output_path = os.path.join('./output', args.test_name)
+    model_path = os.path.join('./output', args.test_name)
+    os.makedirs(model_path, exist_ok=True)
+
+    output_path = os.path.join('./output', args.test_name, 'preds')
     os.makedirs(output_path, exist_ok=True)
+
+    label_path = os.path.join('./output', args.test_name, 'labels')
+    os.makedirs(output_path, exist_ok=True)
+
     # Test model
     dapi_t_mean, cd3_t_mean, cd20_t_mean, panck_t_mean, average_mean, \
         corr_coef_mean, psnr_mean = test_model(model, test_loader, device, output_path)
@@ -179,9 +186,13 @@ def main():
     print('Average mean psnr_mean: {:.3f}'.format(psnr_mean.item()))
 
     # Visualize outputs
-    visualized_output_path = os.path.join('./visualization', args.test_name)
+    visualized_output_path = os.path.join('./visualization', args.test_name, 'preds')
     os.makedirs(visualized_output_path, exist_ok=True)
     visualize_4channel_tif(output_path, visualized_output_path)
+    # Visualize labels
+    visualized_labels_path = os.path.join('./visualization', args.test_name, 'labels')
+    os.makedirs(visualized_labels_path, exist_ok=True)
+    visualize_4channel_tif(label_path, visualized_labels_path)
 
 
 if __name__ == '__main__':
