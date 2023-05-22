@@ -183,8 +183,8 @@ def main():
 
     # Define device and load model
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = SwinTransformer().to(device)
-    # model = CustomSwinTransformer().to(device)
+    # model = SwinTransformer().to(device)
+    model = CustomSwinTransformer().to(device)
 
     state_dict = torch.load(args.model_path, map_location=device)
     # If the model is an instance of nn.DataParallel
