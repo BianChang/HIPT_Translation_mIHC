@@ -17,9 +17,10 @@ import torch.nn
 import cv2
 
 
-def test_model(model, test_loader, device, output_dir):
-    dapi_t, cd3_t, cd20_t, panck_t, average_t = 0, 0, 0, 0, 0
-    corr_coef_t, psnr_t = 0, 0
+def test_model(model, test_loader, device, output_dir, label_dir):
+    dapi_t, cd3_t, cd20_t, panck_t= 0, 0, 0, 0
+    corr_coef_dapi_t, corr_coef_cd3_t, corr_coef_cd20_t, corr_coef_panck_t = 0, 0, 0, 0
+    psnr_dapi_t, psnr_cd3_t, psnr_cd20_t, psnr_panck_t = 0, 0, 0, 0
     model.eval()
     outputs = []
     test_loader_num = test_loader
@@ -33,14 +34,20 @@ def test_model(model, test_loader, device, output_dir):
             test_mask = test_mask.detach().cpu()
             predict1 = predict1.detach().cpu()
             ssim_4_channel_test = calculate_ssim_per_channel(predict1, test_mask)
-            corr_coef, psnr = calculate_pearson_corr(predict1, test_mask)
+            corr_coef_4_channel, psnr_4_channel = calculate_pearson_corr(predict1, test_mask)
 
             dapi_t += ssim_4_channel_test[0]
             cd3_t += ssim_4_channel_test[1]
             cd20_t += ssim_4_channel_test[2]
             panck_t += ssim_4_channel_test[3]
-            corr_coef_t += corr_coef
-            psnr_t += psnr
+            corr_coef_dapi_t += corr_coef_4_channel[0]
+            corr_coef_cd3_t += corr_coef_4_channel[1]
+            corr_coef_cd20_t += corr_coef_4_channel[2]
+            corr_coef_panck_t += corr_coef_4_channel[3]
+            psnr_dapi_t += psnr_4_channel[0]
+            psnr_cd3_t += psnr_4_channel[1]
+            psnr_cd20_t += psnr_4_channel[2]
+            psnr_panck_t += psnr_4_channel[3]
 
             # Save the output tensors
             for output, filename in zip(predict1, filenames):
@@ -48,7 +55,7 @@ def test_model(model, test_loader, device, output_dir):
                 save_outputs(output, filename, output_dir)
             for label, filename in zip(test_mask, filenames):
                 label = label.squeeze()
-                save_outputs(label, filename, 'D:\Chang_files\workspace\Github_workspace\HIPT_Translation_mIHC\output\Scratch_224_label_[-1,1]')
+                save_outputs(label, filename, label_dir)
 
 
         dapi_t_mean = dapi_t / len(test_loader_num)
@@ -56,8 +63,17 @@ def test_model(model, test_loader, device, output_dir):
         cd20_t_mean = cd20_t / len(test_loader_num)
         panck_t_mean = panck_t / len(test_loader_num)
         average_mean = (dapi_t_mean + cd3_t_mean + cd20_t_mean + panck_t_mean) / 4
-        corr_coef_mean = corr_coef_t / len(test_loader_num)
-        psnr_mean = psnr_t / len(test_loader_num)
+        corr_coef_dapi_t_mean = corr_coef_dapi_t / len(test_loader_num)
+        corr_coef_cd3_t_mean = corr_coef_cd3_t / len(test_loader_num)
+        corr_coef_cd20_t_mean = corr_coef_cd20_t / len(test_loader_num)
+        corr_coef_panck_t_mean = corr_coef_panck_t / len(test_loader_num)
+        average_corr_coef_t_mean = (corr_coef_dapi_t_mean + corr_coef_cd3_t_mean +
+                                    corr_coef_cd20_t_mean + corr_coef_panck_t_mean) / 4
+        psnr_dapi_t_mean = psnr_dapi_t / len(test_loader_num)
+        psnr_cd3_t_mean = psnr_cd3_t / len(test_loader_num)
+        psnr_cd20_t_mean = psnr_cd20_t / len(test_loader_num)
+        psnr_panck_t_mean = psnr_panck_t / len(test_loader_num)
+        average_psnr_t_mean = (psnr_dapi_t_mean + psnr_cd3_t_mean + psnr_cd20_t_mean + psnr_panck_t_mean) / 4
 
         # Define the directory where you want to save the log files
         log_dir = "./test_logs"
@@ -100,13 +116,26 @@ def test_model(model, test_loader, device, output_dir):
         logger.info('CD20 mean SSIM: {:.3f}'.format(cd20_t_mean))
         logger.info('PanCK mean SSIM: {:.3f}'.format(panck_t_mean))
         logger.info('Average mean SSIM: {:.3f}'.format(average_mean))
-        logger.info('Average Pearson correslation: {:.3f}'.format(corr_coef_mean))
-        logger.info('Average psnr: {:.3f}'.format(psnr_mean))
+        logger.info('-------')
+        logger.info('DAPI mean PEARSON CORR: {:.3f}'.format(corr_coef_dapi_t_mean))
+        logger.info('CD3 mean PEARSON CORR: {:.3f}'.format(corr_coef_cd3_t_mean))
+        logger.info('CD20 mean PEARSON CORR: {:.3f}'.format(corr_coef_cd20_t_mean))
+        logger.info('PANCK mean PEARSON CORR: {:.3f}'.format(corr_coef_panck_t_mean))
+        logger.info('Average mean PEARSON CORR: {:.3f}'.format(average_corr_coef_t_mean))
+        logger.info('-------')
+        logger.info('DAPI mean PSNR: {:.3f}'.format(psnr_dapi_t_mean))
+        logger.info('CD3 mean PSNR: {:.3f}'.format(psnr_cd3_t_mean))
+        logger.info('CD20 mean PSNR: {:.3f}'.format(psnr_cd20_t_mean))
+        logger.info('PANCK mean PSNR: {:.3f}'.format(psnr_panck_t_mean))
+        logger.info('Average PSNR: {:.3f}'.format(average_psnr_t_mean))
 
         # Make sure to close the logger when you're done to free up resources
         logger.handlers.clear()
 
-    return dapi_t_mean, cd3_t_mean, cd20_t_mean, panck_t_mean, average_mean, corr_coef_mean, psnr_mean
+    return dapi_t_mean, cd3_t_mean, cd20_t_mean, panck_t_mean, average_mean, \
+        corr_coef_dapi_t_mean, corr_coef_cd3_t_mean, corr_coef_cd20_t_mean, \
+        corr_coef_panck_t_mean, average_corr_coef_t_mean,\
+        psnr_dapi_t_mean, psnr_cd3_t_mean, psnr_cd20_t, psnr_panck_t, average_psnr_t_mean
 
 
 def save_outputs(output, filename, output_dir):
@@ -175,15 +204,26 @@ def main():
 
     # Test model
     dapi_t_mean, cd3_t_mean, cd20_t_mean, panck_t_mean, average_mean, \
-        corr_coef_mean, psnr_mean = test_model(model, test_loader, device, output_path)
+        corr_coef_dapi_mean, corr_coef_cd3_mean, corr_coef_cd20_mean, corr_coef_panck_mean, average_pr, \
+        psnr_dapi, psnr_cd3, psnr_cd20, psnr_panck, average_psnr= test_model(model, test_loader, device, output_path, label_path)
     # Print the results
     print('DAPI mean SSIM: {:.3f}'.format(dapi_t_mean))
     print('CD3 mean SSIM: {:.3f}'.format(cd3_t_mean))
     print('CD20 mean SSIM: {:.3f}'.format(cd20_t_mean))
     print('PanCK mean SSIM: {:.3f}'.format(panck_t_mean))
     print('Average mean SSIM: {:.3f}'.format(average_mean))
-    print('Average mean Pearson correlation: {:.3f}'.format(corr_coef_mean.item()))
-    print('Average mean psnr_mean: {:.3f}'.format(psnr_mean.item()))
+
+    print('DAPI pearson corr: {:.3f}'.format(corr_coef_dapi_mean))
+    print('CD3 pearson corr: {:.3f}'.format(corr_coef_cd3_mean))
+    print('CD20 pearson corr: {:.3f}'.format(corr_coef_cd20_mean))
+    print('PANCK pearson corr: {:.3f}'.format(corr_coef_panck_mean))
+    print('Average pearson corr: {:.3f}'.format(average_pr))
+
+    print('DAPI psnr: {:.3f}'.format(psnr_dapi))
+    print('CD3 psnr: {:.3f}'.format(psnr_cd3))
+    print('CD20 psnr: {:.3f}'.format(psnr_cd20))
+    print('PANCK psnr: {:.3f}'.format(psnr_panck))
+    print('AVERAGE psnr: {:.3f}'.format(average_psnr))
 
     # Visualize outputs
     visualized_output_path = os.path.join('./visualization', args.test_name, 'preds')

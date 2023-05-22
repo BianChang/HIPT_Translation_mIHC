@@ -25,18 +25,27 @@ def calculate_ssim_per_channel(input_tensor, target_tensor):
 
 
 def calculate_pearson_corr(input_tensor, target_tensor):
-    # Calculate mean squared error (MSE) and mean absolute error (MAE) between the output and target tensors
-    mse_loss = F.mse_loss(input_tensor, target_tensor)
-    mae_loss = F.l1_loss(input_tensor, target_tensor)
+    pearson_corr_scores = []
+    psnr_scores = []
 
-    # Calculate Pearson correlation coefficient
-    corr_coef = 1.0 - (2.0 * mae_loss) / (mse_loss + torch.mean(target_tensor ** 2))
+    for channel in range (input_tensor.size(1)):
+        input_channel = input_tensor[:, channel, :, :].unsqueeze(1)
+        target_channel = target_tensor[:, channel, :, :].unsqueeze(1)
+        # Calculate mean squared error (MSE) and mean absolute error (MAE) between the output and target tensors
+        mse_loss = F.mse_loss(input_channel, target_channel)
+        mae_loss = F.l1_loss(input_channel, target_channel)
 
-    # Calculate psnr
-    max_val = 1.0
-    psnr = 20 * torch.log10(max_val / torch.sqrt(mse_loss))
+        # Calculate Pearson correlation coefficient
+        corr_coef = 1.0 - (2.0 * mae_loss) / (mse_loss + torch.mean(target_channel** 2))
 
-    return corr_coef, psnr
+        # Calculate psnr
+        max_val = 1.0
+        psnr = 20 * torch.log10(max_val / torch.sqrt(mse_loss))
+
+        pearson_corr_scores.append(corr_coef.item())
+        psnr_scores.append(psnr.item())
+
+    return pearson_corr_scores, psnr_scores
 
 
 
