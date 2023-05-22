@@ -10,7 +10,7 @@ def calculate_ssim_per_channel(input_tensor, target_tensor):
         1), "Input and target tensors must have the same number of channels"
 
     # Create an instance of StructuralSimilarityIndexMeasure
-    ssim = StructuralSimilarityIndexMeasure(range=2.0, reduction='none')
+    ssim = StructuralSimilarityIndexMeasure(range=1.0, reduction='none')
 
     # Calculate SSIM for each channel
     ssim_scores = []
@@ -19,11 +19,14 @@ def calculate_ssim_per_channel(input_tensor, target_tensor):
         input_channel = input_tensor[:, channel, :, :].unsqueeze(1)
         target_channel = target_tensor[:, channel, :, :].unsqueeze(1)
 
+        input_channel = (input_channel + 1.0) / 2.0
+        target_channel = (target_channel + 1.0) / 2.0
+
         # If the standard deviation of the input channel is zero, add a tiny value to the first pixel
         if input_channel.std() == 0:
-            input_channel += 1e-8 * torch.randn(input_channel.shape)
+            input_channel[0, 0, 0, 0] += 1e-8
         if target_channel.std() == 0:
-            target_channel += 1e-8 * torch.randn(target_channel.shape)
+            target_channel[0, 0, 0, 0] += 1e-8
 
         ssim_channel = ssim(input_channel, target_channel)
         ssim_channel = ssim_channel.mean()
@@ -40,11 +43,14 @@ def calculate_pearson_corr(input_tensor, target_tensor):
         input_channel = input_tensor[:, channel, :, :].unsqueeze(1)
         target_channel = target_tensor[:, channel, :, :].unsqueeze(1)
 
+        input_channel = (input_channel + 1.0) / 2.0
+        target_channel = (target_channel + 1.0) / 2.0
+
         # If the standard deviation of the input channel is zero, add a tiny value to the first pixel
         if input_channel.std() == 0:
-            input_channel += 1e-8 * torch.randn(input_channel.shape)
+            input_channel[0, 0, 0, 0] += 1e-8
         if target_channel.std() == 0:
-            target_channel += 1e-8 * torch.randn(target_channel.shape)
+            target_channel[0, 0, 0, 0] += 1e-8
 
         # Flatten the arrays
         input_channel_flat = input_channel.flatten().detach().cpu().numpy()
