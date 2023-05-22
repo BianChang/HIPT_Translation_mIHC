@@ -37,8 +37,8 @@ def calculate_pearson_corr(input_tensor, target_tensor):
     psnr_scores = []
 
     for channel in range(input_tensor.size(1)):
-        input_channel = input_tensor[:, channel, :, :].detach().cpu().numpy()
-        target_channel = target_tensor[:, channel, :, :].detach().cpu().numpy()
+        input_channel = input_tensor[:, channel, :, :].unsqueeze(1)
+        target_channel = target_tensor[:, channel, :, :].unsqueeze(1)
 
         # If the standard deviation of the input channel is zero, add a tiny value to the first pixel
         if input_channel.std() == 0:
@@ -47,8 +47,8 @@ def calculate_pearson_corr(input_tensor, target_tensor):
             target_channel[0, 0, 0, 0] += 1e-8
 
         # Flatten the arrays
-        input_channel_flat = input_channel.flatten()
-        target_channel_flat = target_channel.flatten()
+        input_channel_flat = input_channel.flatten().detach().cpu().numpy()
+        target_channel_flat = target_channel.flatten().detach().cpu().numpy()
 
         # Calculate Pearson correlation coefficient
         corr_coef_matrix = np.corrcoef(input_channel_flat, target_channel_flat)
