@@ -135,7 +135,7 @@ def test_model(model, test_loader, device, output_dir, label_dir):
     return dapi_t_mean, cd3_t_mean, cd20_t_mean, panck_t_mean, average_mean, \
         corr_coef_dapi_t_mean, corr_coef_cd3_t_mean, corr_coef_cd20_t_mean, \
         corr_coef_panck_t_mean, average_corr_coef_t_mean,\
-        psnr_dapi_t_mean, psnr_cd3_t_mean, psnr_cd20_t, psnr_panck_t, average_psnr_t_mean
+        psnr_dapi_t_mean, psnr_cd3_t_mean, psnr_cd20_t_mean, psnr_panck_t_mean, average_psnr_t_mean
 
 
 def save_outputs(output, filename, output_dir):
