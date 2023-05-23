@@ -322,6 +322,7 @@ def get_args():
                         default=r'F:\2023_4_11_data_organization\Patches\small_dataset\val')
     parser.add_argument('-test_p', '--test_path', dest='test_path', type=str,
                         default=r'F:\2023_4_11_data_organization\Patches\small_dataset\test')
+    parser.add_argument('-net', '--net_scratch', dest='scratch',type=bool, default=True)
 
 
     return parser.parse_args()
@@ -395,8 +396,10 @@ if __name__ == '__main__':
             "pretrained": False,
         }
     }
-    net = SwinTransformer(**config["model_params"])
-    # net = CustomSwinTransformer(**config["model_params"])
+    if args.scratch == True:
+        net = SwinTransformer(**config["model_params"])
+    else:
+        net = CustomSwinTransformer(**config["model_params"])
     train(net)
 
 
