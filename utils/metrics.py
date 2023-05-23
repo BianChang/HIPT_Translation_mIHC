@@ -2,6 +2,7 @@ import torch
 from torchmetrics import StructuralSimilarityIndexMeasure
 import torch.nn.functional as F
 import numpy as np
+from skimage.metrics import structural_similarity as ssim
 
 
 def calculate_ssim_per_channel(input_tensor, target_tensor):
@@ -10,27 +11,30 @@ def calculate_ssim_per_channel(input_tensor, target_tensor):
         1), "Input and target tensors must have the same number of channels"
 
     # Create an instance of StructuralSimilarityIndexMeasure
-    ssim = StructuralSimilarityIndexMeasure(range=1.0, reduction='none')
+    # ssim = StructuralSimilarityIndexMeasure(range=1.0, reduction='none')
 
     # Calculate SSIM for each channel
     ssim_scores = []
 
     for channel in range(input_tensor.size(1)):
-        input_channel = input_tensor[:, channel, :, :].unsqueeze(1)
-        target_channel = target_tensor[:, channel, :, :].unsqueeze(1)
+        input_channel = input_tensor[:, channel, :, :].squeeze()
+        target_channel = target_tensor[:, channel, :, :].squeeze()
 
         input_channel = (input_channel + 1.0) / 2.0
         target_channel = (target_channel + 1.0) / 2.0
 
+        input_channel  = (input_channel .cpu().detach().numpy() * 255).astype(np.uint8)
+        target_channel = (target_channel.cpu().detach().numpy() * 255).astype(np.uint8)
+
         # If the standard deviation of the input channel is zero, add a tiny value to the first pixel
         if input_channel.std() == 0:
-            input_channel[0, 0, 0, 0] += 1e-8
+            input_channel[0][0] += 1
         if target_channel.std() == 0:
-            target_channel[0, 0, 0, 0] += 1e-8
+            target_channel[0][0] += 1
 
-        ssim_channel = ssim(input_channel, target_channel)
-        ssim_channel = ssim_channel.mean()
-        ssim_scores.append(ssim_channel.item())  # Convert to Python float right away
+        ssim_channel = ssim(input_channel, target_channel, data_range=255)
+        # ssim_channel = ssim_channel.mean()
+        ssim_scores.append(ssim_channel)
 
     return ssim_scores  # Returns a list of Python floats
 
@@ -40,32 +44,37 @@ def calculate_pearson_corr(input_tensor, target_tensor):
     psnr_scores = []
 
     for channel in range(input_tensor.size(1)):
-        input_channel = input_tensor[:, channel, :, :].unsqueeze(1)
-        target_channel = target_tensor[:, channel, :, :].unsqueeze(1)
+        input_channel = input_tensor[:, channel, :, :].squeeze()
+        target_channel = target_tensor[:, channel, :, :].squeeze()
+
+        input_channel_tensor = input_tensor[:, channel, :, :].unsqueeze(1)
+        target_channel_tensor = target_tensor[:, channel, :, :].unsqueeze(1)
 
         input_channel = (input_channel + 1.0) / 2.0
         target_channel = (target_channel + 1.0) / 2.0
 
+        input_channel = (input_channel.cpu().detach().numpy() * 255).astype(np.uint8)
+        target_channel = (target_channel.cpu().detach().numpy() * 255).astype(np.uint8)
+
         # If the standard deviation of the input channel is zero, add a tiny value to the first pixel
         if input_channel.std() == 0:
-            input_channel[0, 0, 0, 0] += 1e-8
+            input_channel[0][0] += 1
         if target_channel.std() == 0:
-            target_channel[0, 0, 0, 0] += 1e-8
+            target_channel[0][0] += 1
 
         # Flatten the arrays
-        input_channel_flat = input_channel.flatten().detach().cpu().numpy()
-        target_channel_flat = target_channel.flatten().detach().cpu().numpy()
+        input_channel_flat = input_channel.flatten()
+        target_channel_flat = target_channel.flatten()
 
         # Calculate Pearson correlation coefficient
         corr_coef_matrix = np.corrcoef(input_channel_flat, target_channel_flat)
 
         # np.corrcoef returns a 2D array, the correlation coefficient is at index [0,1] or [1,0]
         corr_coef = corr_coef_matrix[0, 1]
-
         pearson_corr_scores.append(corr_coef)
 
         # Calculate psnr
-        mse_loss = F.mse_loss(input_channel, target_channel)
+        mse_loss = F.mse_loss(input_channel_tensor, target_channel_tensor)
         if mse_loss < 1.0e-10:
             psnr = torch.tensor(100.)
         else:
@@ -73,7 +82,6 @@ def calculate_pearson_corr(input_tensor, target_tensor):
             max_val = 2.0
             psnr = 20 * torch.log10(max_val / torch.sqrt(mse_loss))
 
-        pearson_corr_scores.append(corr_coef.item())
         psnr_scores.append(psnr.item())
 
     return pearson_corr_scores, psnr_scores

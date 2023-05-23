@@ -1,5 +1,6 @@
 import os
 from PIL import Image
+from tifffile import imread, imwrite
 from torch.utils.data import Dataset
 from torchvision.transforms import Compose, Normalize, ToTensor
 

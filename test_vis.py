@@ -36,6 +36,11 @@ def test_model(model, test_loader, device, output_dir, label_dir):
             ssim_4_channel_test = calculate_ssim_per_channel(predict1, test_mask)
             corr_coef_4_channel, psnr_4_channel = calculate_pearson_corr(predict1, test_mask)
 
+            print('dapi:', corr_coef_4_channel[0])
+            print('cd3:', corr_coef_4_channel[1])
+            print('cd20:', corr_coef_4_channel[2])
+            print('panck:', corr_coef_4_channel[3])
+
             dapi_t += ssim_4_channel_test[0]
             cd3_t += ssim_4_channel_test[1]
             cd20_t += ssim_4_channel_test[2]

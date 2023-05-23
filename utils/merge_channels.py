@@ -1,13 +1,21 @@
 import os
 import cv2
 import numpy as np
+from tifffile import imread, imwrite
+'''
+flag = r'HE-1\[11760,39505]'
+base_root = r'F:\2023_4_11_data_organization\512_patches\all_slide'
+DAPI_DIR = os.path.join(base_root, 'dapi', flag)
+CD3_DIR = os.path.join(base_root, 'cd3', flag)
+CD20_DIR = os.path.join(base_root, 'cd20', flag)
+PANCK_DIR = os.path.join(base_root, 'panck', flag)
+'''
+DAPI_DIR = os.path.join(r'F:\2023_4_11_data_organization\512_patches\all_slide\dapi')
+CD3_DIR = os.path.join(r'F:\2023_4_11_data_organization\512_patches\all_slide\cd3')
+CD20_DIR = os.path.join(r'F:\2023_4_11_data_organization\512_patches\all_slide\cd20')
+PANCK_DIR = os.path.join(r'F:\2023_4_11_data_organization\512_patches\all_slide\panck')
 
-DAPI_DIR = r'F:\2023_4_11_data_organization\224_patches\dapi\HE-1\[13196,49353]'
-CD3_DIR = r'F:\2023_4_11_data_organization\224_patches\cd3\HE-1\[13196,49353]'
-CD20_DIR = r'F:\2023_4_11_data_organization\224_patches\cd20\HE-1\[13196,49353]'
-PANCK_DIR = r'F:\2023_4_11_data_organization\224_patches\panck\HE-1\[13196,49353]'
-
-output_dir = r'F:\2023_4_11_data_organization\224_patches\merged\test'
+output_dir = r'F:\2023_4_11_data_organization\512_patches\all_slide\merged'
 
 # Make sure output directory exists
 os.makedirs(output_dir, exist_ok=True)
@@ -15,7 +23,7 @@ os.makedirs(output_dir, exist_ok=True)
 
 
 for filename in os.listdir(DAPI_DIR):
-    print(filename)
+    # print(filename)
     srcsuffix = '.tif'
     nosurffixname = os.path.splitext(filename)[0]
     DAPI = cv2.imread(os.path.join(DAPI_DIR, filename), cv2.IMREAD_GRAYSCALE)
@@ -28,4 +36,5 @@ for filename in os.listdir(DAPI_DIR):
     MIHC_patch[:, :, 1] = CD3
     MIHC_patch[:, :, 2] = CD20
     MIHC_patch[:, :, 3] = PANCK
-    cv2.imwrite(os.path.join(output_dir, nosurffixname + srcsuffix), MIHC_patch)
+
+    imwrite(os.path.join(output_dir, nosurffixname + srcsuffix), MIHC_patch)

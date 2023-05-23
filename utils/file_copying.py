@@ -1,6 +1,9 @@
 import os
 import shutil
-
+'''
+This code will search through every file in dir_B, if there is a file with the same name exists in dir_A, it will make 
+a copy of the file in dir_B and save it in dir_C
+'''
 # Define the directories
 dir_A = r'F:\2023_4_11_data_organization\512_patches\train\input'
 dir_B = r'F:\2023_4_11_data_organization\512_patches\all_slide\merged'
