@@ -7,6 +7,7 @@ from dataset.ImageToImageDataset import ImageToImageDatasetWithName
 from utils.visulization import visualize_4channel_tif
 from utils.metrics import calculate_ssim_per_channel, calculate_pearson_corr
 from PIL import Image
+from tifffile import imread, imwrite
 import os
 import numpy as np
 from tqdm import tqdm
@@ -35,11 +36,6 @@ def test_model(model, test_loader, device, output_dir, label_dir):
             predict1 = predict1.detach().cpu()
             ssim_4_channel_test = calculate_ssim_per_channel(predict1, test_mask)
             corr_coef_4_channel, psnr_4_channel = calculate_pearson_corr(predict1, test_mask)
-
-            print('dapi:', corr_coef_4_channel[0])
-            print('cd3:', corr_coef_4_channel[1])
-            print('cd20:', corr_coef_4_channel[2])
-            print('panck:', corr_coef_4_channel[3])
 
             dapi_t += ssim_4_channel_test[0]
             cd3_t += ssim_4_channel_test[1]
@@ -147,15 +143,36 @@ def save_outputs(output, filename, output_dir):
     os.makedirs(output_dir, exist_ok=True)
     # Remove extension of filename
     base_filename = os.path.splitext(filename)[0]
-    output_path = os.path.join(output_dir, f'{base_filename}.tif')
+
     # Convert tensor to numpy array and save as .tif
     output = output.permute(1, 2, 0)
     # Convert the image values back to [0, 1] from [-1, 1]
     output = (output + 1.0) / 2.0
-
     # Convert the image values back to [0, 255] from [0, 1]
     output = (output.cpu().detach().numpy() * 255).astype(np.uint8)
-    cv2.imwrite(os.path.join(output_path), output)
+
+    # Define a dictionary of colors to be used for each channel
+    colors = {0: [0, 0, 255], 1: [0, 255, 0], 2: [255, 255, 0], 3: [255, 0, 0]}
+
+    channel_names = ['dapi', 'cd3', 'cd20', 'panck']
+    for i, channel_name in enumerate(channel_names):
+        channel_dir = os.path.join(output_dir, channel_name)
+        os.makedirs(channel_dir, exist_ok=True)
+        channel_path = os.path.join(channel_dir, f'{base_filename}.tif')
+
+        # Create a blank (black) RGB image
+        colored_output = np.zeros((output.shape[0], output.shape[1], 3), dtype=np.uint8)
+        # Assign the color to the target channel
+        colored_output[:, :, :] = colors[i]
+        # Multiply the color with the normalized intensity of the target channel
+        colored_output = colored_output * (output[:, :, i, np.newaxis] / 255)
+        colored_output = colored_output.astype(np.uint8)
+        imwrite(channel_path, colored_output)
+
+    multi_channel_dir = os.path.join(output_dir, 'multi_channel')
+    os.makedirs(multi_channel_dir, exist_ok=True)
+    output_path = os.path.join(multi_channel_dir, f'{base_filename}.tif')
+    imwrite(output_path, output)
 
 
 def main():
@@ -233,11 +250,11 @@ def main():
     # Visualize outputs
     visualized_output_path = os.path.join('./visualization', args.test_name, 'preds')
     os.makedirs(visualized_output_path, exist_ok=True)
-    visualize_4channel_tif(output_path, visualized_output_path)
+    visualize_4channel_tif(os.path.join(output_path, 'multi_channel'), visualized_output_path)
     # Visualize labels
     visualized_labels_path = os.path.join('./visualization', args.test_name, 'labels')
     os.makedirs(visualized_labels_path, exist_ok=True)
-    visualize_4channel_tif(label_path, visualized_labels_path)
+    visualize_4channel_tif(os.path.join(label_path, 'multi_channel'),  visualized_labels_path)
 
 
 if __name__ == '__main__':
@@ -249,7 +266,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_path', type=str, help='Path to the pretrained model')
     parser.add_argument('--output_path', type=str, help='Path to save the outputs')
     parser.add_argument('--visualized_output_path', type=str, help='Path to save the visualized outputs')
-    parser.add_argument('--batch_size', type=int, default=4, help='Batch size for testing')
+    parser.add_argument('--batch_size', type=int, default=1, help='Batch size for testing')
 
     args = parser.parse_args()
     main()

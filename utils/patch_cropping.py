@@ -1,5 +1,6 @@
 import os
 import cv2
+from tifffile import imread, imwrite
 
 
 def crop_images_in_directory(input_dir, output_dir, patch_size, stride):
@@ -25,10 +26,16 @@ def crop_images_in_directory(input_dir, output_dir, patch_size, stride):
             if filename.endswith(".tif") or filename.endswith(".jpg"):
                 # Read the image
                 img_path = os.path.join(subdir, filename)
-                img = cv2.imread(img_path)
+                # for HE images
+                # img = cv2.imread(img_path)
+                # for marker images in tif format
+                img = imread(img_path)
 
                 # Determine the number of patches to crop
-                height, width, channels = img.shape
+                # for 3 channel HE images
+                # height, width, channels = img.shape
+                # for markers
+                height, width = img.shape
                 num_rows = (height - patch_size) // stride + 1
                 num_cols = (width - patch_size) // stride + 1
 
@@ -37,20 +44,23 @@ def crop_images_in_directory(input_dir, output_dir, patch_size, stride):
                     for j in range(num_cols):
                         x = i * stride
                         y = j * stride
-                        patch = img[x:x + patch_size, y:y + patch_size, :]
-
+                        # for HE images
+                        # patch = img[x:x + patch_size, y:y + patch_size, :]
+                        # for markers
+                        patch = img[x:x + patch_size, y:y + patch_size]
                         # Determine output filename and directory
                         patch_dir = os.path.join(out_subdir, filename.split('.')[0])
                         os.makedirs(patch_dir, exist_ok=True)
-                        patch_filename = f"{filename.split('.')[0]}_patch_{i}_{j}.jpg"
+                        patch_filename = f"{filename.split('.')[0]}_patch_{i}_{j}.tif"
                         patch_path = os.path.join(patch_dir, patch_filename)
 
                         # Save the patch to disk
-                        cv2.imwrite(patch_path, patch)
+                        # cv2.imwrite(patch_path, patch)
+                        imwrite(patch_path, patch)
 
 
-input_dir = r'F:\2023_4_11_data_organization\HE_block_norm'
-output_dir = r'F:\2023_4_11_data_organization\224_patches\HE_jpg'
+input_dir = r'F:\2023_4_11_data_organization\DAPI_block\grey'
+output_dir = r'F:\2023_4_11_data_organization\224_patches\DAPI'
 patch_size = 224
 stride = 112
 crop_images_in_directory(input_dir, output_dir, patch_size, stride)
