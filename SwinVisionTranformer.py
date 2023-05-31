@@ -70,7 +70,7 @@ class Decoder(nn.Module):
         x = self.upsample5(x)
 
         # return self.sigmoid(x)
-        return self.tanh(x)
+        # return self.tanh(x)
         # return(x)
 
 
