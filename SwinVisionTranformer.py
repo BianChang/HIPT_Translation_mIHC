@@ -71,7 +71,7 @@ class Decoder(nn.Module):
 
         # return self.sigmoid(x)
         # return self.tanh(x)
-        # return(x)
+        return(x)
 
 
 class SwinTransformer(nn.Module):
