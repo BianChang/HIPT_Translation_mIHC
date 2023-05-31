@@ -81,13 +81,14 @@ def train(net=None):
     std_label = [0.5, 0.5, 0.5, 0.5]
 
     input_transform = Compose([
-        ToTensor(),
-        Normalize(mean=mean_data, std=std_data)
+        ToTensor()
+        # Normalize(mean=mean_data, std=std_data)
     ])
     label_transform = Compose([
         ToTensor(),
-        Normalize(mean=mean_label, std=std_label)
+        # Normalize(mean=mean_label, std=std_label)
     ])
+
 
     # Create instances of the ImageToImageDataset for the training, validation, and test sets
     train_dataset = ImageToImageDataset(args.train_path, input_transform=input_transform, label_transform=label_transform)

@@ -60,7 +60,7 @@ def crop_images_in_directory(input_dir, output_dir, patch_size, stride):
 
 
 input_dir = r'F:\2023_4_11_data_organization\PANCK_block\grey'
-output_dir = r'F:\2023_4_11_data_organization\224_patches\PANCK'
-patch_size = 224
-stride = 112
+output_dir = r'F:\2023_4_11_data_organization\1024_patches\PANCK'
+patch_size = 1024
+stride = 512
 crop_images_in_directory(input_dir, output_dir, patch_size, stride)
