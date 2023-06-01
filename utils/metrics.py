@@ -32,7 +32,7 @@ def calculate_ssim_per_channel(input_tensor, target_tensor):
         if target_channel.std() == 0:
             target_channel[0][0] += 1
 
-        ssim_channel = ssim(input_channel, target_channel, data_range=255)
+        ssim_channel = ssim(input_channel, target_channel, data_range=255, multichannel=True)
         # ssim_channel = ssim_channel.mean()
         ssim_scores.append(ssim_channel)
 
