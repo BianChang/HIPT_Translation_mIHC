@@ -215,8 +215,8 @@ def main():
             "pretrained": False,
         }
     }
-    model = SwinTransformer(**config["model_params"]).to(device)
-    # model = CustomSwinTransformer(**config["model_params"]).to(device)
+    # model = SwinTransformer(**config["model_params"]).to(device)
+    model = CustomSwinTransformer(**config["model_params"]).to(device)
 
     state_dict = torch.load(args.model_path, map_location=device)
     # If the model is an instance of nn.DataParallel
