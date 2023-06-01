@@ -70,8 +70,8 @@ class Decoder(nn.Module):
         x = self.upsample5(x)
 
         # return self.sigmoid(x)
-        # return self.tanh(x)
-        return(x)
+        return self.tanh(x)
+        # return(x)
 
 
 class SwinTransformer(nn.Module):

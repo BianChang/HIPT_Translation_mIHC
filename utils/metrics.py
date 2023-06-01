@@ -20,8 +20,8 @@ def calculate_ssim_per_channel(input_tensor, target_tensor):
         input_channel = input_tensor[:, channel, :, :].squeeze()
         target_channel = target_tensor[:, channel, :, :].squeeze()
 
-        #input_channel = (input_channel + 1.0) / 2.0
-        #target_channel = (target_channel + 1.0) / 2.0
+        input_channel = (input_channel + 1.0) / 2.0
+        target_channel = (target_channel + 1.0) / 2.0
 
         input_channel  = (input_channel .cpu().detach().numpy() * 255).astype(np.uint8)
         target_channel = (target_channel.cpu().detach().numpy() * 255).astype(np.uint8)
@@ -50,8 +50,8 @@ def calculate_pearson_corr(input_tensor, target_tensor):
         input_channel_tensor = input_tensor[:, channel, :, :].unsqueeze(1)
         target_channel_tensor = target_tensor[:, channel, :, :].unsqueeze(1)
 
-        #input_channel = (input_channel + 1.0) / 2.0
-        #target_channel = (target_channel + 1.0) / 2.0
+        input_channel = (input_channel + 1.0) / 2.0
+        target_channel = (target_channel + 1.0) / 2.0
 
         input_channel = (input_channel.cpu().detach().numpy() * 255).astype(np.uint8)
         target_channel = (target_channel.cpu().detach().numpy() * 255).astype(np.uint8)

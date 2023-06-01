@@ -207,9 +207,9 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     config = {
         "model_params": {
-            "img_size": [512, 512],
+            "img_size": [224, 224],
             "patch_size": 4,
-            "window_size": 8,
+            "window_size": 7,
             "depths": [2, 2, 6, 2],
             "embed_dim": 96,
             "pretrained": False,
