@@ -41,9 +41,9 @@ for filename in os.listdir(DAPI_DIR):
     imwrite(os.path.join(output_dir, nosurffixname + srcsuffix), MIHC_patch)
 '''
 
-base_root = r'F:\2023_4_11_data_organization\1024_patches'
+base_root = r'F:\2023_4_11_data_organization\224_patches'
 channel_dirs = ['DAPI', 'CD3', 'CD20', 'PANCK']
-output_dir = r'F:\2023_4_11_data_organization\1024_patches\merged_channels'
+output_dir = r'F:\2023_4_11_data_organization\224_patches\merged_channels'
 
 # Create the output directory if it doesn't exist
 os.makedirs(output_dir, exist_ok=True)
