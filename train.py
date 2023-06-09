@@ -395,13 +395,16 @@ if __name__ == '__main__':
             "window_size": 7,
             "depths": [2, 2, 6, 2],
             "embed_dim": 96,
-            "pretrained": False,
+            "pretrained": not args.scratch,
         }
     }
+    '''
     if args.scratch == True:
         net = SwinTransformer(**config["model_params"])
     else:
         net = CustomSwinTransformer(**config["model_params"])
+    '''
+    net = CustomSwinTransformer(**config["model_params"])
     print(args.scratch)
     train(net)
 
