@@ -179,7 +179,7 @@ class CustomSwinTransformer(nn.Module):
         self.depths = depths
         self.patch_size = patch_size
         self.last_stage_dim = embed_dim * (2 ** (len(depths) - 1))
-        self.model = timm.create_model('swin_tiny_patch4_window7_224', pretrained=True)
+        self.model = timm.create_model('swin_tiny_patch4_window7_224', pretrained)
         self.model.head = nn.Identity()  # remove classification head
 
         self.decoder = Decoder(in_channs=int(embed_dim * (math.pow(2, len(depths) - 1))),
