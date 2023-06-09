@@ -4,7 +4,7 @@ from timm.models.layers import DropPath, to_2tuple
 from timm.models.swin_transformer import SwinTransformerBlock
 import math
 from torch.utils.checkpoint import checkpoint
-from timm.models.swin_transformer import PatchMerging
+from timm.models.swin_transformer import PatchMerging, PatchEmbed
 import timm
 
 
@@ -84,8 +84,10 @@ class SwinTransformer(nn.Module):
         self.depths = depths
         self.patch_size = patch_size
         self.last_stage_dim = embed_dim * (2 ** (len(depths) - 1))
+        self.patch_embed = PatchEmbed(
+            img_size=img_size[0], patch_size=patch_size, in_chans=in_chans, embed_dim=embed_dim)
 
-        self.patch_embed = nn.Conv2d(in_chans, embed_dim, kernel_size=patch_size, stride=patch_size, padding=0)
+        # self.patch_embed = nn.Conv2d(in_chans, embed_dim, kernel_size=patch_size, stride=patch_size, padding=0)
         self.num_patches = (img_size[0] // patch_size) * (img_size[1] // patch_size)
 
         input_resolutions = [(img_size[0] // patch_size, img_size[1] // patch_size)]
@@ -150,15 +152,15 @@ class SwinTransformer(nn.Module):
         x = self.patch_embed(x)
 
         # Extract the batch size (B), channels (C), height (H), and width (W) from the input tensor
-        B, C, H, W = x.shape
+        B, N, W = x.shape
         # Calculate the number of patches by dividing the height and width by the patch size
         # num_patches_2 = (H // self.patch_size) * (W // self.patch_size)
 
         # Reshape the input tensor to create patches
-        x = x.reshape(B, C, self.patch_size, H // self.patch_size, self.patch_size, W // self.patch_size)
+        # x = x.reshape(B, C, self.patch_size, H // self.patch_size, self.patch_size, W // self.patch_size)
         # Permute and reshape the tensor to obtain a sequence of flattened patches
         # x = x.permute(0, 3, 5, 1, 2, 4).reshape(B, num_patches, C * self.patch_size ** 2)
-        x = x.permute(0, 3, 5, 1, 2, 4).reshape(B, self.num_patches, C)
+        # x = x.permute(0, 3, 5, 1, 2, 4).reshape(B, self.num_patches, C)
 
 
         # Add positional encoding to the patch embeddings

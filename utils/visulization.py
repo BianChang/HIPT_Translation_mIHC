@@ -71,8 +71,8 @@ def normalize_4channel_tif(input_dir, output_dir):
 
 
 def main():
-    input_dir = r'F:\2023_4_11_data_organization\224_patches\merged\train\label'
-    output_dir = r'F:\2023_4_11_data_organization\224_patches\merged\vis\train'
+    input_dir = r'F:\2023_4_11_data_organization\224_patches\224_small_dataset\test\label'
+    output_dir = r'F:\2023_4_11_data_organization\224_patches\224_small_dataset\viz_val'
     visualize_4channel_tif(input_dir, output_dir)
     # normalize_4channel_tif(input_dir, output_dir)
 

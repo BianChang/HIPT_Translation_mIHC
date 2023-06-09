@@ -83,7 +83,7 @@ def main():
 
 
     #dir_A = r'F:\2023_4_11_data_organization\224_patches\224_small_dataset\test\input'
-    #dir_B = r'F:\2023_4_11_data_organization\224_patches\merged\merged_channels'
+    #dir_B = r'F:\2023_4_11_data_organization\224_patches\merged_channels'
     #dir_C = r'F:\2023_4_11_data_organization\224_patches\224_small_dataset\test\label'
     #copy_matching_files(dir_A, dir_B, dir_C)
 

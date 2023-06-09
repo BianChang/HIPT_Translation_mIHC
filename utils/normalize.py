@@ -44,16 +44,16 @@ import cv2
 import os
 from tifffile import imread, imwrite
 
-base_root = r'F:\2023_4_11_data_organization\224_patches'
+base_root = r'F:\2023_4_11_data_organization\1024_patches'
 channel_dirs = ['DAPI_unnorm']
-output_dir = r'F:\2023_4_11_data_organization\224_patches\DAPI'
+output_dir = r'F:\2023_4_11_data_organization\1024_patches\DAPI'
 
 # Create the output directory if it doesn't exist
 os.makedirs(output_dir, exist_ok=True)
 
 # Parameters for CLAHE
 clip_limit = 2
-tile_grid_size = (32, 32)
+tile_grid_size = (64, 64)
 
 # Go through each slide subfolder
 for slide in ['HE-1', 'HE-2', 'HE-3', 'HE-4', 'HE-5', 'HE-6']:
