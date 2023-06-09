@@ -77,7 +77,7 @@ class Decoder(nn.Module):
 class SwinTransformer(nn.Module):
     def __init__(self, img_size=[224, 224], patch_size=4, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
                  num_heads=3, window_size=7, mlp_ratio=4., qkv_bias=False, drop_rate=0., attn_drop_rate=0.,
-                 drop_path_rate=0.1, norm_layer=nn.LayerNorm, output_channels=4, pretrained=False, **kwargs):
+                 drop_path_rate=0.1, norm_layer=nn.LayerNorm, output_channels=4, **kwargs):
         super().__init__()
         self.img_size = img_size
         self.embed_dim = embed_dim
@@ -95,7 +95,8 @@ class SwinTransformer(nn.Module):
             input_resolutions.append((input_resolutions[-1][0] // 2, input_resolutions[-1][1] // 2))
 
         self.pos_embed = nn.Parameter(torch.empty(1, self.num_patches, embed_dim))
-        nn.init.kaiming_uniform_(self.pos_embed, a=math.sqrt(5))
+        # nn.init.kaiming_uniform_(self.pos_embed, a=math.sqrt(5))
+        nn.init.trunc_normal_(self.pos_embed, std=.02)
         self.pos_drop = nn.Dropout(p=drop_rate)
 
         self.blocks_and_merging = nn.ModuleList([])
@@ -122,15 +123,6 @@ class SwinTransformer(nn.Module):
 
         self.apply(self._init_weights)
 
-        if pretrained:
-            self._load_pretrained_weights()
-
-    def _load_pretrained_weights(self):
-
-        pretrained_model = timm.create_model('swin_tiny_patch4_window7_224', pretrained=True)
-        self.load_state_dict(pretrained_model.state_dict(), strict=False)
-
-
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
@@ -150,22 +142,10 @@ class SwinTransformer(nn.Module):
         # Apply patch embedding to convert the input image into a sequence of flattened patches
         # print("input shape:", x.shape)
         x = self.patch_embed(x)
-
-        # Extract the batch size (B), channels (C), height (H), and width (W) from the input tensor
+        # Extract the batch size (B)
         B, N, W = x.shape
-        # Calculate the number of patches by dividing the height and width by the patch size
-        # num_patches_2 = (H // self.patch_size) * (W // self.patch_size)
-
-        # Reshape the input tensor to create patches
-        # x = x.reshape(B, C, self.patch_size, H // self.patch_size, self.patch_size, W // self.patch_size)
-        # Permute and reshape the tensor to obtain a sequence of flattened patches
-        # x = x.permute(0, 3, 5, 1, 2, 4).reshape(B, num_patches, C * self.patch_size ** 2)
-        # x = x.permute(0, 3, 5, 1, 2, 4).reshape(B, self.num_patches, C)
-
-
         # Add positional encoding to the patch embeddings
         x = x + self.pos_embed
-        # print('x+x_embed: ', x.shape)
         # Apply dropout to the patch embeddings (prevent overfitting)
         x = self.pos_drop(x)
 
