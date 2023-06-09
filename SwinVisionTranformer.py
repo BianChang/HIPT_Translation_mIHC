@@ -73,7 +73,7 @@ class Decoder(nn.Module):
         return self.tanh(x)
         # return(x)
 
-
+'''
 class SwinTransformer(nn.Module):
     def __init__(self, img_size=[224, 224], patch_size=4, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
                  num_heads=3, window_size=7, mlp_ratio=4., qkv_bias=False, drop_rate=0., attn_drop_rate=0.,
@@ -164,6 +164,62 @@ class SwinTransformer(nn.Module):
         x = x.permute(0, 3, 1, 2)
         #print(x.shape)
 
+        x = self.decoder(x, self.stage_outputs)
+
+        return x
+'''
+
+
+class SwinTransformer(nn.Module):
+    def __init__(self, img_size=[224, 224], patch_size=4, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
+                 num_heads=(3, 6, 12, 24), window_size=7, mlp_ratio=4., qkv_bias=False, drop_rate=0., attn_drop_rate=0.,
+                 drop_path_rate=0.1, norm_layer=nn.LayerNorm, output_channels=4, **kwargs):
+        super().__init__()
+        self.img_size = img_size
+        self.embed_dim = embed_dim
+        self.depths = depths
+        self.patch_size = patch_size
+        self.last_stage_dim = embed_dim * (2 ** (len(depths) - 1))
+
+        # create the Swin Transformer model
+        self.model = timm.models.swin_transformer.SwinTransformer(
+            img_size=img_size,
+            patch_size=patch_size,
+            in_chans=in_chans,
+            embed_dim=embed_dim,
+            depths=depths,
+            num_heads=num_heads,
+            window_size=window_size,
+            mlp_ratio=mlp_ratio,
+            qkv_bias=qkv_bias,
+            drop_rate=drop_rate,
+            attn_drop_rate=attn_drop_rate,
+            drop_path_rate=drop_path_rate,
+            norm_layer=norm_layer
+        )
+        self.model.head = nn.Identity()  # remove classification head
+
+        self.decoder = Decoder(in_channs=int(embed_dim * (math.pow(2, len(depths) - 1))),
+                               output_channels=output_channels,
+                               )
+
+    def forward(self, x):
+        self.stage_outputs = []
+        B, C, H, W = x.shape
+        x = self.model.patch_embed(x)
+        x = self.model.pos_drop(x)
+
+        for stage in self.model.layers:
+            for blk in stage.blocks:
+                x = blk(x)
+            if stage.downsample is not None:
+                self.stage_outputs.append(x)
+                x = stage.downsample(x)
+
+        x = self.model.norm(x)
+        x = x.reshape(B, self.img_size[0] // int(self.patch_size * math.pow(2, len(self.depths) - 1)),
+                      self.img_size[1] // int(self.patch_size * math.pow(2, len(self.depths) - 1)), self.last_stage_dim)
+        x = x.permute(0, 3, 1, 2)
         x = self.decoder(x, self.stage_outputs)
 
         return x

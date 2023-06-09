@@ -398,13 +398,13 @@ if __name__ == '__main__':
             "pretrained": not args.scratch,
         }
     }
-    '''
+
     if args.scratch == True:
         net = SwinTransformer(**config["model_params"])
     else:
         net = CustomSwinTransformer(**config["model_params"])
-    '''
-    net = CustomSwinTransformer(**config["model_params"])
+
+    # net = CustomSwinTransformer(**config["model_params"])
     print(args.scratch)
     train(net)
 
