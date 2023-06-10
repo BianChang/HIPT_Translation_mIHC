@@ -9,7 +9,7 @@ import timm
 
 
 class Decoder(nn.Module):
-    def __init__(self, in_channs, output_channels):
+    def __init__(self, in_channs, output_channels, patch_size):
         super().__init__()
 
         self.upsample1 = nn.ConvTranspose2d(in_channs, in_channs // 2, kernel_size=2, stride=2)
@@ -21,53 +21,40 @@ class Decoder(nn.Module):
         self.upsample3 = nn.ConvTranspose2d(in_channs // 4, in_channs // 8, kernel_size=2, stride=2)
         self.conv3 = nn.Conv2d(in_channs // 4, in_channs // 8, kernel_size=3, padding=1)
 
+        upsampling_factor = int(math.log(patch_size, 2))
+        self.final_upsample_layers = nn.ModuleList(
+            [nn.ConvTranspose2d(in_channs // 8, output_channels if i == upsampling_factor - 1 else in_channs // 8,
+                                kernel_size=2, stride=2) for i
+             in range(upsampling_factor)])
+
         #self.upsample4 = nn.ConvTranspose2d(in_channs // 8, in_channs // 8, kernel_size=6, stride=4, padding=1)
         #self.upsample5 = nn.ConvTranspose2d(in_channs // 8, output_channels, kernel_size=6, stride=4, padding=1)
-        self.upsample4 = nn.ConvTranspose2d(in_channs // 8, in_channs // 4, kernel_size=2, stride=2)
-        self.upsample5 = nn.ConvTranspose2d(in_channs // 4, output_channels, kernel_size=2, stride=2)
+        #self.upsample4 = nn.ConvTranspose2d(in_channs // 8, in_channs // 8, kernel_size=2, stride=2)
+        #self.upsample5 = nn.ConvTranspose2d(in_channs // 8, output_channels, kernel_size=2, stride=2)
         self.sigmoid = nn.Sigmoid()
         self.tanh = nn.Tanh()
 
 
     def forward(self, x, stage_outputs):
-        #print('decoder')
-        #print(stage_outputs[-1].shape, stage_outputs[-2].shape, stage_outputs[-3].shape)
         x = self.upsample1(x)
         h_w_dim = int((stage_outputs[-1].shape[1]) ** 0.5)
-        #print(x.shape)
-        #stage_outputs_reshape = stage_outputs[-1].view(stage_outputs[-1].shape[0], 16, 16, 384).permute(0, 3, 1, 2)
-        #print(stage_outputs_reshape.shape)
-        #x = torch.cat((x, stage_outputs[-1].view(stage_outputs[-1].shape[0], 8, 8, 384).permute(0, 3, 1, 2)), dim=1)
-        #x = torch.cat((x, stage_outputs[-1].view(stage_outputs[-1].shape[0], 14, 14, 384).permute(0, 3, 1, 2)), dim=1)
         x = torch.cat((x, stage_outputs[-1].view(stage_outputs[-1].shape[0], h_w_dim, h_w_dim, stage_outputs[-1].shape[2]).permute(0, 3, 1, 2)), dim=1)
-        #print(x.shape)
         x = self.conv1(x)
-        #print('final:',x.shape)
-
 
         x = self.upsample2(x)
         h_w_dim2 = int((stage_outputs[-2].shape[1]) ** 0.5)
-        #print('up2:',x.shape)
-        #stage_outputs_reshape = stage_outputs[-2].view(stage_outputs[-1].shape[0], 32, 32, 192).permute(0, 3, 1, 2)
-        #print(stage_outputs_reshape.shape)
-        #x = torch.cat((x, stage_outputs[-2].view(stage_outputs[-2].shape[0], 16, 16, 192).permute(0, 3, 1, 2)), dim=1)
-        #x = torch.cat((x, stage_outputs[-2].view(stage_outputs[-2].shape[0], 28, 28, 192).permute(0, 3, 1, 2)), dim=1)
         x = torch.cat((x, stage_outputs[-2].view(stage_outputs[-2].shape[0], h_w_dim2, h_w_dim2, stage_outputs[-2].shape[2]).permute(0, 3, 1, 2)), dim=1)
-        #print('after conca:',x.shape)
         x = self.conv2(x)
-
 
         x = self.upsample3(x)
         h_w_dim3 = int((stage_outputs[-3].shape[1]) ** 0.5)
-        # stage_outputs_reshape = stage_outputs[-3].view(stage_outputs[-1].shape[0], 64, 64, 96).permute(0, 3, 1, 2)
-        # x = torch.cat((x, stage_outputs[-3].view(stage_outputs[-1].shape[0], 32, 32, 96).permute(0, 3, 1, 2)), dim=1)
-        # x = torch.cat((x, stage_outputs[-3].view(stage_outputs[-1].shape[0], 56, 56, 96).permute(0, 3, 1, 2)), dim=1)
         x = torch.cat((x, stage_outputs[-3].view(stage_outputs[-3].shape[0], h_w_dim3, h_w_dim3, stage_outputs[-3].shape[2]).permute(0, 3, 1, 2)), dim=1)
         x = self.conv3(x)
 
-
-        x = self.upsample4(x)
-        x = self.upsample5(x)
+        for upsample_layer in self.final_upsample_layers:
+            x = upsample_layer(x)
+        # x = self.upsample4(x)
+        # x = self.upsample5(x)
 
         # return self.sigmoid(x)
         return self.tanh(x)
@@ -201,6 +188,7 @@ class SwinTransformer(nn.Module):
 
         self.decoder = Decoder(in_channs=int(embed_dim * (math.pow(2, len(depths) - 1))),
                                output_channels=output_channels,
+                               patch_size=patch_size,
                                )
 
     def forward(self, x):
@@ -240,6 +228,7 @@ class CustomSwinTransformer(nn.Module):
 
         self.decoder = Decoder(in_channs=int(embed_dim * (math.pow(2, len(depths) - 1))),
                                output_channels=output_channels,
+                               patch_size = patch_size,
                                )
 
     def forward(self, x):
