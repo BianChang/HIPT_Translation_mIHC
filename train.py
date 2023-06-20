@@ -319,11 +319,11 @@ def get_args():
     parser.add_argument('-e', '--epoch', dest='epoch', type=int, default=100, help='data root')
     parser.add_argument('-p', '--pretrained', dest='premodel', type=str, default='None', help='pre trained model')
     parser.add_argument('-tp', '--train_path', dest='train_path', type=str,
-                        default=r'F:\2023_4_11_data_organization\224_patches\224_small_dataset\train')
+                        default=r'F:\2023_4_11_data_organization\512_patches\train')
     parser.add_argument('-vp', '--val_path', dest='val_path', type=str,
-                        default=r'F:\2023_4_11_data_organization\224_patches\224_small_dataset\val')
+                        default=r'F:\2023_4_11_data_organization\512_patches\val')
     parser.add_argument('-test_p', '--test_path', dest='test_path', type=str,
-                        default=r'F:\2023_4_11_data_organization\224_patches\224_small_dataset\test')
+                        default=r'F:\2023_4_11_data_organization\512_patches\test')
     parser.add_argument('--net_true', dest='scratch', action='store_true')
     parser.add_argument('--net_false', dest='scratch', action='store_false')
 
@@ -390,9 +390,9 @@ if __name__ == '__main__':
     args = get_args()
     config = {
         "model_params": {
-            "img_size": [224, 224],
-            "patch_size": 4,
-            "window_size": 7,
+            "img_size": [512, 512],
+            "patch_size": 16,
+            "window_size": 32,
             "depths": [2, 2, 6, 2],
             "embed_dim": 96,
             "pretrained": not args.scratch,

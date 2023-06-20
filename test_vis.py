@@ -16,6 +16,8 @@ import logging
 import datetime
 import torch.nn
 import cv2
+from matplotlib.backends.backend_pdf import PdfPages
+import matplotlib.pyplot as plt
 
 
 def test_model(model, test_loader, device, output_dir, label_dir):
@@ -207,16 +209,16 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     config = {
         "model_params": {
-            "img_size": [224, 224],
-            "patch_size": 4,
-            "window_size": 7,
+            "img_size": [1024, 1024],
+            "patch_size": 32,
+            "window_size": 64,
             "depths": [2, 2, 6, 2],
             "embed_dim": 96,
             "pretrained": False,
         }
     }
-    # model = SwinTransformer(**config["model_params"]).to(device)
-    model = CustomSwinTransformer(**config["model_params"]).to(device)
+    model = SwinTransformer(**config["model_params"]).to(device)
+    # model = CustomSwinTransformer(**config["model_params"]).to(device)
 
     state_dict = torch.load(args.model_path, map_location=device)
     # If the model is an instance of nn.DataParallel
@@ -265,6 +267,30 @@ def main():
     visualized_labels_path = os.path.join('./visualization', args.test_name, 'labels')
     os.makedirs(visualized_labels_path, exist_ok=True)
     visualize_4channel_tif(os.path.join(label_path, 'multi_channel'),  visualized_labels_path)
+    #output pdf for visualization
+    # find common files in both directories
+    files1 = set(os.listdir(visualized_output_path))
+    files2 = set(os.listdir(visualized_labels_path))
+    common_files = files1.intersection(files2)
+    # create a pdf
+    with PdfPages(os.path.join('./visualization', args.test_name,'output.pdf')) as pdf:
+        for file in sorted(common_files):
+            # open images
+            img1 = Image.open(os.path.join(visualized_output_path, file))
+            img2 = Image.open(os.path.join(visualized_labels_path, file))
+
+            # create a figure and show images
+            fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+            axs[0].imshow(img1)
+            axs[0].set_title('Output: ' + file)
+            axs[0].axis('off')
+            axs[1].imshow(img2)
+            axs[1].set_title('Label: ' + file)
+            axs[1].axis('off')
+
+            # save the figure to pdf
+            pdf.savefig(fig)
+
 
 
 if __name__ == '__main__':
