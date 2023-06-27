@@ -29,19 +29,19 @@ y_loss['val'] = []
 
 y_ssim_dapi['train'] = []
 y_ssim_cd3['train'] = []
-y_ssim_cd20['train'] = []
+#y_ssim_cd20['train'] = []
 y_ssim_panck['train'] = []
 y_ssim_average['train'] = []
 
 y_ssim_dapi['val'] = []
 y_ssim_cd3['val'] = []
-y_ssim_cd20['val'] = []
+#y_ssim_cd20['val'] = []
 y_ssim_panck['val'] = []
 y_ssim_average['val'] = []
 
 y_ssim_dapi['test'] = []
 y_ssim_cd3['test'] = []
-y_ssim_cd20['test'] = []
+#y_ssim_cd20['test'] = []
 y_ssim_panck['test'] = []
 y_ssim_average['test'] = []
 
@@ -77,8 +77,8 @@ def train(net=None):
 
     mean_data = [0.5, 0.5, 0.5]
     std_data = [0.5, 0.5, 0.5]
-    mean_label = [0.5, 0.5, 0.5, 0.5]
-    std_label = [0.5, 0.5, 0.5, 0.5]
+    mean_label = [0.5, 0.5, 0.5]
+    std_label = [0.5, 0.5, 0.5]
 
     input_transform = Compose([
         ToTensor(),
@@ -143,7 +143,8 @@ def train(net=None):
         print('---------- Epoch:' + str(epoch) + ' ----------')
         data_loader_iter = train_loader
         train_epoch_loss = 0.
-        dapi_train, cd3_train, cd20_train, panck_train, average_train = 0, 0, 0, 0, 0
+        #dapi_train, cd3_train, cd20_train, panck_train, average_train = 0, 0, 0, 0, 0
+        dapi_train, cd3_train, panck_train, average_train = 0, 0, 0, 0
         print('Train:')
         for img, mask in tqdm(data_loader_iter, ncols=20, total=len(data_loader_iter)):
 
@@ -158,10 +159,10 @@ def train(net=None):
             mask_cpu = mask.detach().cpu()
 
             ssim_4_channel_train = calculate_ssim_per_channel(pred_cpu, mask_cpu)
-            dapi_train += ssim_4_channel_train[0]
+            dapi_train += ssim_4_channel_train[2]
             cd3_train += ssim_4_channel_train[1]
-            cd20_train += ssim_4_channel_train[2]
-            panck_train += ssim_4_channel_train[3]
+            #cd20_train += ssim_4_channel_train[2]
+            panck_train += ssim_4_channel_train[0]
             average_train += np.mean(ssim_4_channel_train)
             train_epoch_loss += train_loss.item()
 
@@ -176,8 +177,10 @@ def train(net=None):
 
         val_epoch_loss = 0
 
-        dapi_v, cd3_v, cd20_v, panck_v, average_v = 0, 0, 0, 0, 0
-        dapi_t, cd3_t, cd20_t, panck_t, average_t = 0, 0, 0, 0, 0
+        #dapi_v, cd3_v, cd20_v, panck_v, average_v = 0, 0, 0, 0, 0
+        #dapi_t, cd3_t, cd20_t, panck_t, average_t = 0, 0, 0, 0, 0
+        dapi_v, cd3_v, panck_v, average_v = 0, 0, 0, 0
+        dapi_t, cd3_t, panck_t, average_t = 0, 0, 0, 0
 
         # Validation
         print('Validation:')
@@ -193,10 +196,10 @@ def train(net=None):
 
                 val_epoch_loss += val_loss
                 ssim_4_channel_val = calculate_ssim_per_channel(predict,val_mask)
-                dapi_v += ssim_4_channel_val[0]
+                dapi_v += ssim_4_channel_val[2]
                 cd3_v += ssim_4_channel_val[1]
-                cd20_v += ssim_4_channel_val[2]
-                panck_v += ssim_4_channel_val[3]
+                #cd20_v += ssim_4_channel_val[2]
+                panck_v += ssim_4_channel_val[0]
                 average_v += np.mean(ssim_4_channel_val)
 
             # Test
@@ -209,15 +212,15 @@ def train(net=None):
                 predict1 = predict1.detach().cpu()
 
                 ssim_4_channel_test = calculate_ssim_per_channel(predict1, test_mask)
-                dapi_t += ssim_4_channel_test[0]
+                dapi_t += ssim_4_channel_test[2]
                 cd3_t += ssim_4_channel_test[1]
-                cd20_t += ssim_4_channel_test[2]
-                panck_t += ssim_4_channel_test[3]
+                #cd20_t += ssim_4_channel_test[2]
+                panck_t += ssim_4_channel_test[0]
                 average_t += np.mean(ssim_4_channel_test)
 
         batch_ssim_dapi_train = dapi_train / len(data_loader_iter)
         batch_ssim_cd3_train = cd3_train / len(data_loader_iter)
-        batch_ssim_cd20_train = cd20_train / len(data_loader_iter)
+        #batch_ssim_cd20_train = cd20_train / len(data_loader_iter)
         batch_ssim_panck_train = panck_train / len(data_loader_iter)
         batch_ssim_average_train = average_train / len(data_loader_iter)
 
@@ -225,13 +228,13 @@ def train(net=None):
         val_epoch_loss = val_epoch_loss.detach().cpu().numpy()
         batch_ssim_dapi_val = dapi_v / len(val_loader_num)
         batch_ssim_cd3_val = cd3_v / len(val_loader_num)
-        batch_ssim_cd20_val = cd20_v / len(val_loader_num)
+        #batch_ssim_cd20_val = cd20_v / len(val_loader_num)
         batch_ssim_panck_val = panck_v / len(val_loader_num)
         batch_ssim_average_val = average_v / len(val_loader_num)
 
         batch_ssim_dapi_test = dapi_t / len(test_loader_num)
         batch_ssim_cd3_test = cd3_t / len(test_loader_num)
-        batch_ssim_cd20_test = cd20_t / len(test_loader_num)
+        #batch_ssim_cd20_test = cd20_t / len(test_loader_num)
         batch_ssim_panck_test = panck_t / len(test_loader_num)
         batch_ssim_average_test = average_t / len(test_loader_num)
 
@@ -240,19 +243,19 @@ def train(net=None):
 
         y_ssim_dapi['train'].append(batch_ssim_dapi_train)
         y_ssim_cd3['train'].append(batch_ssim_cd3_train)
-        y_ssim_cd20['train'].append(batch_ssim_cd20_train)
+        #y_ssim_cd20['train'].append(batch_ssim_cd20_train)
         y_ssim_panck['train'].append(batch_ssim_panck_train)
         y_ssim_average['train'].append(batch_ssim_average_train)
 
         y_ssim_dapi['val'].append(batch_ssim_dapi_val)
         y_ssim_cd3['val'].append(batch_ssim_cd3_val)
-        y_ssim_cd20['val'].append(batch_ssim_cd20_val)
+        #y_ssim_cd20['val'].append(batch_ssim_cd20_val)
         y_ssim_panck['val'].append(batch_ssim_panck_val)
         y_ssim_average['val'].append(batch_ssim_average_val)
 
         y_ssim_dapi['test'].append(batch_ssim_dapi_test)
         y_ssim_cd3['test'].append(batch_ssim_cd3_test)
-        y_ssim_cd20['test'].append(batch_ssim_cd20_test)
+        #y_ssim_cd20['test'].append(batch_ssim_cd20_test)
         y_ssim_panck['test'].append(batch_ssim_panck_test)
         y_ssim_average['test'].append(batch_ssim_average_test)
         draw_curve(model_name, epoch)
@@ -266,7 +269,7 @@ def train(net=None):
 
         writer.add_scalar('ssim_dapi_val', batch_ssim_dapi_val, epoch)
         writer.add_scalar('ssim_cd3_val', batch_ssim_cd3_val, epoch)
-        writer.add_scalar('ssim_cd20_val', batch_ssim_cd20_val, epoch)
+        #writer.add_scalar('ssim_cd20_val', batch_ssim_cd20_val, epoch)
         writer.add_scalar('ssim_panck_val', batch_ssim_panck_val, epoch)
         writer.add_scalar('ssim_average_val', batch_ssim_average_val, epoch)
         # mylog.write('********** ' + 'lr={:.10f}'.format(scheduler.get_lr()[0]) + ' **********' + '\n')
@@ -275,10 +278,9 @@ def train(net=None):
             '--epoch:' + str(epoch) + '  --time:' + str(int(time() - tic)) + '  --train_loss:' + str(train_epoch_loss)
             + ' --val_loss:' + str(val_loss) + '\n'
             + '--ssim_dapi:' + str(batch_ssim_dapi_val) + '--ssim_cd3:' + str(batch_ssim_cd3_val)
-            + '--ssim_cd20:' + str(batch_ssim_cd20_val) + '--ssim_panck:' + str(
-                batch_ssim_panck_val) + '--ssim_average:' + str(batch_ssim_average_val) + '\n'
+            + '--ssim_panck:' + str(batch_ssim_panck_val) + '--ssim_average:' + str(batch_ssim_average_val) + '\n'
             + '--ssim_dapi_test:' + str(batch_ssim_dapi_test) + '--ssim_cd3_test:' + str(batch_ssim_cd3_test)
-            + '--ssim_cd20_test:' + str(batch_ssim_cd20_test) + '--ssim_panck_test:' + str(batch_ssim_panck_test)
+            + '--ssim_panck_test:' + str(batch_ssim_panck_test)
             + '--ssim_average_test:' + str(batch_ssim_average_test) + '\n')
         print(
             '--epoch: {} --time: {} --train_loss: {:.3f} --val_loss: {:.3f} --ssim_average_val: {:.3f} --ssim_average_test: {:.3f}'.format(
@@ -347,7 +349,7 @@ def draw_ssim_curve_val(model_name, current_epoch):
     fig2 = plt.figure("SSIM_val")
     plt.plot(x_epoch, y_ssim_dapi['val'], 'ro-', label='ssim_dapi_val')
     plt.plot(x_epoch, y_ssim_cd3['val'], 'go-', label='ssim_cd3_val')
-    plt.plot(x_epoch, y_ssim_cd20['val'], 'bo-', label='ssim_cd20_val')
+    #plt.plot(x_epoch, y_ssim_cd20['val'], 'bo-', label='ssim_cd20_val')
     plt.plot(x_epoch, y_ssim_panck['val'], 'co-', label='ssim_panck_val')
     plt.plot(x_epoch, y_ssim_average['val'], 'mo-', label='ssim_average_val')
 
@@ -363,7 +365,7 @@ def draw_ssim_curve_test(model_name, current_epoch):
     fig3 = plt.figure("SSIM_test")
     plt.plot(x_epoch, y_ssim_dapi['test'], 'ro-', label='ssim_dapi_test')
     plt.plot(x_epoch, y_ssim_cd3['test'], 'go-', label='ssim_cd3_test')
-    plt.plot(x_epoch, y_ssim_cd20['test'], 'bo-', label='ssim_cd20_test')
+    #plt.plot(x_epoch, y_ssim_cd20['test'], 'bo-', label='ssim_cd20_test')
     plt.plot(x_epoch, y_ssim_panck['test'], 'co-', label='ssim_panck_test')
     plt.plot(x_epoch, y_ssim_average['test'], 'mo-', label='ssim_average_test')
 
@@ -379,7 +381,7 @@ def draw_ssim_curve_train(model_name, current_epoch):
     fig4 = plt.figure("SSIM_train")
     plt.plot(x_epoch, y_ssim_dapi['train'], 'ro-', label='ssim_dapi_train')
     plt.plot(x_epoch, y_ssim_cd3['train'], 'go-', label='ssim_cd3_train')
-    plt.plot(x_epoch, y_ssim_cd20['train'], 'bo-', label='ssim_cd20_train')
+    #plt.plot(x_epoch, y_ssim_cd20['train'], 'bo-', label='ssim_cd20_train')
     plt.plot(x_epoch, y_ssim_panck['train'], 'co-', label='ssim_panck_train')
     plt.plot(x_epoch, y_ssim_average['train'], 'mo-', label='ssim_average_train')
     if current_epoch == 1:

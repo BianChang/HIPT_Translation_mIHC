@@ -160,7 +160,7 @@ class SwinTransformer(nn.Module):
 class SwinTransformer(nn.Module):
     def __init__(self, img_size=[224, 224], patch_size=4, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
                  num_heads=(3, 6, 12, 24), window_size=7, mlp_ratio=4., qkv_bias=False, drop_rate=0., attn_drop_rate=0.,
-                 drop_path_rate=0.1, norm_layer=nn.LayerNorm, output_channels=4, **kwargs):
+                 drop_path_rate=0.1, norm_layer=nn.LayerNorm, output_channels=3, **kwargs):
         super().__init__()
         self.img_size = img_size
         self.embed_dim = embed_dim
