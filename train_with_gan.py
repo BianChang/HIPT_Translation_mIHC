@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, ToTensor, Normalize
-from SwinVisionTranformer import SwinTransformer, CustomSwinTransformer, HybridSwinT
+from SwinVisionTranformer import SwinTransformer, CustomSwinTransformer, HybridSwinT, define_D, GANLoss
 import matplotlib.pyplot as plt
 import torch.nn.functional as F
 import os
@@ -26,6 +26,8 @@ y_ssim_average = {}
 
 y_loss['train'] = []
 y_loss['val'] = []
+y_loss['D_train'] = []
+
 
 y_ssim_dapi['train'] = []
 y_ssim_cd3['train'] = []
@@ -49,7 +51,7 @@ x_epoch = []
 fig = plt.figure()
 
 
-def train(net=None):
+def train(net=None, netD=None, Gan_weight=10):
     pre_model = args.premodel
     bs_p_card = args.batchsize
     lr = args.lr
@@ -68,13 +70,6 @@ def train(net=None):
     batch_size = BATCHSIZE_PER_CARD
 
     # Define the transforms for the input and label images
-    '''
-    mean_data = [x / 255. for x in [220.01547782, 191.56385728, 212.98354594]]
-    std_data = [x / 255. for x in [40.00758663, 50.92426149, 35.41413304]]
-    mean_label = [x / 255. for x in [0.10220867, 10.87440873, 1.94304308, 15.15272538]]
-    std_label = [x / 255. for x in [1.4342306, 11.01720706, 4.51241098, 16.71110848]]
-    '''
-
     mean_data = [0.5, 0.5, 0.5]
     std_data = [0.5, 0.5, 0.5]
     mean_label = [0.5, 0.5, 0.5]
@@ -132,33 +127,75 @@ def train(net=None):
         weights = weights.cuda()  # Move weights to GPU if available.
     criterion = ChannelWeightedFocalLoss(weights=weights, gamma=2.0)
     # criterion = torch.nn.L1Loss()
+    criterionGAN = GANLoss('lsgan').to(device)
+
 
     if torch.cuda.device_count() > 1:
         net = nn.DataParallel(net, device_ids=range(torch.cuda.device_count()))
-        net.to(device)
+        netG = net
+        netG.to(device)
+        netD.to(device)
     else:
         net.to(device)
+        netG = net
+        netG.to(device)
+        netD.to(device)
 
-    optimizer = torch.optim.Adam(net.decoder.parameters(), lr=lr, betas=(0.9, 0.999))
+
+    optimizer_G = torch.optim.Adam(netG.parameters(), lr=lr, betas=(0.9, 0.999))
+    optimizer_D = torch.optim.Adam(netD.parameters(), lr=lr, betas=(0.9, 0.999))
     # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=30, eta_min=1e-6)
-    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.1)
-
+    scheduler_G = optim.lr_scheduler.StepLR(optimizer_G, step_size=100, gamma=0.1)
+    scheduler_D = optim.lr_scheduler.StepLR(optimizer_D, step_size=100, gamma=0.1)
 
     for epoch in range(1, total_epoch + 1):
         print('---------- Epoch:' + str(epoch) + ' ----------')
         data_loader_iter = train_loader
         train_epoch_loss = 0.
+        train_epoch_D_loss = 0.
         #dapi_train, cd3_train, cd20_train, panck_train, average_train = 0, 0, 0, 0, 0
         dapi_train, cd3_train, panck_train, average_train = 0, 0, 0, 0
         print('Train:')
         for img, mask in tqdm(data_loader_iter, ncols=20, total=len(data_loader_iter)):
-
-            net.train()
-            lr = scheduler.get_lr()
+            netG.train()
+            netD.train()
+            # Move the real and masks to the device
             img, mask = img.to(device), mask.to(device)
-            optimizer.zero_grad()
-            pred = net(img)
+
+            # ---- Update Generator ----
+            optimizer_G.zero_grad()
+            pred = netG(img)
+            fake_AB = torch.cat((img, pred), 1)  # fake paired data
+            pred_fake = netD(fake_AB)
+
+            # GAN loss (Fake passability loss)
+            loss_G_GAN = criterionGAN(pred_fake, True)
+            # Content loss
             train_loss = criterion(pred, mask)
+            # Total Generator Loss
+            loss_G = loss_G_GAN + Gan_weight * train_loss
+
+            loss_G.backward()
+            optimizer_G.step()
+
+            # ---- Update Discriminator ----
+            optimizer_D.zero_grad()
+
+            # Real loss
+            real_AB = torch.cat((img, mask), 1)  # real paired data
+            pred_real = netD(real_AB)
+            loss_D_real = criterionGAN(pred_real, True)
+
+            # Fake loss
+            # Detach the fake_AB: this is a trick to prevent backpropagation to the generator
+            fake_AB = fake_AB.detach()
+            pred_fake = netD(fake_AB)
+            loss_D_fake = criterionGAN(pred_fake, False)
+
+            # Total Discriminator Loss
+            loss_D = (loss_D_real + loss_D_fake) * 0.5
+            loss_D.backward()
+            optimizer_D.step()
 
             pred_cpu = pred.detach().cpu()
             mask_cpu = mask.detach().cpu()
@@ -169,13 +206,14 @@ def train(net=None):
             #cd20_train += ssim_4_channel_train[2]
             panck_train += ssim_4_channel_train[0]
             average_train += np.mean(ssim_4_channel_train)
-            train_epoch_loss += train_loss.item()
+            train_epoch_loss += loss_G.item()
+            train_epoch_D_loss += loss_D.item()
 
-            train_loss.backward()
-            optimizer.step()
 
-        scheduler.step()
+        scheduler_G.step()
+        scheduler_D.step()
         train_epoch_loss /= len(data_loader_iter)
+        train_epoch_D_loss /= len(data_loader_iter)
 
         val_loader_num = val_loader
         test_loader_num = test_loader
@@ -245,6 +283,7 @@ def train(net=None):
 
         y_loss['train'].append(train_epoch_loss)
         y_loss['val'].append(val_epoch_loss)
+        y_loss['D_train'].append(train_epoch_D_loss)
 
         y_ssim_dapi['train'].append(batch_ssim_dapi_train)
         y_ssim_cd3['train'].append(batch_ssim_cd3_train)
@@ -268,7 +307,7 @@ def train(net=None):
         draw_ssim_curve_val(model_name, epoch)
         draw_ssim_curve_test(model_name, epoch)
 
-        writer.add_scalar('lr', optimizer.param_groups[0]['lr'], epoch)
+        writer.add_scalar('lr', optimizer_G.param_groups[0]['lr'], epoch)
         writer.add_scalar('train_loss', train_epoch_loss, epoch)
         writer.add_scalar('val_loss', val_loss, epoch)
 
@@ -278,18 +317,18 @@ def train(net=None):
         writer.add_scalar('ssim_panck_val', batch_ssim_panck_val, epoch)
         writer.add_scalar('ssim_average_val', batch_ssim_average_val, epoch)
         # mylog.write('********** ' + 'lr={:.10f}'.format(scheduler.get_lr()[0]) + ' **********' + '\n')
-        mylog.write('********** ' + 'lr={:.10f}'.format(optimizer.param_groups[0]['lr']) + ' **********' + '\n')
+        mylog.write('********** ' + 'lr={:.10f}'.format(optimizer_G.param_groups[0]['lr']) + ' **********' + '\n')
         mylog.write(
-            '--epoch:' + str(epoch) + '  --time:' + str(int(time() - tic)) + '  --train_loss:' + str(train_epoch_loss)
-            + ' --val_loss:' + str(val_loss) + '\n'
+            '--epoch:' + str(epoch) + '  --time:' + str(int(time() - tic)) + '  --train_G_loss:' + str(train_epoch_loss)
+            + ' --train_D_loss:' + str(train_epoch_D_loss) + ' --val_loss:' + str(val_loss) + '\n'
             + '--ssim_dapi:' + str(batch_ssim_dapi_val) + '--ssim_cd3:' + str(batch_ssim_cd3_val)
             + '--ssim_panck:' + str(batch_ssim_panck_val) + '--ssim_average:' + str(batch_ssim_average_val) + '\n'
             + '--ssim_dapi_test:' + str(batch_ssim_dapi_test) + '--ssim_cd3_test:' + str(batch_ssim_cd3_test)
             + '--ssim_panck_test:' + str(batch_ssim_panck_test)
             + '--ssim_average_test:' + str(batch_ssim_average_test) + '\n')
         print(
-            '--epoch: {} --time: {} --train_loss: {:.3f} --val_loss: {:.3f} --ssim_average_val: {:.3f} --ssim_average_test: {:.3f}'.format(
-                epoch, int(time() - tic), train_epoch_loss, val_epoch_loss, batch_ssim_average_val,
+            '--epoch: {} --time: {} --train_G_loss: {:.3f} --train_D_loss: {:.3f} --val_loss: {:.3f} --ssim_average_val: {:.3f} --ssim_average_test: {:.3f}'.format(
+                epoch, int(time() - tic), train_epoch_loss, train_epoch_D_loss, val_epoch_loss, batch_ssim_average_val,
                 batch_ssim_average_test))
 
         if not os.path.exists('./weights/' + model_name + '/'):
@@ -333,14 +372,16 @@ def get_args():
                         default=r'F:\2023_4_11_data_organization\1024_patches\bci_debug\test')
     parser.add_argument('--net_true', dest='scratch', action='store_true')
     parser.add_argument('--net_false', dest='scratch', action='store_false')
+    parser.add_argument('-w', '--Gan_weight', dest='Gan_weight', type=float, default=10)
 
     return parser.parse_args()
 
 def draw_curve(model_name, current_epoch):
     x_epoch.append(current_epoch)
     fig1 = plt.figure("loss")
-    plt.plot(x_epoch, y_loss['train'], 'bo-', label='train')
-    plt.plot(x_epoch, y_loss['val'], 'ro-', label='val')
+    plt.plot(x_epoch, y_loss['train'], 'bo-', label='Train Loss (Generator)')
+    plt.plot(x_epoch, y_loss['D_train'], 'go-', label='Train Loss (Discriminator)')
+    plt.plot(x_epoch, y_loss['val'], 'ro-', label='Validation Loss')
 
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
@@ -349,6 +390,7 @@ def draw_curve(model_name, current_epoch):
     if current_epoch == 1:
         plt.legend()
     fig1.savefig(os.path.join('./lossGraphs', model_name + '_train.jpg'))
+
 
 def draw_ssim_curve_val(model_name, current_epoch):
     fig2 = plt.figure("SSIM_val")
@@ -406,17 +448,32 @@ if __name__ == '__main__':
         }
     }
 
+    # Define the configuration dictionary
+    configD = {
+        'input_nc': 6,  # input channels + output channels
+        'ndf': 64,
+        'netD': 'basic',
+        'n_layers_D': 3,
+        'norm': 'instance',
+        'init_type': 'normal',
+        'init_gain': 0.02
+    }
+
     if args.scratch == True:
-        #net = SwinTransformer(**config["model_params"])
+        # net = SwinTransformer(**config["model_params"])
         net = HybridSwinT(**config["model_params"])
+        # Pass the configuration to the function
+        netD = define_D(**configD)
     else:
         net = CustomSwinTransformer(**config["model_params"])
+        # Pass the configuration to the function
+        netD = define_D(**configD)
 
     if args.premodel != 'None':
         pretrained_model = torch.load(args.premodel)
         net.load_state_dict(pretrained_model)
 
     print(args.scratch)
-    train(net)
+    train(net, netD, args.Gan_weight)
 
 

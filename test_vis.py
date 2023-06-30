@@ -180,7 +180,7 @@ def save_outputs(output, filename, output_dir):
     output_path = os.path.join(multi_channel_dir, f'{base_filename}.tif')
     imwrite(output_path, output)
     '''
-    colors = {0: [255, 0, 0], 1: [0, 255, 0], 3: [0, 0, 255]}
+    colors = {0: [255, 0, 0], 1: [0, 255, 0], 2: [0, 0, 255]}
 
     channel_names = ['panck', 'cd3', 'dapi']
     for i, channel_name in enumerate(channel_names):
@@ -286,7 +286,8 @@ def main():
     print('PANCK psnr: {:.3f}'.format(psnr_panck))
     print('AVERAGE psnr: {:.3f}'.format(average_psnr))
 
-    # Visualize outputs
+    '''
+    # Visualize outputs for 4 channel
     visualized_output_path = os.path.join('./visualization', args.test_name, 'preds')
     os.makedirs(visualized_output_path, exist_ok=True)
     visualize_4channel_tif(os.path.join(output_path, 'multi_channel'), visualized_output_path)
@@ -294,17 +295,21 @@ def main():
     visualized_labels_path = os.path.join('./visualization', args.test_name, 'labels')
     os.makedirs(visualized_labels_path, exist_ok=True)
     visualize_4channel_tif(os.path.join(label_path, 'multi_channel'),  visualized_labels_path)
+    '''
     #output pdf for visualization
     # find common files in both directories
-    files1 = set(os.listdir(visualized_output_path))
-    files2 = set(os.listdir(visualized_labels_path))
+    # files1 = set(os.listdir(visualized_output_path))
+    # files2 = set(os.listdir(visualized_labels_path))
+    files1 = set(os.listdir(os.path.join('./output', args.test_name, 'preds', 'multi_channel')))
+    files2 = set(os.listdir(os.path.join('./output', args.test_name, 'labels', 'multi_channel')))
     common_files = files1.intersection(files2)
     # create a pdf
+    os.makedirs(os.path.join('./visualization', args.test_name), exist_ok=True)
     with PdfPages(os.path.join('./visualization', args.test_name,'output.pdf')) as pdf:
         for file in sorted(common_files):
             # open images
-            img1 = Image.open(os.path.join(visualized_output_path, file))
-            img2 = Image.open(os.path.join(visualized_labels_path, file))
+            img1 = Image.open(os.path.join(os.path.join('./output', args.test_name, 'preds', 'multi_channel'), file))
+            img2 = Image.open(os.path.join(os.path.join('./output', args.test_name, 'preds', 'multi_channel'), file))
 
             # create a figure and show images
             fig, axs = plt.subplots(1, 2, figsize=(10, 5))

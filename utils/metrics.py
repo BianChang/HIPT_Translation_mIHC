@@ -3,6 +3,9 @@ from torchmetrics import StructuralSimilarityIndexMeasure
 import torch.nn.functional as F
 import numpy as np
 from skimage.metrics import structural_similarity as ssim
+from skimage.metrics import peak_signal_noise_ratio
+import torch.nn as nn
+
 
 
 def calculate_ssim_per_channel(input_tensor, target_tensor):
@@ -79,6 +82,7 @@ def calculate_pearson_corr(input_tensor, target_tensor):
         pearson_corr_scores.append(corr_coef)
 
         # Calculate psnr
+        '''
         mse_loss = F.mse_loss(input_channel_tensor, target_channel_tensor)
         if mse_loss < 1.0e-10:
             psnr = torch.tensor(100.)
@@ -86,10 +90,37 @@ def calculate_pearson_corr(input_tensor, target_tensor):
             # if the image is -1 to 1
             max_val = 2.0
             psnr = 20 * torch.log10(max_val / torch.sqrt(mse_loss))
-
+            
         psnr_scores.append(psnr.item())
+        '''
+        psnr = peak_signal_noise_ratio(input_channel_tensor, target_channel_tensor)
+
+        psnr_scores.append(psnr)
 
     return pearson_corr_scores, psnr_scores
+
+
+class ChannelWeightedFocalLoss(nn.Module):
+    def __init__(self, weights, gamma=2.0):
+        super(ChannelWeightedFocalLoss, self).__init__()
+        self.weights = weights
+        self.gamma = gamma
+
+    def forward(self, inputs, targets):
+        # Normalize the inputs and targets to [0, 1]
+        inputs = (inputs + 1) / 2
+        targets = (targets + 1) / 2
+
+        # Compute the standard L1Loss
+        L1_loss = F.l1_loss(inputs, targets, reduction='none')
+        # Convert the L1Loss to 'pseudo probabilities', in [0,1]
+        pt = torch.exp(-L1_loss)
+
+        # Compute the Focal Loss
+        weights = self.weights.view(1, -1, 1, 1)
+        F_loss = weights * (1-pt)**self.gamma * L1_loss
+
+        return F_loss.mean()
 
 
 
