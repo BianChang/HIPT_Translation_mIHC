@@ -99,7 +99,7 @@ def save_outputs(output, filename, output_dir):
     # Convert the image values back to [0, 255] from [0, 1]
     output = (output.cpu().detach().numpy() * 255).astype(np.uint8)
     output_path = os.path.join(output_dir, f'{base_filename}.png')
-    imwrite(output_path, output)
+    cv.imwrite(output_path, output)
 
 
 def psnr_and_ssim_and_pearson(output_dir, label_dir):
@@ -204,7 +204,7 @@ def main():
         for file in sorted(common_files):
             # open images
             img1 = Image.open(os.path.join(os.path.join('./output', args.test_name, 'preds'), file))
-            img2 = Image.open(os.path.join(os.path.join('./output', args.test_name, 'preds'), file))
+            img2 = Image.open(os.path.join(os.path.join('./output', args.test_name, 'labels'), file))
 
             # create a figure and show images
             fig, axs = plt.subplots(1, 2, figsize=(10, 5))

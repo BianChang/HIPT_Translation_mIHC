@@ -230,15 +230,15 @@ def train(net=None, netD=None, Gan_weight=10):
         with torch.no_grad():
             for val_img, val_mask in tqdm(val_loader_num, ncols=20, total=len(val_loader_num)):
                 val_img, val_mask = val_img.to(device), val_mask.to(device)
-                net.eval()
-                predict = net(val_img)
+                netG.eval()
+                predict = netG(val_img)
                 val_loss = criterion(predict, val_mask)
 
                 predict = predict.detach().cpu()
                 val_mask = val_mask.detach().cpu()
 
                 val_epoch_loss += val_loss
-                ssim_4_channel_val = calculate_ssim_per_channel(predict,val_mask)
+                ssim_4_channel_val = calculate_ssim_per_channel(predict, val_mask)
                 dapi_v += ssim_4_channel_val[2]
                 cd3_v += ssim_4_channel_val[1]
                 #cd20_v += ssim_4_channel_val[2]
@@ -249,8 +249,8 @@ def train(net=None, netD=None, Gan_weight=10):
             print('Test:')
             for test_img, test_mask in tqdm(test_loader_num, ncols=20, total=len(test_loader_num)):
                 test_img, test_mask = test_img.to(device), test_mask.to(device)
-                net.eval()
-                predict1 = net(test_img)
+                netG.eval()
+                predict1 = netG(test_img)
                 test_mask = test_mask.detach().cpu()
                 predict1 = predict1.detach().cpu()
 
