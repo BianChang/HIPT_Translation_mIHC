@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4d3ee66f-d13f-4c3c-837e-e8865e75facd" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../utils/DrawGraphics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SwinVisionTranformer.py" beforeDir="false" afterPath="$PROJECT_DIR$/../SwinVisionTranformer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../test_vis_BCI.py" beforeDir="false" afterPath="$PROJECT_DIR$/../test_vis_BCI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../train.py" beforeDir="false" afterPath="$PROJECT_DIR$/../train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../train_with_gan.py" beforeDir="false" afterPath="$PROJECT_DIR$/../train_with_gan.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="2VtT6dcoLLw1Ss7l1laeVBF7TtH" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "D:/software/Anaconda/envs/Pytorch_basic/python.exe"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4d3ee66f-d13f-4c3c-837e-e8865e75facd" name="Changes" comment="" />
+      <created>1695654203188</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1695654203188</updated>
+    </task>
+    <servers />
+  </component>
+</project>

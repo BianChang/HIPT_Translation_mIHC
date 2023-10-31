@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, ToTensor, Normalize
-from SwinVisionTranformer import SwinTransformer, CustomSwinTransformer, HybridSwinT
+from SwinVisionTranformer import SwinTransformer, CustomSwinTransformer, HybridSwinT, SwinUnetGenerator, ResnetGeneratorSwinT
 import matplotlib.pyplot as plt
 import torch.nn.functional as F
 import os
@@ -15,6 +15,7 @@ import argparse
 import warnings
 from time import time
 from tqdm import tqdm
+import functools
 
 
 y_loss = {}  # loss history
@@ -139,7 +140,7 @@ def train(net=None):
     else:
         net.to(device)
 
-    optimizer = torch.optim.Adam(net.decoder.parameters(), lr=lr, betas=(0.9, 0.999))
+    optimizer = torch.optim.Adam(net.parameters(), lr=lr, betas=(0.9, 0.999))
     # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=30, eta_min=1e-6)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.1)
 
@@ -395,20 +396,39 @@ def draw_ssim_curve_train(model_name, current_epoch):
 
 if __name__ == '__main__':
     args = get_args()
+    '''
     config = {
         "model_params": {
-            "img_size": [256, 256],
+            "img_size": [128, 128],
             "patch_size": 4,
             "window_size": 8,
+            "in_chans": 3,
             "depths": [2, 2, 6, 2],
             "embed_dim": 96,
             "pretrained": not args.scratch,
+            "cnn_channels": [16, 32, 64],
+        }
+    }
+    '''
+    config = {
+        "model_params": {
+            "input_nc": 3,
+            "output_nc": 3,
+            "norm_layer": functools.partial(nn.BatchNorm2d, affine=True, track_running_stats=True),
+            "img_size": [1024, 1024],
+            "patch_size": 32,
+            "window_size": 64,
+            "depths": [2, 2, 6, 2],
+            "embed_dim": 96
         }
     }
 
+
     if args.scratch == True:
         #net = SwinTransformer(**config["model_params"])
-        net = HybridSwinT(**config["model_params"])
+        #net = HybridSwinT(**config["model_params"])
+        #net = SwinUnetGenerator(**config["model_params"])
+        net = ResnetGeneratorSwinT(**config["model_params"])
     else:
         net = CustomSwinTransformer(**config["model_params"])
 

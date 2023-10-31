@@ -2,7 +2,7 @@ import tifffile
 import torch
 from torchvision.transforms import Normalize, ToTensor, Compose
 from torch.utils.data import DataLoader
-from SwinVisionTranformer import SwinTransformer, CustomSwinTransformer
+from SwinVisionTranformer import SwinTransformer, CustomSwinTransformer, HybridSwinT
 from dataset.ImageToImageDataset import ImageToImageDatasetWithName
 from utils.visulization import visualize_4channel_tif
 from utils.metrics import calculate_ssim_per_channel, calculate_pearson_corr
@@ -98,8 +98,12 @@ def save_outputs(output, filename, output_dir):
     output = (output + 1.0) / 2.0
     # Convert the image values back to [0, 255] from [0, 1]
     output = (output.cpu().detach().numpy() * 255).astype(np.uint8)
+
+    # Convert the image to RGB format
+    output_rgb = cv.cvtColor(output, cv.COLOR_BGR2RGB)
+
     output_path = os.path.join(output_dir, f'{base_filename}.png')
-    cv.imwrite(output_path, output)
+    cv.imwrite(output_path, output_rgb)
 
 
 def psnr_and_ssim_and_pearson(output_dir, label_dir):
@@ -164,16 +168,17 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     config = {
         "model_params": {
-            "img_size": [1024, 1024],
-            "patch_size": 32,
-            "window_size": 64,
+            "img_size": [256, 256],
+            "patch_size": 2,
+            "window_size": 4,
             "depths": [2, 2, 6, 2],
             "embed_dim": 96,
             "pretrained": False,
         }
     }
-    model = SwinTransformer(**config["model_params"]).to(device)
+    # model = SwinTransformer(**config["model_params"]).to(device)
     # model = CustomSwinTransformer(**config["model_params"]).to(device)
+    model = HybridSwinT(**config["model_params"]).to(device)
 
     state_dict = torch.load(args.model_path, map_location=device)
     # If the model is an instance of nn.DataParallel

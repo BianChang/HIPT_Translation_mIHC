@@ -173,7 +173,7 @@ def train(net=None, netD=None, Gan_weight=10):
             # Content loss
             train_loss = criterion(pred, mask)
             # Total Generator Loss
-            loss_G = loss_G_GAN + Gan_weight * train_loss
+            loss_G = Gan_weight * loss_G_GAN + train_loss
 
             loss_G.backward()
             optimizer_G.step()

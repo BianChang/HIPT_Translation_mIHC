@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-from torch import einsum
 from timm.models.layers import DropPath, to_2tuple
 from timm.models.swin_transformer import SwinTransformerBlock
 import math
@@ -9,8 +8,6 @@ from timm.models.swin_transformer import PatchMerging, PatchEmbed
 import timm
 import functools
 from torch.nn import init
-from einops import rearrange, repeat
-import torch.nn.functional as F
 
 
 class Decoder(nn.Module):
@@ -62,7 +59,6 @@ class Decoder_hbrid(nn.Module):
     def __init__(self, in_channs, output_channels, patch_size):
         super().__init__()
 
-        '''
         self.upsample1 = nn.ConvTranspose2d(in_channs, in_channs // 2, kernel_size=2, stride=2)
         self.conv1 = nn.Conv2d(in_channs, in_channs // 2, kernel_size=3, padding=1)
 
@@ -71,107 +67,37 @@ class Decoder_hbrid(nn.Module):
 
         self.upsample3 = nn.ConvTranspose2d(in_channs // 4, in_channs // 8, kernel_size=2, stride=2)
         self.conv3 = nn.Conv2d(in_channs // 4, in_channs // 8, kernel_size=3, padding=1)
-        '''
 
-        # Replace ConvTranspose with Upsample + Convolution
-        self.upsample_and_conv1 = nn.Sequential(
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True),
-            nn.Conv2d(in_channs, in_channs // 2, kernel_size=3, padding=1)
-        )
-        self.conv1 = nn.Conv2d(in_channs, in_channs // 2, kernel_size=3, padding=1)
-
-        self.upsample_and_conv2 = nn.Sequential(
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True),
-            nn.Conv2d(in_channs // 2, in_channs // 4, kernel_size=3, padding=1)
-        )
-        self.conv2 = nn.Conv2d(in_channs // 2, in_channs // 4, kernel_size=3, padding=1)
-
-        self.upsample_and_conv3 = nn.Sequential(
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True),
-            nn.Conv2d(in_channs // 4, in_channs // 8, kernel_size=3, padding=1)
-        )
-        self.conv3 = nn.Conv2d(in_channs // 4, in_channs // 8, kernel_size=3, padding=1)
-
-        #upsampling_factor = int(math.log(patch_size, 2)) + 3
-        '''
+        upsampling_factor = int(math.log(patch_size, 2))+2
         self.final_upsample_layers = nn.ModuleList(
             [nn.ConvTranspose2d(in_channs // 8, output_channels if i == upsampling_factor - 1 else in_channs // 8,
                                 kernel_size=2, stride=2) for i
              in range(upsampling_factor)])
-        '''
-
-
-        self.upsample_and_conv4 = nn.Sequential(
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True),
-            nn.Conv2d(96, 48, kernel_size=3, padding=1)
-        )
-        self.upsample_and_conv5 = nn.Sequential(
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True),
-            nn.Conv2d(48, 24, kernel_size=3, padding=1)
-        )
-
-        self.conv4 = nn.Conv2d(88, 44, kernel_size=3, padding=1)
-
-        self.upsample_and_conv6 = nn.Sequential(
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True),
-            nn.Conv2d(44, 22, kernel_size=3, padding=1)
-        )
-
-        self.conv5 = nn.Conv2d(54, 27, kernel_size=3, padding=1)
-
-        self.upsample_and_conv7 = nn.Sequential(
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True),
-            nn.Conv2d(27, 14, kernel_size=3, padding=1)
-        )
-
-        self.conv6 = nn.Conv2d(30, 15, kernel_size=3, padding=1)
-
-        self.upsample_and_conv8 = nn.Sequential(
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True),
-            nn.Conv2d(15, 3, kernel_size=3, padding=1)
-        )
 
         self.sigmoid = nn.Sigmoid()
         self.tanh = nn.Tanh()
 
 
     def forward(self, x, stage_outputs):
-        x = self.upsample_and_conv1(x)
+        x = self.upsample1(x)
         h_w_dim = int((stage_outputs[-1].shape[1]) ** 0.5)
         x = torch.cat((x, stage_outputs[-1].view(stage_outputs[-1].shape[0], h_w_dim, h_w_dim, stage_outputs[-1].shape[2]).permute(0, 3, 1, 2)), dim=1)
         x = self.conv1(x)
 
-        x = self.upsample_and_conv2(x)
+        x = self.upsample2(x)
         h_w_dim2 = int((stage_outputs[-2].shape[1]) ** 0.5)
         x = torch.cat((x, stage_outputs[-2].view(stage_outputs[-2].shape[0], h_w_dim2, h_w_dim2, stage_outputs[-2].shape[2]).permute(0, 3, 1, 2)), dim=1)
         x = self.conv2(x)
 
-        x = self.upsample_and_conv3(x)
+        x = self.upsample3(x)
         h_w_dim3 = int((stage_outputs[-3].shape[1]) ** 0.5)
         x = torch.cat((x, stage_outputs[-3].view(stage_outputs[-3].shape[0], h_w_dim3, h_w_dim3, stage_outputs[-3].shape[2]).permute(0, 3, 1, 2)), dim=1)
         x = self.conv3(x)
 
-        x = self.upsample_and_conv4(x)
-        x = self.upsample_and_conv5(x)
-
-        x = torch.cat((x, stage_outputs[-4]), dim=1)
-        x = self.conv4(x)
-
-        x = self.upsample_and_conv6(x)
-
-        x = torch.cat((x, stage_outputs[-5]), dim=1)
-        x = self.conv5(x)
-
-        x = self.upsample_and_conv7(x)
-
-        x = torch.cat((x, stage_outputs[-6]), dim=1)
-        x = self.conv6(x)
-
-        x = self.upsample_and_conv8(x)
-
+        for upsample_layer in self.final_upsample_layers:
+            x = upsample_layer(x)
 
         return self.tanh(x)
-
 
 '''
 class SwinTransformer(nn.Module):
@@ -379,16 +305,14 @@ class CustomSwinTransformer(nn.Module):
 class HybridSwinT(nn.Module):
     def __init__(self, img_size=[224, 224], patch_size=4, in_chans=3, embed_dim=96, depths=[2, 2, 6, 2],
                  num_heads=(3, 6, 12, 24), window_size=7, mlp_ratio=4., qkv_bias=False, drop_rate=0., attn_drop_rate=0.,
-                 drop_path_rate=0.1, norm_layer=nn.LayerNorm, output_channels=3, cnn_channels=[16, 32, 64], **kwargs):
+                 drop_path_rate=0.1, norm_layer=nn.LayerNorm, output_channels=3, **kwargs):
         super().__init__()
         self.img_size = img_size
         self.embed_dim = embed_dim
         self.depths = depths
         self.patch_size = patch_size
         self.last_stage_dim = embed_dim * (2 ** (len(depths) - 1))
-        self.cnn_depths = cnn_channels
 
-        '''
         # Add a block of convolutional layers
         self.cnn_block = nn.Sequential(
             nn.Conv2d(in_chans, 32, kernel_size=3, stride=1, padding=1),
@@ -400,19 +324,6 @@ class HybridSwinT(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(2, 2),  # Reduce spatial dimensions by half
         )
-        '''
-        # Customizable depths for the CNN module
-        layers = []
-        in_channels = in_chans
-        for channel in cnn_channels:
-            layers.extend([
-                nn.Conv2d(in_channels, channel, kernel_size=3, stride=1, padding=1),
-                nn.BatchNorm2d(channel),
-                nn.ReLU(),
-                nn.MaxPool2d(2, 2)  # Reduce spatial dimensions by half
-            ])
-            in_channels = channel
-        self.cnn_block = nn.Sequential(*layers)
 
         # create the Swin Transformer model
         self.model = timm.models.swin_transformer.SwinTransformer(
@@ -440,13 +351,7 @@ class HybridSwinT(nn.Module):
     def forward(self, x):
         self.stage_outputs = []
         # Pass the input through the cnn_block first
-        # x = self.cnn_block(x)
-        for layer in self.cnn_block:
-            x = layer(x)
-            print(x.shape)
-            if isinstance(layer, nn.MaxPool2d):
-                self.stage_outputs.append(x)
-
+        x = self.cnn_block(x)
         B, C, H, W = x.shape
 
         x = self.model.patch_embed(x)
@@ -455,7 +360,6 @@ class HybridSwinT(nn.Module):
         for stage in self.model.layers:
             for blk in stage.blocks:
                 x = blk(x)
-                print(x.shape)
             if stage.downsample is not None:
                 self.stage_outputs.append(x)
                 x = stage.downsample(x)
@@ -734,546 +638,3 @@ class GANLoss(nn.Module):
                 loss = prediction.mean()
         return loss
 
-
-class SwinUnetGenerator(nn.Module):
-    def __init__(self, input_nc=3, output_nc=3, num_downs=10, ngf=64, norm_layer=nn.BatchNorm2d,
-                 norm_layer_swinT=nn.LayerNorm, use_dropout=False,
-                 img_size=1024, patch_size=4, embed_dim=96, depths=[2, 2, 6, 2], num_heads=[3, 6, 12, 24],
-                 window_size=7, mlp_ratio=4., qkv_bias=True, drop_rate=0., attn_drop_rate=0., drop_path_rate=0.2):
-        super(SwinUnetGenerator, self).__init__()
-
-        # UNet branch
-        # Downsampling layers
-        self.down_layers = nn.ModuleList()
-        for i in range(num_downs):
-            in_channels = input_nc if i == 0 else min(ngf * (2 ** (i - 1)), ngf * 8)
-            out_channels = min(ngf * (2 ** i), ngf * 8)
-            is_innermost = (i == num_downs - 1)  # Check if it's the innermost layer
-            self.down_layers.append(
-                self.get_down_layer(in_channels, out_channels, norm_layer, use_dropout, is_innermost))
-
-
-        # Upsampling layers
-        self.up_layers = nn.ModuleList()
-        # Define channel configurations for each layer
-        channel_configs = [
-            (ngf * 8, ngf * 8),  # i == 0 (innermost)
-            (ngf * 16, ngf * 8),  # i == 1
-            (ngf * 16, ngf * 8),  # i == 2
-            (ngf * 16, ngf * 8),  # i == 3
-            (ngf * 16, ngf * 8),  # i == 4
-            (ngf * 16, ngf * 8),  # i == 5
-            (ngf * 16, ngf * 4),  # i == 6
-            (ngf * 8, ngf * 2),  # i == 7
-            (ngf * 4, ngf),  # i == 8
-        ]
-
-        for i in range(num_downs - 1):
-            in_channels, out_channels = channel_configs[i]
-            self.up_layers.append(self.get_up_layer(in_channels, out_channels, norm_layer, use_dropout))
-
-        # Final layer
-        self.final_layer = nn.Sequential(
-            nn.ConvTranspose2d(ngf * 2, output_nc, kernel_size=4, stride=2, padding=1),
-            nn.Tanh()
-        )
-
-        # Swin Transformer branch
-        self.swinT = timm.models.swin_transformer.SwinTransformer(
-            img_size=img_size,
-            patch_size=patch_size,
-            in_chans=input_nc,
-            embed_dim=embed_dim,
-            depths=depths,
-            num_heads=num_heads,
-            window_size=window_size,
-            mlp_ratio=mlp_ratio,
-            qkv_bias=qkv_bias,
-            drop_rate=drop_rate,
-            attn_drop_rate=attn_drop_rate,
-            drop_path_rate=drop_path_rate,
-            norm_layer=norm_layer_swinT
-        )
-        self.swinT.head = nn.Identity()  # remove classification head
-
-        self.cross_atts = nn.ModuleList([
-            Cross_Att(ngf * 8, embed_dim * 2),
-            Cross_Att(ngf * 8, embed_dim * 4),
-            Cross_Att(ngf * 8, embed_dim * 8),
-        ])
-
-        self.cnn_starting_index = math.log2(patch_size)
-        self.patch_projector = nn.Conv2d(input_nc, embed_dim, kernel_size=1, stride=1, bias=True)
-
-    def get_down_layer(self, in_channels, out_channels, norm_layer, use_dropout, is_innermost):
-        layers = [
-            nn.Conv2d(in_channels, out_channels, kernel_size=4, stride=2, padding=1),
-            nn.LeakyReLU(0.2, True)
-        ]
-        if not is_innermost:  # Only add normalization layer if it's not the innermost layer
-            layers.append(norm_layer(out_channels))
-        if use_dropout:
-            layers.append(nn.Dropout(0.5))
-        return nn.Sequential(*layers)
-
-    def get_up_layer(self, in_channels, out_channels, norm_layer, use_dropout):
-        layers = [
-            nn.ConvTranspose2d(in_channels, out_channels, kernel_size=4, stride=2, padding=1),
-            nn.ReLU(True),
-            norm_layer(out_channels)
-        ]
-        if use_dropout:
-            layers.append(nn.Dropout(0.5))
-        return nn.Sequential(*layers)
-
-    @staticmethod
-    def patch_partition(x, patch_size, overlap_rate):
-        stride_h = int(patch_size[0] * (1 - overlap_rate))
-        stride_w = int(patch_size[1] * (1 - overlap_rate))
-        stride = (stride_h, stride_w)
-
-        B, C, H, W = x.size()
-
-        # Padding might be needed if the defined stride doesn't perfectly divide the height and width
-        pad_H = (stride[0] - H % stride[0]) % stride[0]
-        pad_W = (stride[1] - W % stride[1]) % stride[1]
-
-        x = F.pad(x, (0, 0, 0, pad_H, 0, pad_W), mode='constant', value=0)
-
-        I_h = torch.arange(0, H + pad_H - patch_size[0] + 1, stride[0]).long()
-        I_w = torch.arange(0, W + pad_W - patch_size[1] + 1, stride[1]).long()
-
-        patches = torch.stack([x[:, :, i:i + patch_size[0], j:j + patch_size[1]] for i in I_h for j in I_w])
-        patches = patches.permute(1, 0, 2, 3, 4).reshape(B, -1, C * patch_size[0] * patch_size[1])
-
-        return patches
-
-    def forward(self, x):
-        x0 = x
-        unet_features = []
-        swinT_features = []
-        skip_connections = []
-
-        # unet processing
-        for down_layer in self.down_layers:
-            x = down_layer(x)
-            skip_connections.append(x)
-            if x.shape[2] == 16 or x.shape[2] == 8 or x.shape[2] == 4:
-                unet_features.append(x)
-                skip_connections[-1] = unet_features[-1]
-        skip_connections = skip_connections[:-1] # Remove the last
-
-        # SwinT processing
-        B, C, H, W = x0.shape
-        print('img shape: ', B, C, H, W)
-        x2 = self.swinT.patch_embed(x0)
-        x2 = self.swinT.pos_drop(x2)
-        for stage in self.swinT.layers:
-            for blk in stage.blocks:
-                x2 = blk(x2)
-            if stage.downsample is not None:
-                x2 = stage.downsample(x2)
-                h_w_dim = int((x2.shape[1]) ** 0.5)
-                print('h_w_dim:', h_w_dim)
-                swinT_features.append(x2.view(x2.shape[0], h_w_dim, h_w_dim,
-                                              x2.shape[2]).permute(0, 3, 1, 2))
-
-        # Apply Cross Attention at each scale
-        for i in range(len(self.cross_atts)):
-            #unet_features[i], swinT_features[i] = self.cross_atts[i](unet_features[i], swinT_features[i])
-            unet_features[i] = self.cross_atts[i](unet_features[i], swinT_features[i])
-        skip_connections[int(self.cnn_starting_index)] = unet_features[0]
-        skip_connections[int(self.cnn_starting_index + 1)] = unet_features[1]
-        skip_connections[int(self.cnn_starting_index + 2)] = unet_features[2]
-        skip_connections = skip_connections[::-1]
-
-        for up_layer, skip in zip(self.up_layers, skip_connections):
-            x = up_layer(x)
-            x = torch.cat([x, skip], dim=1)
-
-        return self.final_layer(x)
-
-
-class PreNorm(nn.Module):
-    def __init__(self, dim, fn):
-        super().__init__()
-        self.norm = nn.LayerNorm(dim)
-        self.fn = fn
-    def forward(self, x, **kwargs):
-        return self.fn(self.norm(x), **kwargs)
-
-
-class FeedForward(nn.Module):
-    def __init__(self, dim, hidden_dim, dropout = 0.):
-        super().__init__()
-        self.net = nn.Sequential(
-            nn.Linear(dim, hidden_dim),
-            nn.GELU(),
-            nn.Dropout(dropout),
-            nn.Linear(hidden_dim, dim),
-            nn.Dropout(dropout)
-        )
-    def forward(self, x):
-        return self.net(x)
-
-
-class Attention(nn.Module):
-    def __init__(self, dim, heads = 8, dim_head = 64, dropout = 0.):
-        super().__init__()
-        inner_dim = dim_head *  heads
-        project_out = not (heads == 1 and dim_head == dim)
-
-        self.heads = heads
-        self.scale = dim_head ** -0.5
-
-        self.to_qkv = nn.Linear(dim, inner_dim * 3, bias = False)
-
-        self.to_out = nn.Sequential(
-            nn.Linear(inner_dim, dim),
-            nn.Dropout(dropout)
-        ) if project_out else nn.Identity()
-
-    def forward(self, x):
-        b, n, _, h = *x.shape, self.heads
-        qkv = self.to_qkv(x).chunk(3, dim = -1)
-        q, k, v = map(lambda t: rearrange(t, 'b n (h d) -> b h n d', h = h), qkv)
-
-        dots = einsum('b h i d, b h j d -> b h i j', q, k) * self.scale
-
-        attn = dots.softmax(dim=-1)
-
-        out = einsum('b h i j, b h j d -> b h i d', attn, v)
-        out = rearrange(out, 'b h n d -> b n (h d)')
-        out = self.to_out(out)
-        return out
-
-
-class Transformer(nn.Module):
-    def __init__(self, dim, depth, heads, dim_head, mlp_dim, dropout = 0.):
-        super().__init__()
-        self.layers = nn.ModuleList([])
-        for _ in range(depth):
-            self.layers.append(nn.ModuleList([
-                PreNorm(dim, Attention(dim, heads = heads, dim_head = dim_head, dropout = dropout)),
-                PreNorm(dim, FeedForward(dim, mlp_dim, dropout = dropout))
-            ]))
-    def forward(self, x):
-        for attn, ff in self.layers:
-            x = attn(x) + x
-            x = ff(x) + x
-        return x
-
-
-class Cross_Att(nn.Module):
-    def __init__(self, dim_cnn, dim_swinT):
-        super().__init__()
-        self.transformer_unet = Transformer(dim=dim_cnn, depth=1, heads=3, dim_head=32, mlp_dim=128)
-        # self.transformer_swinT = Transformer(dim=dim_swinT, depth=1, heads=1, dim_head=64, mlp_dim=256)
-        # self.norm_unet = nn.LayerNorm(dim_cnn)
-        self.norm_swinT = nn.LayerNorm(dim_swinT)
-        self.avgpool = nn.AdaptiveAvgPool1d(1)
-        self.linear_unet = nn.Linear(dim_cnn, dim_swinT)
-        self.linear_swinT = nn.Linear(dim_swinT, dim_cnn)
-        self.gate = nn.Sequential(
-            nn.Conv2d(dim_cnn, dim_cnn, kernel_size=1),
-            nn.Sigmoid()
-        )
-
-    def forward(self, cnn_feature, swinT_feature):
-        original_cnn_feature = cnn_feature.clone()
-        gate_values = self.gate(original_cnn_feature)
-        b_u, c_u, h_u, w_u = cnn_feature.shape
-        cnn_feature = cnn_feature.reshape(b_u, c_u, -1).permute(0, 2, 1)
-        b_s, c_s, h_s, w_s = swinT_feature.shape
-        swinT_feature = swinT_feature.reshape(b_s, c_s, -1).permute(0, 2, 1)
-        swinT_t = torch.flatten(self.avgpool(self.norm_swinT(swinT_feature).transpose(1,2)), 1)
-        swinT_t = self.linear_swinT(swinT_t).unsqueeze(1)
-        cnn_feature = self.transformer_unet(torch.cat([swinT_t, cnn_feature],dim=1))[:, 1:, :]
-        cnn_feature = cnn_feature.permute(0, 2, 1).reshape(b_u, c_u, h_u, w_u)
-        cnn_feature_output = gate_values * cnn_feature + (1 - gate_values) * original_cnn_feature
-
-        return cnn_feature_output
-
-
-class ResnetGeneratorSwinT(nn.Module):
-    """Resnet-based generator that consists of Resnet blocks between a few downsampling/upsampling operations.
-
-    We adapt Torch code and idea from Justin Johnson's neural style transfer project(https://github.com/jcjohnson/fast-neural-style)
-    """
-
-    def __init__(self, input_nc, output_nc, ngf=64, norm_layer=nn.BatchNorm2d, use_dropout=False, n_blocks=6, padding_type='reflect',
-                 norm_layer_swinT=nn.LayerNorm, img_size=1024, patch_size=4, embed_dim=96, depths=[2, 2, 6, 2],
-                 num_heads=[3, 6, 12, 24], window_size=7, mlp_ratio=4., qkv_bias=True, drop_rate=0., attn_drop_rate=0.,
-                 drop_path_rate=0.2
-                 ):
-        """Construct a Resnet-based generator
-
-        Parameters:
-            input_nc (int)      -- the number of channels in input images
-            output_nc (int)     -- the number of channels in output images
-            ngf (int)           -- the number of filters in the last conv layer
-            norm_layer          -- normalization layer
-            use_dropout (bool)  -- if use dropout layers
-            n_blocks (int)      -- the number of ResNet blocks
-            padding_type (str)  -- the name of padding layer in conv layers: reflect | replicate | zero
-        """
-        assert(n_blocks >= 0)
-        super(ResnetGeneratorSwinT, self).__init__()
-        if type(norm_layer) == functools.partial:
-            use_bias = norm_layer.func == nn.InstanceNorm2d
-        else:
-            use_bias = norm_layer == nn.InstanceNorm2d
-        # Initial layers
-        self.initial_layers = self.init_layers(input_nc, ngf, norm_layer, use_bias)
-
-        # Downsampling layers
-        self.downsampling_layers = self.downsample_layers(ngf, norm_layer, use_bias)
-
-        # ResNet blocks
-        self.resnet_blocks = self.resnet_blocks_layers(ngf, n_blocks, padding_type, norm_layer, use_dropout,
-                                                       use_bias)
-
-        # Swin Transformer branch
-        self.swinT = timm.models.swin_transformer.SwinTransformer(
-            img_size=img_size,
-            patch_size=patch_size,
-            in_chans=input_nc,
-            embed_dim=embed_dim,
-            depths=depths,
-            num_heads=num_heads,
-            window_size=window_size,
-            mlp_ratio=mlp_ratio,
-            qkv_bias=qkv_bias,
-            drop_rate=drop_rate,
-            attn_drop_rate=attn_drop_rate,
-            drop_path_rate=drop_path_rate,
-            norm_layer=norm_layer_swinT
-        )
-        self.swinT.head = nn.Identity()  # remove classification head
-
-        self.cross_atts = nn.ModuleList([
-            GatedCrossAttention(cnn_channels=128, swinT_channels=192, upsample_factor=int(math.log2(patch_size))),
-            GatedCrossAttention(cnn_channels=256, swinT_channels=384, upsample_factor=int(math.log2(patch_size))),
-            GatedCrossAttention(cnn_channels=512, swinT_channels=768, upsample_factor=int(math.log2(patch_size)))
-        ])
-
-        self.patch_projector = nn.Conv2d(input_nc, embed_dim, kernel_size=1, stride=1, bias=True)
-
-        # Upsampling layers
-        self.upsampling_layers = self.upsample_layers(ngf, norm_layer, use_bias)
-
-        # Final layers
-        self.final_layers = self.final_layers_func(ngf, output_nc)
-
-    def init_layers(self, input_nc, ngf, norm_layer, use_bias):
-        layers = [
-            nn.ReflectionPad2d(3),
-            nn.Conv2d(input_nc, ngf, kernel_size=7, padding=0, bias=use_bias),
-            norm_layer(ngf),
-            nn.ReLU(True)
-        ]
-        return nn.Sequential(*layers)
-
-    def downsample_layers(self, ngf, norm_layer, use_bias):
-        n_downsampling = 3
-        layers = nn.ModuleList()
-        for i in range(n_downsampling):
-            mult = 2 ** i
-            block = nn.Sequential(
-                nn.Conv2d(ngf * mult, ngf * mult * 2, kernel_size=3, stride=2, padding=1, bias=use_bias),
-                norm_layer(ngf * mult * 2),
-                nn.ReLU(True)
-            )
-            layers.append(block)
-        return layers
-
-    def resnet_blocks_layers(self, ngf, n_blocks, padding_type, norm_layer, use_dropout, use_bias):
-        mult = 2 ** 3  # 3 for n_downsampling
-        layers = []
-        for i in range(n_blocks):
-            layers.append(
-                ResnetBlock(ngf * mult, padding_type=padding_type, norm_layer=norm_layer, use_dropout=use_dropout,
-                            use_bias=use_bias))
-        return nn.Sequential(*layers)
-
-    def upsample_layers(self, ngf, norm_layer, use_bias):
-        n_downsampling = 3
-        layers = nn.ModuleList()
-        for i in range(n_downsampling):
-            mult = 2 ** (n_downsampling - i)
-            block = nn.Sequential(
-                nn.ConvTranspose2d(ngf * mult * 2,  # Multiply by 2 to account for concatenation
-                                   int(ngf * mult / 2),
-                                   kernel_size=3, stride=2,
-                                   padding=1, output_padding=1,
-                                   bias=use_bias),
-                norm_layer(int(ngf * mult / 2)),
-                nn.ReLU(True)
-            )
-            layers.append(block)
-        return layers
-
-    def final_layers_func(self, ngf, output_nc):
-        return nn.Sequential(
-            nn.ReflectionPad2d(3),
-            nn.Conv2d(ngf, output_nc, kernel_size=7, padding=0),
-            nn.Tanh()
-        )
-
-    def forward(self, input):
-        x = self.initial_layers(input)
-
-        # Downsample while storing the intermediate outputs
-        downsampled_features = []
-        for down_layer in self.downsampling_layers:
-            x = down_layer(x)
-            downsampled_features.append(x)
-
-        x = self.resnet_blocks(x)
-
-        # SwinT branch
-        swinT_features = []
-        # SwinT processing
-        B, C, H, W = input.shape
-        print('input shape: ', B, C, H, W)
-        x2 = self.swinT.patch_embed(input)
-        x2 = self.swinT.pos_drop(x2)
-        for stage in self.swinT.layers:
-            for blk in stage.blocks:
-                x2 = blk(x2)
-            if stage.downsample is not None:
-                x2 = stage.downsample(x2)
-                h_w_dim = int((x2.shape[1]) ** 0.5)
-                swinT_features.append(x2.view(x2.shape[0], h_w_dim, h_w_dim,
-                                              x2.shape[2]).permute(0, 3, 1, 2))
-
-        # Apply Cross Attention at each scale
-        for i in range(len(self.cross_atts)):
-            downsampled_features[i] = self.cross_atts[i](downsampled_features[i], swinT_features[i])
-
-        # Upsample with concatenation
-        for up_layer, feature in zip(self.upsampling_layers, reversed(downsampled_features)):
-            x = torch.cat([x, feature], dim=1)
-            x = up_layer(x)
-
-        x = self.final_layers(x)
-
-        return x
-
-
-class ResnetBlock(nn.Module):
-    """Define a Resnet block"""
-
-    def __init__(self, dim, padding_type, norm_layer, use_dropout, use_bias):
-        """Initialize the Resnet block
-
-        A resnet block is a conv block with skip connections
-        We construct a conv block with build_conv_block function,
-        and implement skip connections in <forward> function.
-        Original Resnet paper: https://arxiv.org/pdf/1512.03385.pdf
-        """
-        super(ResnetBlock, self).__init__()
-        self.conv_block = self.build_conv_block(dim, padding_type, norm_layer, use_dropout, use_bias)
-
-    def build_conv_block(self, dim, padding_type, norm_layer, use_dropout, use_bias):
-        """Construct a convolutional block.
-
-        Parameters:
-            dim (int)           -- the number of channels in the conv layer.
-            padding_type (str)  -- the name of padding layer: reflect | replicate | zero
-            norm_layer          -- normalization layer
-            use_dropout (bool)  -- if use dropout layers.
-            use_bias (bool)     -- if the conv layer uses bias or not
-
-        Returns a conv block (with a conv layer, a normalization layer, and a non-linearity layer (ReLU))
-        """
-        conv_block = []
-        p = 0
-        if padding_type == 'reflect':
-            conv_block += [nn.ReflectionPad2d(1)]
-        elif padding_type == 'replicate':
-            conv_block += [nn.ReplicationPad2d(1)]
-        elif padding_type == 'zero':
-            p = 1
-        else:
-            raise NotImplementedError('padding [%s] is not implemented' % padding_type)
-
-        conv_block += [nn.Conv2d(dim, dim, kernel_size=3, padding=p, bias=use_bias), norm_layer(dim), nn.ReLU(True)]
-        if use_dropout:
-            conv_block += [nn.Dropout(0.5)]
-
-        p = 0
-        if padding_type == 'reflect':
-            conv_block += [nn.ReflectionPad2d(1)]
-        elif padding_type == 'replicate':
-            conv_block += [nn.ReplicationPad2d(1)]
-        elif padding_type == 'zero':
-            p = 1
-        else:
-            raise NotImplementedError('padding [%s] is not implemented' % padding_type)
-        conv_block += [nn.Conv2d(dim, dim, kernel_size=3, padding=p, bias=use_bias), norm_layer(dim)]
-
-        return nn.Sequential(*conv_block)
-
-    def forward(self, x):
-        """Forward function (with skip connections)"""
-        out = x + self.conv_block(x)  # add skip connections
-        return out
-
-
-class GatedCrossAttention(nn.Module):
-    def __init__(self, cnn_channels, swinT_channels, num_heads=8, k=1000, upsample_factor=5):
-        super(GatedCrossAttention, self).__init__()
-
-        self.swinT_transform = nn.Conv2d(swinT_channels, cnn_channels, kernel_size=1)
-
-        self.attention = nn.MultiheadAttention(embed_dim=cnn_channels, num_heads=num_heads)
-
-        self.gate = nn.Sequential(
-            nn.Conv2d(cnn_channels, 1, kernel_size=1),
-            nn.Sigmoid()
-        )
-        # Predefine the upsampling blocks based on the upsample_factor
-        self.upsample_blocks = nn.ModuleList([
-            nn.Sequential(
-                nn.ConvTranspose2d(cnn_channels, cnn_channels, kernel_size=4, stride=2, padding=1),
-                nn.ReLU(),
-                nn.Conv2d(cnn_channels, cnn_channels, kernel_size=3, stride=1, padding=1)
-            ) for _ in range(upsample_factor)
-        ])
-        self.k = k
-
-    def forward(self, downsampling_features, swinT_features):
-        # Transform channel dimensions to common_channels
-        swinT_features = self.swinT_transform(swinT_features)
-
-        for upsample_block in self.upsample_blocks:
-            swinT_features = upsample_block(swinT_features)
-
-        # Calculate gate values
-        gate_values = self.gate(downsampling_features)
-
-        # Flatten and permute for attention module
-        down_features_flat = downsampling_features.flatten(2).permute(2, 0, 1)
-        swinT_features_flat = swinT_features.flatten(2).permute(2, 0, 1)
-
-        # Select top-k activations to apply attention
-        _, top_indices = torch.topk(gate_values.view(gate_values.size(0), -1), k=self.k, dim=1)
-
-        down_features_subset = torch.index_select(down_features_flat, 0, top_indices.view(-1))
-        swinT_features_subset = torch.index_select(swinT_features_flat, 0, top_indices.view(-1))
-
-        # Apply attention only on the subset
-        attended_features_subset, _ = self.attention(down_features_subset, swinT_features_subset, swinT_features_subset)
-
-        # Scatter back the attended values to original size tensor
-        attended_features = down_features_flat.clone()
-        attended_features.index_copy_(0, top_indices.view(-1), attended_features_subset)
-
-        # Reshape to [B, C, H, W]
-        attended_features = attended_features.permute(1, 2, 0).view_as(downsampling_features)
-
-        # Combine the attended features and original features using the gate
-        # out = gate_values * attended_features + (1 - gate_values) * downsampling_features
-
-        return attended_features

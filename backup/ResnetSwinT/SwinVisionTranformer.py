@@ -1222,7 +1222,7 @@ class ResnetBlock(nn.Module):
 
 
 class GatedCrossAttention(nn.Module):
-    def __init__(self, cnn_channels, swinT_channels, num_heads=8, k=1000, upsample_factor=5):
+    def __init__(self, cnn_channels, swinT_channels, num_heads=8, k=0.003, upsample_factor=5):
         super(GatedCrossAttention, self).__init__()
 
         self.swinT_transform = nn.Conv2d(swinT_channels, cnn_channels, kernel_size=1)
@@ -1241,7 +1241,7 @@ class GatedCrossAttention(nn.Module):
                 nn.Conv2d(cnn_channels, cnn_channels, kernel_size=3, stride=1, padding=1)
             ) for _ in range(upsample_factor)
         ])
-        self.k = k
+        self.k_raw = nn.Parameter(torch.tensor([math.log(0.01 / (1 - 0.01))]))
 
     def forward(self, downsampling_features, swinT_features):
         # Transform channel dimensions to common_channels
@@ -1253,12 +1253,17 @@ class GatedCrossAttention(nn.Module):
         # Calculate gate values
         gate_values = self.gate(downsampling_features)
 
+        B, C, H, W = gate_values.size()
+        k = torch.sigmoid(self.k_raw)
+        currentk = int(H * W * k)
+        print(currentk)
+
         # Flatten and permute for attention module
         down_features_flat = downsampling_features.flatten(2).permute(2, 0, 1)
         swinT_features_flat = swinT_features.flatten(2).permute(2, 0, 1)
 
         # Select top-k activations to apply attention
-        _, top_indices = torch.topk(gate_values.view(gate_values.size(0), -1), k=self.k, dim=1)
+        _, top_indices = torch.topk(gate_values.view(gate_values.size(0), -1), k=currentk, dim=1)
 
         down_features_subset = torch.index_select(down_features_flat, 0, top_indices.view(-1))
         swinT_features_subset = torch.index_select(swinT_features_flat, 0, top_indices.view(-1))
@@ -1274,6 +1279,6 @@ class GatedCrossAttention(nn.Module):
         attended_features = attended_features.permute(1, 2, 0).view_as(downsampling_features)
 
         # Combine the attended features and original features using the gate
-        # out = gate_values * attended_features + (1 - gate_values) * downsampling_features
+        out = gate_values * attended_features + (1 - gate_values) * downsampling_features
 
-        return attended_features
+        return out
