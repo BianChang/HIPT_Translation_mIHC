@@ -59,8 +59,8 @@ def crop_images_in_directory(input_dir, output_dir, patch_size, stride):
                         imwrite(patch_path, patch)
 
 
-input_dir = r'F:\2023_4_11_data_organization\PANCK_block\grey'
-output_dir = r'F:\2023_4_11_data_organization\1024_patches\PANCK'
+input_dir = r'F:\2023_4_11_data_organization\PD-L1_block\grey'
+output_dir = r'F:\2023_4_11_data_organization\1024_patches\PD-L1'
 patch_size = 1024
 stride = 512
 crop_images_in_directory(input_dir, output_dir, patch_size, stride)

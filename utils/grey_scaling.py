@@ -2,7 +2,7 @@ from PIL import Image
 import os
 
 # Specify the root directory containing the subfolders
-root_dir = r'D:\work\project1\workspace\2023_4_11_data_organization\DAPI_block'
+root_dir = r'F:\2023_4_11_data_organization\PD-L1_block'
 
 # Loop over the subfolders in the root directory
 for subdir in os.listdir(root_dir):

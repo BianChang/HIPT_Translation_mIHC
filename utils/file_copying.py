@@ -76,8 +76,8 @@ def main():
 
     # Use the functions
 
-    src_dir = r'F:\2023_4_11_data_organization\1024_patches\merged_channels\HE-2'
-    dest_dir = r'F:\2023_4_11_data_organization\1024_patches\test\label'
+    src_dir = r'F:\2023_4_11_data_organization\1024_patches\PD-L1'
+    dest_dir = r'F:\2023_4_11_data_organization\1024_patches\train\PD-L1'
     copy_images(src_dir, dest_dir)
     # copy_images_faster(src_dir, dest_dir)
 
