@@ -293,6 +293,9 @@ def train(net=None):
                 epoch, int(time() - tic), train_epoch_loss, val_epoch_loss, batch_ssim_average_val,
                 batch_ssim_average_test))
 
+        if not os.path.exists('./weights'):
+            os.makedirs('./weights')
+
         if not os.path.exists('./weights/' + model_name + '/'):
             os.mkdir('./weights/' + model_name + '/')
         if train_epoch_loss >= train_epoch_best_loss:
@@ -324,7 +327,7 @@ def get_args():
     parser.add_argument('-n', '--model_name', dest='name', type=str, default='default')
     parser.add_argument('-b', '--batch_size', dest='batchsize', type=int, default=4, help='batch size')
     parser.add_argument('-l', '--learning_rate', dest='lr', type=float, default=0.001, help='initial learning rate')
-    parser.add_argument('-e', '--epoch', dest='epoch', type=int, default=100, help='data root')
+    parser.add_argument('-e', '--epoch', dest='epoch', type=int, default=100, help='epochs')
     parser.add_argument('-p', '--pretrained', dest='premodel', type=str, default='None', help='pre trained model')
     parser.add_argument('-tp', '--train_path', dest='train_path', type=str,
                         default=r'F:\2023_4_11_data_organization\1024_patches\bci_debug\train')
