@@ -349,6 +349,11 @@ def draw_curve(model_name, current_epoch):
 
     if current_epoch == 1:
         plt.legend()
+
+    # Check if the directory exists, and if not, create it
+    if not os.path.exists('./lossGraphs'):
+        os.makedirs('./lossGraphs')
+
     fig1.savefig(os.path.join('./lossGraphs', model_name + '_train.jpg'))
 
 def draw_ssim_curve_val(model_name, current_epoch):
@@ -430,7 +435,7 @@ if __name__ == '__main__':
         #net = SwinUnetGenerator(**config["model_params"])
         net = ResnetGeneratorSwinT(**config["model_params"])
     else:
-        net = CustomSwinTransformer(**config["model_params"])
+        net = ResnetGeneratorSwinT(**config["model_params"])
 
     if args.premodel != 'None':
         pretrained_model = torch.load(args.premodel)
