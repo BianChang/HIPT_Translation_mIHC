@@ -38,9 +38,8 @@ def test_model(model, test_loader, device, output_dir, label_dir):
             test_img, test_mask = test_img.to(device), test_mask.to(device)
             model.eval()
             predict1 = model(test_img)
-            test_mask = test_mask.detach().cpu()
-            test_mask = test_mask.detach().cpu()
-            predict1 = predict1.detach().cpu()
+            test_mask = test_mask.detach().cpu().numpy()
+            predict1 = predict1.detach().cpu().numpy()
             ssim_4_channel_test = calculate_ssim_per_channel(predict1, test_mask)
             corr_coef_4_channel, psnr_4_channel = calculate_pearson_corr(predict1, test_mask)
 
