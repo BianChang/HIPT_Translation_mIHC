@@ -240,8 +240,7 @@ def main():
             "patch_size": 32,
             "window_size": 64,
             "depths": [2, 2, 6, 2],
-            "embed_dim": 96,
-            "pretrained": False,
+            "embed_dim": 96
         }
     }
     # model = SwinTransformer(**config["model_params"]).to(device)
