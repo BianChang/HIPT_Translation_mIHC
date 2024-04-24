@@ -55,8 +55,8 @@ def calculate_pearson_corr(input_tensor, target_tensor):
         input_channel = input_tensor[:, channel, :, :].squeeze()
         target_channel = target_tensor[:, channel, :, :].squeeze()
 
-        input_channel_tensor = input_tensor[:, channel, :, :].unsqueeze(1)
-        target_channel_tensor = target_tensor[:, channel, :, :].unsqueeze(1)
+        #input_channel_tensor = input_tensor[:, channel, :, :].unsqueeze(1)
+        #target_channel_tensor = target_tensor[:, channel, :, :].unsqueeze(1)
 
         input_channel = (input_channel + 1.0) / 2.0
         target_channel = (target_channel + 1.0) / 2.0
@@ -93,7 +93,7 @@ def calculate_pearson_corr(input_tensor, target_tensor):
             
         psnr_scores.append(psnr.item())
         '''
-        psnr = peak_signal_noise_ratio(input_channel_tensor, target_channel_tensor)
+        psnr = peak_signal_noise_ratio(input_channel, target_channel)
 
         psnr_scores.append(psnr)
 
