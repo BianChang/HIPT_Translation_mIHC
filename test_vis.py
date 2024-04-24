@@ -18,6 +18,8 @@ import torch.nn
 import cv2
 from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.pyplot as plt
+import torch.nn as nn
+import functools
 
 
 def test_model(model, test_loader, device, output_dir, label_dir):
@@ -236,6 +238,9 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     config = {
         "model_params": {
+            "input_nc": 3,
+            "output_nc": 3,
+            "norm_layer": functools.partial(nn.BatchNorm2d, affine=True, track_running_stats=True),
             "img_size": [1024, 1024],
             "patch_size": 32,
             "window_size": 64,
