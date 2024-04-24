@@ -2,7 +2,7 @@ import tifffile
 import torch
 from torchvision.transforms import Normalize, ToTensor, Compose
 from torch.utils.data import DataLoader
-from SwinVisionTranformer import SwinTransformer, CustomSwinTransformer, HybridSwinT
+from SwinVisionTranformer import SwinTransformer, CustomSwinTransformer, HybridSwinT, ResnetGeneratorSwinT
 from dataset.ImageToImageDataset import ImageToImageDatasetWithName
 from utils.visulization import visualize_4channel_tif
 from utils.metrics import calculate_ssim_per_channel, calculate_pearson_corr
@@ -245,8 +245,9 @@ def main():
         }
     }
     # model = SwinTransformer(**config["model_params"]).to(device)
-    model = HybridSwinT(**config["model_params"]).to(device)
+    # model = HybridSwinT(**config["model_params"]).to(device)
     # model = CustomSwinTransformer(**config["model_params"]).to(device)
+    model = ResnetGeneratorSwinT(**config["model_params"]).to(device)
 
     state_dict = torch.load(args.model_path, map_location=device)
     # If the model is an instance of nn.DataParallel
