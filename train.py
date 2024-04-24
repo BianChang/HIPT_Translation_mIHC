@@ -142,7 +142,7 @@ def train(net=None):
 
     optimizer = torch.optim.Adam(net.parameters(), lr=lr, betas=(0.9, 0.999))
     # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=30, eta_min=1e-6)
-    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.1)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=15, gamma=0.1)
 
 
     for epoch in range(1, total_epoch + 1):
