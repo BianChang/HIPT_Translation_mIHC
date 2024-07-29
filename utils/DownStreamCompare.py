@@ -32,6 +32,7 @@ data = [
     [2511,2356,9288,13250,30513,38370]
 ]
 '''
+'''
 # UNet
 data = [
     [4104,0,11242,14830,38408,48701], [1465,0,12955,16419,26965,40421],
@@ -43,6 +44,19 @@ data = [
     [2423,0,23865,37347,45739,66378], [2364,0,8845,11069,28576,35492],
     [2511,0,9288,10373,30513,37009]
 ]
+'''
+
+data = [
+    [4104,0,11242,14630,38408,48701], [1465,0,12955,15419,26965,40421],
+    [2576,0,8566,11223,27033,33255], [2419,0,19633,21837,36783,57574],
+    [2335,0,9189,12126,22577,35732], [8161,0,8918,13222,39941,51506],
+    [2978,0,5704,8248,29379,41354], [1604,0,11731,19341,34247,46313],
+    [4563,0,11442,12686,35460,47362], [4035,0,6658,9421,39017,50326],
+    [2528,0,7722,11404,30740,43641], [4969,0,14198,25382,39958,57403],
+    [2423,0,23865,36347,45739,66378], [2364,0,8845,11069,28576,35492],
+    [2511,0,9288,10073,30513,37009]
+    ]
+
 
 save_path = r'D:\Chang_files\work_records\swinT\downstream'
 
@@ -64,7 +78,7 @@ df['CD3_Diff'] = df['CD3_Ratio_Real'] - df['CD3_Ratio_Gen']
 df['PanCK_Diff'] = df['PanCK_Ratio_Real'] - df['PanCK_Ratio_Gen']
 
 # Plot Bland-Altman for CD3
-plt.figure(figsize=(10, 4))
+plt.figure(figsize=(7, 3))
 #plt.suptitle('Bland-Altman Plots')
 plt.subplot(1, 2, 1)
 plt.scatter(df['CD3_Mean_Ratio'], df['CD3_Diff'], color='blue')
@@ -101,12 +115,12 @@ print(f"Mean Absolute Error Ratio for CD3: {cd3_error_mean}")
 print(f"Mean Absolute Error Ratio for PanCK: {panck_error_mean}")
 
 # box plots
-plt.figure(figsize=(6, 6))
+plt.figure(figsize=(5, 5))
 cell_count_data = pd.melt(df, value_vars=['CD3_Real', 'CD3_Gen', 'PanCK_Real', 'PanCK_Gen', 'Total_Real', 'Total_Gen'],
                           var_name='Cell Type', value_name='Count')
 sns.boxplot(x='Cell Type', y='Count', data=cell_count_data)
-plt.xticks(rotation=0)
-plt.title('Boxplots of Cell Counts for 15 Image Blocks')
+plt.xticks(rotation=45)
+plt.title('Boxplots of Cell Counts for Test Set')
 # Set y-axis to scientific notation
 plt.gca().yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
 plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
@@ -114,7 +128,7 @@ plt.tight_layout()
 #plt.show()
 plt.savefig(os.path.join(save_path, f'BoxPlots.jpg'), dpi=300)
 
-plt.figure(figsize=(10, 4))
+plt.figure(figsize=(7, 3))
 # CD3 Ratios Scatter Plot
 plt.subplot(1, 2, 1)
 plt.scatter(df['CD3_Ratio_Real'], df['CD3_Ratio_Gen'], color='blue', alpha=0.7)
@@ -123,7 +137,7 @@ plt.xlim(0, max(df[['CD3_Ratio_Real', 'CD3_Ratio_Gen']].max()) + 0.05)
 plt.ylim(0, max(df[['CD3_Ratio_Real', 'CD3_Ratio_Gen']].max()) + 0.05)
 plt.xlabel('Real CD3 Ratio')
 plt.ylabel('Generated CD3 Ratio')
-plt.title('Real vs. Generated CD3 Positive Cell Proportion')
+plt.title('CD3 Positive Cell Proportion')
 
 # PanCK Ratios Scatter Plot
 plt.subplot(1, 2, 2)
@@ -133,7 +147,7 @@ plt.xlim(0, max(df[['PanCK_Ratio_Real', 'PanCK_Ratio_Gen']].max()) + 0.05)
 plt.ylim(0, max(df[['PanCK_Ratio_Real', 'PanCK_Ratio_Gen']].max()) + 0.05)
 plt.xlabel('Real PanCK Ratio')
 plt.ylabel('Generated PanCK Ratio')
-plt.title('Real vs. Generated PanCK Positive Cell Proportion')
+plt.title('PanCK Positive Cell Proportion')
 
 plt.tight_layout()
 #plt.show()
